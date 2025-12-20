@@ -1,1 +1,36 @@
-node_modules
+git rm --cached .env
+```
+
+### **2. Adicione o `.env` no `.gitignore`:**
+
+Abra ou crie o arquivo `.gitignore` na raiz do projeto e adicione:
+```
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+
+# Build
+dist/
+build/
+
+# Prisma
+prisma/migrations/**/*.sql
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Testing
+coverage/
