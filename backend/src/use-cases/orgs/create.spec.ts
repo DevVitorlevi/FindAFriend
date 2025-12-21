@@ -1,8 +1,8 @@
 import { OrgAlreadyExits } from "@/utils/errors/org-already-exist.js"
 import { InMemoryOrgsRepository } from "@/utils/test/in-memory/in-memory-orgs-repository.js"
+import { compare } from "bcryptjs"
 import { beforeEach, describe, expect, it } from "vitest"
 import { CreateOrgUseCase } from "./create.js"
-import { compare } from "bcryptjs"
 
 let orgsRepository: InMemoryOrgsRepository
 let sut: CreateOrgUseCase
@@ -18,7 +18,10 @@ describe("Create Org Use Case", () => {
       name: "SEDEMA",
       email: "sedema@email.com",
       password: "123456",
+      cep: "62810-000",
+      address: "Vila Serra de Peroba",
       whatsapp: "(88)99999-9999",
+      state: "CE",
       city: "Icapui - CE",
       latitude: -4.7086,
       longitude: -37.3564
@@ -33,7 +36,10 @@ describe("Create Org Use Case", () => {
       name: "SEDEMA",
       email: "sedema@email.com",
       password: "123456",
+      cep: "62810-000",
+      address: "Vila Serra de Peroba",
       whatsapp: "(88)99999-9999",
+      state: "CE",
       city: "Icapui - CE",
       latitude: -4.7086,
       longitude: -37.3564
@@ -49,9 +55,12 @@ describe("Create Org Use Case", () => {
 
     await sut.execute({
       name: "SEDEMA",
-      email,
+      email: "sedema@email.com",
       password: "123456",
+      cep: "62810-000",
+      address: "Vila Serra de Peroba",
       whatsapp: "(88)99999-9999",
+      state: "CE",
       city: "Icapui - CE",
       latitude: -4.7086,
       longitude: -37.3564
@@ -59,10 +68,13 @@ describe("Create Org Use Case", () => {
 
     await expect(
       sut.execute({
-        name: "SEDEMA 2",
-        email,
+        name: "SEDEMA",
+        email: "sedema@email.com",
         password: "123456",
+        cep: "62810-000",
+        address: "Vila Serra de Peroba",
         whatsapp: "(88)99999-9999",
+        state: "CE",
         city: "Icapui - CE",
         latitude: -4.7086,
         longitude: -37.3564

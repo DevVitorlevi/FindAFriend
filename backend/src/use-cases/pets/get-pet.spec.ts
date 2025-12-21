@@ -21,13 +21,16 @@ describe('Get Pet Details Use Case', () => {
 
   it('should be able to get pet details', async () => {
     const org = await orgsRepository.create({
-      name: 'SEDEMA',
-      email: 'sedema@email.com',
+      name: "SEDEMA",
+      email: "sedema@email.com",
       password_hash: await hash('123456', 6),
-      whatsapp: '(88)99999-9999',
-      city: 'Icapui - CE',
+      cep: "62810-000",
+      address: "Vila Serra de Peroba",
+      whatsapp: "(88)99999-9999",
+      state: "CE",
+      city: "Icapui - CE",
       latitude: -4.7086,
-      longitude: -37.3564,
+      longitude: -37.3564
     })
 
     const createdPet = await petsRepository.create({

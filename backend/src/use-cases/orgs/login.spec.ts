@@ -17,8 +17,11 @@ describe("Login Use Case", () => {
     await orgsRepository.create({
       name: "SEDEMA",
       email: "sedema@email.com",
-      password_hash: await hash("123456", 6),
+      password_hash: await hash('123456', 6),
+      cep: "62810-000",
+      address: "Vila Serra de Peroba",
       whatsapp: "(88)99999-9999",
+      state: "CE",
       city: "Icapui - CE",
       latitude: -4.7086,
       longitude: -37.3564
@@ -46,8 +49,11 @@ describe("Login Use Case", () => {
     await orgsRepository.create({
       name: "SEDEMA",
       email: "sedema@email.com",
-      password_hash: await hash("123456", 6),
+      password_hash: await hash('123456', 6),
+      cep: "62810-000",
+      address: "Vila Serra de Peroba",
       whatsapp: "(88)99999-9999",
+      state: "CE",
       city: "Icapui - CE",
       latitude: -4.7086,
       longitude: -37.3564
