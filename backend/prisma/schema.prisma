@@ -19,7 +19,7 @@ model Org {
   whatsapp      String
   state         String
   city          String
-  create_at     DateTime @default(now())
+  created_at    DateTime @default(now())
   pets          Pet[]
 
   @@map("orgs")
@@ -43,7 +43,8 @@ model Pet {
   description String
   age         Age
   size        Size
-  create_at   DateTime   @default(now())
+  adopted     Boolean    @default(false)
+  created_at  DateTime   @default(now())
   org         Org        @relation(fields: [org_id], references: [id])
   org_id      String
   images      PetImage[]

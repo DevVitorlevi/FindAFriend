@@ -19,9 +19,8 @@ export class InMemoryOrgsRepository implements OrgsRepository {
       city: data.city,
       latitude: new Prisma.Decimal(data.latitude.toString()),
       longitude: new Prisma.Decimal(data.longitude.toString()),
-      create_at: new Date()
+      created_at: new Date()
     }
-
     this.database.push(org)
 
     return org
