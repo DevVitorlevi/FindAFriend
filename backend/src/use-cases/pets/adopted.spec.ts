@@ -3,18 +3,18 @@ import { InMemoryPetImagesRepository } from "@/utils/test/in-memory/in-memory-pe
 import { InMemoryPetsRepository } from "@/utils/test/in-memory/in-memory-pets-repository.js"
 import { hash } from "bcryptjs"
 import { beforeEach, describe, expect, it } from "vitest"
-import { AdoptedPetUseCase } from "../pets/adopted.js"
+import { ToggleAdoptedUseCase } from "./adopted.js"
 
 let petsRepository: InMemoryPetsRepository
 let orgsRepository: InMemoryOrgsRepository
 let petImagesRepository: InMemoryPetImagesRepository
-let sut: AdoptedPetUseCase
+let sut: ToggleAdoptedUseCase
 describe("Adopted Pet Use Case", () => {
   beforeEach(() => {
     orgsRepository = new InMemoryOrgsRepository()
     petImagesRepository = new InMemoryPetImagesRepository()
     petsRepository = new InMemoryPetsRepository(orgsRepository, petImagesRepository)
-    sut = new AdoptedPetUseCase(petsRepository)
+    sut = new ToggleAdoptedUseCase(petsRepository)
   })
   it("should be able to adopted pet ", async () => {
 
