@@ -1,7 +1,7 @@
 import type { FastifyInstance } from "fastify";
-import { login } from "../controllers/login.js";
-import { refresh } from "../controllers/refresh.js";
-import { register } from "../controllers/register.js";
+import { login } from "../controllers/orgs/login.js";
+import { refresh } from "../controllers/orgs/refresh.js";
+import { register } from "../controllers/orgs/register.js";
 
 export function orgsRoutes(app: FastifyInstance) {
   app.post("/orgs", register)
