@@ -7,8 +7,6 @@ interface FindManyByCityParams {
   city: string
   age?: string
   size?: string
-  energy_level?: string
-  independence_level?: string
 }
 
 export class InMemoryPetsRepository implements PetsRepository {
@@ -19,6 +17,19 @@ export class InMemoryPetsRepository implements PetsRepository {
     private petImagesRepository?: { items: PetImage[] }
   ) { }
 
+  async adopted(petId: string) {
+    const petIndex = this.database.findIndex(pet => pet.id === petId)
+
+    if (petIndex < 0) {
+      throw new Error('Pet not found')
+    }
+
+    this.database[petIndex].adopted = true
+
+    return this.database[petIndex]
+  }
+
+
   async create(data: Prisma.PetUncheckedCreateInput): Promise<Pet> {
     const pet: Pet = {
       id: data.id ?? randomUUID(),
@@ -26,8 +37,9 @@ export class InMemoryPetsRepository implements PetsRepository {
       description: data.description,
       age: data.age as any,
       size: data.size as any,
+      adopted: data.adopted ?? false,
       org_id: data.org_id,
-      create_at: new Date()
+      created_at: new Date()
     }
 
     this.database.push(pet)
@@ -111,4 +123,5 @@ export class InMemoryPetsRepository implements PetsRepository {
 
     return filteredPets
   }
+
 }

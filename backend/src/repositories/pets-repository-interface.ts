@@ -13,4 +13,5 @@ export interface PetsRepository {
     images: PetImage[]
   }) | null>
   findManyByCity(params: FindManyByCityParams): Promise<(Pet & { org: Org; images: PetImage[] })[]>
+  adopted(petId: string): Promise<Pet>
 }
