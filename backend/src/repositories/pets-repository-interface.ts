@@ -1,10 +1,10 @@
-import type { Org, Pet, PetImage, Prisma } from "generated/prisma/client.js";
+import type { Age, Org, Pet, PetImage, Prisma, Size } from "generated/prisma/client.js";
 
 interface FindManyByCityParams {
   state: string
   city: string
-  age?: string
-  size?: string
+  age?: Age
+  size?: Size
 }
 export interface PetsRepository {
   create(data: Prisma.PetUncheckedCreateInput): Promise<Pet>
