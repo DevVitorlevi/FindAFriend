@@ -7,6 +7,7 @@ import { env } from '@/env/index.js';
 import { v2 as cloudinary } from 'cloudinary';
 import z, { ZodError } from "zod";
 import { orgsRoutes } from "./http/routes/orgs.routes.js";
+import { petsRoutes } from "./http/routes/pets.routes.js";
 
 cloudinary.config({
   cloud_name: env.CLOUDINARY_CLOUD_NAME,
@@ -26,6 +27,7 @@ app.register(fastifyJwt, {
 })
 //Routes
 app.register(orgsRoutes)
+app.register(petsRoutes)
 app.setErrorHandler((error, _, reply) => {
 
   if (error instanceof ZodError) {
