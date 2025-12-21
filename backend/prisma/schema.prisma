@@ -12,7 +12,8 @@ model Org {
   name          String
   email         String   @unique
   password_hash String
-  address       String
+  latitude      Decimal
+  longitude     Decimal
   whatsapp      String
   city          String
   create_at     DateTime @default(now())

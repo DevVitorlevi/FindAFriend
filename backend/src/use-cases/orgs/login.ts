@@ -1,4 +1,4 @@
-import type { OrgsRepository } from "@/repositories/orgs-interface-repository.js"
+import type { OrgsRepository } from "@/repositories/orgs-repository-interface.js"
 import { InvalidCredentials } from "@/utils/errors/invalid-credentials.js"
 import { compare } from "bcryptjs"
 import type { Org } from "generated/prisma/browser.js"

@@ -6,19 +6,22 @@ import { LoginUseCase } from "./login.js"
 
 let orgsRepository: InMemoryOrgsRepository
 let sut: LoginUseCase
+
 describe("Login Use Case", () => {
   beforeEach(() => {
     orgsRepository = new InMemoryOrgsRepository()
     sut = new LoginUseCase(orgsRepository)
   })
+
   it("should be able to login org", async () => {
     await orgsRepository.create({
       name: "SEDEMA",
       email: "sedema@email.com",
       password_hash: await hash("123456", 6),
-      address: "Centro Icapui",
       whatsapp: "(88)99999-9999",
-      city: "Icapui - CE"
+      city: "Icapui - CE",
+      latitude: -4.7086,
+      longitude: -37.3564
     })
 
     const { org } = await sut.execute({
@@ -27,8 +30,10 @@ describe("Login Use Case", () => {
     })
 
     expect(org.id).toEqual(expect.any(String))
+    expect(org.email).toBe("sedema@email.com")
   })
-  it("should not be able auth with wrong email", async () => {
+
+  it("should not be able to auth with wrong email", async () => {
     await expect(
       sut.execute({
         email: "sedema@email.com",
@@ -36,14 +41,16 @@ describe("Login Use Case", () => {
       })
     ).rejects.toBeInstanceOf(InvalidCredentials)
   })
-  it("should not be able auth with wrong password", async () => {
+
+  it("should not be able to auth with wrong password", async () => {
     await orgsRepository.create({
       name: "SEDEMA",
       email: "sedema@email.com",
       password_hash: await hash("123456", 6),
-      address: "Centro Icapui",
       whatsapp: "(88)99999-9999",
-      city: "Icapui - CE"
+      city: "Icapui - CE",
+      latitude: -4.7086,
+      longitude: -37.3564
     })
 
     await expect(
