@@ -1,5 +1,6 @@
+import cookie from "@fastify/cookie";
+import fastifyJwt from "@fastify/jwt";
 import fastify from "fastify";
-
 export const app = fastify()
 
 import { env } from '@/env/index.js';
@@ -11,6 +12,17 @@ cloudinary.config({
   cloud_name: env.CLOUDINARY_CLOUD_NAME,
   api_key: env.CLOUDINARY_API_KEY,
   api_secret: env.CLOUDINARY_API_SECRET,
+})
+app.register(cookie)
+app.register(fastifyJwt, {
+  secret: env.JWT_SECRET,
+  cookie: {
+    cookieName: "refreshToken",
+    signed: false
+  },
+  sign: {
+    expiresIn: "10m"
+  }
 })
 //Routes
 app.register(orgsRoutes)
