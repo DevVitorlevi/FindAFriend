@@ -12,9 +12,12 @@ model Org {
   name          String
   email         String   @unique
   password_hash String
+  cep           String
+  address       String
   latitude      Decimal
   longitude     Decimal
   whatsapp      String
+  state         String
   city          String
   create_at     DateTime @default(now())
   pets          Pet[]
