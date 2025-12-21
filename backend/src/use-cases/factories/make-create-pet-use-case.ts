@@ -6,4 +6,5 @@ export function makeCreatePetUseCase() {
   const prismaPetsRepository = new PrismaPetsRepository()
 
   const createPetUseCase = new CreatePetUseCase(prismaPetsRepository)
+  return createPetUseCase
 }
