@@ -35,14 +35,23 @@ enum Size {
 }
 
 model Pet {
-  id          String   @id @default(uuid())
+  id          String     @id @default(uuid())
   name        String
   description String
   age         Age
   size        Size
-  create_at   DateTime @default(now())
-  org         Org      @relation(fields: [org_id], references: [id])
+  create_at   DateTime   @default(now())
+  org         Org        @relation(fields: [org_id], references: [id])
   org_id      String
+  images      PetImage[]
 
   @@map("pets")
+}
+
+model PetImage {
+  id         String   @id @default(uuid())
+  url        String
+  pet_id     String
+  pet        Pet      @relation(fields: [pet_id], references: [id])
+  created_at DateTime @default(now())
 }
