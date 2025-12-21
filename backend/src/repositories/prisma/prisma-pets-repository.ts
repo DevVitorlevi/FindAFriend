@@ -13,24 +13,17 @@ interface FindManyByCityParams {
 export class PrismaPetsRepository implements PetsRepository {
   async create(data: PetUncheckedCreateInput): Promise<Pet> {
     const pet = await prisma.pet.create({ data })
-
     return pet
   }
 
-  async findById(id: string): Promise<(Pet & {
-    org: Org
-    images: PetImage[]
-  }) | null> {
+  async findById(id: string): Promise<(Pet & { org: Org; images: PetImage[] }) | null> {
     const pet = await prisma.pet.findUnique({
-      where: {
-        id,
-      },
+      where: { id },
       include: {
         org: true,
         images: true,
       },
     })
-
     return pet
   }
 
@@ -39,16 +32,10 @@ export class PrismaPetsRepository implements PetsRepository {
     city,
     age,
     size,
-  }: FindManyByCityParams): Promise<(Pet & {
-    org: Org
-    images: PetImage[]
-  })[]> {
+  }: FindManyByCityParams): Promise<(Pet & { org: Org; images: PetImage[] })[]> {
     const pets = await prisma.pet.findMany({
       where: {
-        org: {
-          city,
-          state,
-        },
+        org: { city, state },
         ...(age && { age }),
         ...(size && { size }),
       },
@@ -57,18 +44,24 @@ export class PrismaPetsRepository implements PetsRepository {
         images: true,
       },
     })
-
     return pets
   }
 
-  async adopted(petId: string): Promise<Pet> {
+  async toggleAdopted(petId: string): Promise<Pet> {
+    const currentPet = await prisma.pet.findUnique({
+      where: { id: petId },
+      select: { adopted: true },
+    })
+
+    if (!currentPet) {
+      throw new Error('Pet not found')
+    }
+
     const pet = await prisma.pet.update({
-      where: {
-        id: petId,
-      },
+      where: { id: petId },
       data: {
-        adopted: true
-      }
+        adopted: !currentPet.adopted,
+      },
     })
 
     return pet

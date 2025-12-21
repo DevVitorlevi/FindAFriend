@@ -1,9 +1,10 @@
-import { PrismaPetsRepository } from "@/repositories/prisma/prisma-pets-repository.js";
-import { AdoptedPetUseCase } from "../pets/adopted.js";
 
-export function makeAdoptedPetUseCase() {
-  const prismaPetsRepository = new PrismaPetsRepository()
-  const adoptedPetUseCase = new AdoptedPetUseCase(prismaPetsRepository)
+import { PrismaPetsRepository } from "@/repositories/prisma/prisma-pets-repository.js"
+import { ToggleAdoptedUseCase } from "../pets/adopted.js"
 
-  return adoptedPetUseCase
+export function makeToggleAdoptedUseCase() {
+  const petsRepository = new PrismaPetsRepository()
+  const useCase = new ToggleAdoptedUseCase(petsRepository)
+
+  return useCase
 }

@@ -1,23 +1,27 @@
 import type { PetsRepository } from "@/repositories/pets-repository-interface.js"
-import type { Pet } from "generated/prisma/browser.js"
+import { ResourceNotFound } from "@/utils/errors/resource-not-found.js"
+import type { Pet } from "generated/prisma/client.js"
 
-interface AdoptedPetUseCaseRequest {
-  petId: string,
+interface ToggleAdoptedUseCaseRequest {
+  petId: string
 }
 
-interface AdoptedPetUseCaseResponse {
+interface ToggleAdoptedUseCaseResponse {
   pet: Pet
 }
 
-export class AdoptedPetUseCase {
+export class ToggleAdoptedUseCase {
   constructor(private petsRepository: PetsRepository) { }
 
   async execute({
     petId,
-  }: AdoptedPetUseCaseRequest): Promise<AdoptedPetUseCaseResponse> {
-    const pet = await this.petsRepository.adopted(petId)
-    return {
-      pet,
+  }: ToggleAdoptedUseCaseRequest): Promise<ToggleAdoptedUseCaseResponse> {
+    try {
+      const pet = await this.petsRepository.toggleAdopted(petId)
+
+      return { pet }
+    } catch (error) {
+      throw new ResourceNotFound()
     }
   }
 }
