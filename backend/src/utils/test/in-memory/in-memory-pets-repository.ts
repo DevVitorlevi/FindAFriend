@@ -2,11 +2,20 @@ import type { PetsRepository } from "@/repositories/pets-repository-interface.js
 import type { Org, Pet, PetImage, Prisma } from "generated/prisma/client.js";
 import { randomUUID } from "node:crypto";
 
+interface FindManyByCityParams {
+  state: string
+  city: string
+  age?: string
+  size?: string
+  energy_level?: string
+  independence_level?: string
+}
+
 export class InMemoryPetsRepository implements PetsRepository {
   public database: Pet[] = []
 
-  // ← Recebe o repositório de ORGs para poder fazer o findById com a org incluída
-  constructor(private orgsRepository?: { database: Org[] },
+  constructor(
+    private orgsRepository?: { database: Org[] },
     private petImagesRepository?: { items: PetImage[] }
   ) { }
 
@@ -42,14 +51,64 @@ export class InMemoryPetsRepository implements PetsRepository {
     if (!org) {
       return null
     }
+
+    // Busca as imagens do pet
     const images = this.petImagesRepository?.items.filter(
       (image) => image.pet_id === pet.id
     ) || []
-    // Retorna o pet com a org incluída (igual o Prisma faz)
+
+    // Retorna o pet com a org e images incluídas
     return {
       ...pet,
       org,
       images
     }
+  }
+
+  async findManyByCity({
+    state,
+    city,
+    age,
+    size,
+  }: FindManyByCityParams): Promise<(Pet & { org: Org; images: PetImage[] })[]> {
+    // Mapeia cada pet com sua org e imagens
+    const petsWithRelations = this.database
+      .map((pet) => {
+        // Busca a ONG do pet
+        const org = this.orgsRepository?.database.find(
+          (org) => org.id === pet.org_id
+        )
+
+        // Se não encontrar a ONG, ignora esse pet
+        if (!org) return null
+
+        // Busca as imagens do pet
+        const images = this.petImagesRepository?.items.filter(
+          (image) => image.pet_id === pet.id
+        ) || []
+
+        return {
+          ...pet,
+          org,
+          images,
+        }
+      })
+      // Remove pets que não têm ONG (nulls)
+      .filter((pet): pet is Pet & { org: Org; images: PetImage[] } => pet !== null)
+
+    // Filtra pelos critérios
+    const filteredPets = petsWithRelations.filter((petWithOrg) => {
+      // Filtros obrigatórios: state e city
+      if (petWithOrg.org.state !== state) return false
+      if (petWithOrg.org.city !== city) return false
+
+      // Filtros opcionais
+      if (age && petWithOrg.age !== age) return false
+      if (size && petWithOrg.size !== size) return false
+
+      return true
+    })
+
+    return filteredPets
   }
 }
