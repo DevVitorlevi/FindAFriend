@@ -1,4 +1,5 @@
 import type { FastifyInstance } from "fastify";
+import { adopted } from "../controllers/pets/adopted.js";
 import { create } from "../controllers/pets/create.js";
 import { fetchMany } from "../controllers/pets/fetch-many.js";
 import { getPet } from "../controllers/pets/get-pet.js";
@@ -11,4 +12,5 @@ export function petsRoutes(app: FastifyInstance) {
   app.get("/pets", fetchMany)
   app.get("/pet/:petId", getPet)
   app.post("/pet/:petId/images", { onRequest: [verifyJWT, verifyPetOwnership] }, uploadImages)
+  app.patch("/pet/:petId", { onRequest: [verifyJWT, verifyPetOwnership] }, adopted)
 }
