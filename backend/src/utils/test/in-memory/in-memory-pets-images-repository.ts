@@ -24,6 +24,13 @@ export class InMemoryPetImagesRepository implements PetImagesRepository {
     return images
   }
 
+  async findById(id: string): Promise<PetImage | null> {
+    const image = this.items.find((item) => item.id === id)
+
+    return image || null
+  }
+
+
   async delete(id: string): Promise<void> {
     const imageIndex = this.items.findIndex((image) => image.id === id)
 

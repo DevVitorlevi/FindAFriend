@@ -17,6 +17,13 @@ export class PrismaPetsImagesRepository implements PetImagesRepository {
     })
     return petImages
   }
+  async findById(id: string): Promise<PetImage | null> {
+    const image = await prisma.petImage.findUnique({
+      where: { id },
+    })
+
+    return image
+  }
 
   async delete(id: string): Promise<void> {
     await prisma.petImage.delete({
