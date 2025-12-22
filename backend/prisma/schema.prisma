@@ -58,4 +58,6 @@ model PetImage {
   pet_id     String
   pet        Pet      @relation(fields: [pet_id], references: [id])
   created_at DateTime @default(now())
+
+  @@map("pet_images")
 }
