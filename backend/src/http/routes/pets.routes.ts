@@ -1,9 +1,11 @@
 import type { FastifyInstance } from "fastify";
 import { adopted } from "../controllers/pets/adopted.js";
 import { create } from "../controllers/pets/create.js";
+import { deleteImage } from "../controllers/pets/delete-image.js";
 import { fetchMany } from "../controllers/pets/fetch-many.js";
 import { getPet } from "../controllers/pets/get-pet.js";
 import { uploadImages } from "../controllers/pets/upload-images.js";
+import { verifyImageOwnership } from "../middlewares/verify-image-ownership.js";
 import { verifyJWT } from "../middlewares/verify-jwt.js";
 import { verifyPetOwnership } from "../middlewares/verify-pet-ownership.js";
 
@@ -13,4 +15,5 @@ export function petsRoutes(app: FastifyInstance) {
   app.get("/pet/:petId", getPet)
   app.post("/pet/:petId/images", { onRequest: [verifyJWT, verifyPetOwnership] }, uploadImages)
   app.patch("/pet/:petId", { onRequest: [verifyJWT, verifyPetOwnership] }, adopted)
+  app.delete("/image/:imageId", { onRequest: [verifyJWT, verifyImageOwnership] }, deleteImage)
 }
