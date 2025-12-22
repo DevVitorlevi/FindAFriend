@@ -2,6 +2,8 @@ import cookie from "@fastify/cookie";
 import fastifyJwt from "@fastify/jwt";
 import fastify from "fastify";
 export const app = fastify()
+import multipart from '@fastify/multipart'
+
 
 import { env } from '@/env/index.js';
 import { v2 as cloudinary } from 'cloudinary';
@@ -9,6 +11,7 @@ import z, { ZodError } from "zod";
 import { orgsRoutes } from "./http/routes/orgs.routes.js";
 import { petsRoutes } from "./http/routes/pets.routes.js";
 
+app.register(multipart)
 cloudinary.config({
   cloud_name: env.CLOUDINARY_CLOUD_NAME,
   api_key: env.CLOUDINARY_API_KEY,
