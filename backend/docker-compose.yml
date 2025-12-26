@@ -1,6 +1,5 @@
-version: '3.8'
-
 services:
+  # Banco de dados de desenvolvimento
   postgres:
     image: postgres:15
     container_name: findafriend-postgres
@@ -14,5 +13,23 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  # Banco de dados de testes E2E
+  postgres-test:
+    image: postgres:15
+    container_name: findafriend-postgres-test
+    restart: always
+    environment:
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: findafriend_test
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+    # Configurações otimizadas para testes (mais rápido)
+    command: >
+      postgres  -c fsync=off  -c synchronous_commit=off  -c full_page_writes=off
+
 volumes:
   postgres_data:
+  postgres_test_data:
