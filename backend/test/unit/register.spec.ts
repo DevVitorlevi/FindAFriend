@@ -1,8 +1,8 @@
 import { OrgAlreadyExits } from "@/utils/errors/org-already-exist.js"
-import { InMemoryOrgsRepository } from "@/utils/test/in-memory/in-memory-orgs-repository.js"
 import { compare } from "bcryptjs"
+import { InMemoryOrgsRepository } from "test/in-memory/in-memory-orgs-repository.js"
 import { beforeEach, describe, expect, it } from "vitest"
-import { CreateOrgUseCase } from "./create.js"
+import { CreateOrgUseCase } from "../../src/use-cases/orgs/create.js"
 
 let orgsRepository: InMemoryOrgsRepository
 let sut: CreateOrgUseCase

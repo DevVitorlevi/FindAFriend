@@ -1,8 +1,8 @@
 import { ResourceNotFound } from '@/utils/errors/resource-not-found.js'
-import { InMemoryOrgsRepository } from '@/utils/test/in-memory/in-memory-orgs-repository.js'
-import { InMemoryPetImagesRepository } from '@/utils/test/in-memory/in-memory-pets-images-repository.js'
-import { InMemoryPetsRepository } from '@/utils/test/in-memory/in-memory-pets-repository.js'
 import { hash } from 'bcryptjs'
+import { InMemoryOrgsRepository } from 'test/in-memory/in-memory-orgs-repository.js'
+import { InMemoryPetImagesRepository } from 'test/in-memory/in-memory-pets-images-repository.js'
+import { InMemoryPetsRepository } from 'test/in-memory/in-memory-pets-repository.js'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { UploadPetImagesUseCase } from './upload-images.js'
 

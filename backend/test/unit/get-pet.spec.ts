@@ -1,23 +1,25 @@
-import { InMemoryOrgsRepository } from '@/utils/test/in-memory/in-memory-orgs-repository.js'
-import { InMemoryPetImagesRepository } from '@/utils/test/in-memory/in-memory-pets-images-repository.js'
-import { InMemoryPetsRepository } from '@/utils/test/in-memory/in-memory-pets-repository.js'
+import { ResourceNotFound } from '@/utils/errors/resource-not-found.js'
 import { hash } from 'bcryptjs'
+import { InMemoryOrgsRepository } from 'test/in-memory/in-memory-orgs-repository.js'
+import { InMemoryPetImagesRepository } from 'test/in-memory/in-memory-pets-images-repository.js'
+import { InMemoryPetsRepository } from 'test/in-memory/in-memory-pets-repository.js'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { DeletePetImageUseCase } from './delete-pet-image.js'
+import { GetPetDetailsUseCase } from './get-pet.js'
 
 let petsRepository: InMemoryPetsRepository
 let orgsRepository: InMemoryOrgsRepository
 let petImagesRepository: InMemoryPetImagesRepository
-let sut: DeletePetImageUseCase
-describe(' Delete Use Case', () => {
+let sut: GetPetDetailsUseCase
+
+describe('Get Pet Details Use Case', () => {
   beforeEach(() => {
     orgsRepository = new InMemoryOrgsRepository()
     petImagesRepository = new InMemoryPetImagesRepository()
     petsRepository = new InMemoryPetsRepository(orgsRepository, petImagesRepository)
-    sut = new DeletePetImageUseCase(petImagesRepository)
+    sut = new GetPetDetailsUseCase(petsRepository)
   })
 
-  it('should be able to delete pet', async () => {
+  it('should be able to get pet details', async () => {
     const org = await orgsRepository.create({
       name: "SEDEMA",
       email: "sedema@email.com",
@@ -26,13 +28,12 @@ describe(' Delete Use Case', () => {
       address: "Vila Serra de Peroba",
       whatsapp: "(88)99999-9999",
       state: "CE",
-      city: "Icapui",
+      city: "Icapui - CE",
       latitude: -4.7086,
       longitude: -37.3564
     })
 
     const createdPet = await petsRepository.create({
-      id: "pet-1",
       name: 'Rex',
       description: 'Cachorro dócil',
       age: 'ADULTO',
@@ -41,7 +42,6 @@ describe(' Delete Use Case', () => {
     })
 
     await petImagesRepository.create({
-      id: "img-1",
       pet_id: createdPet.id,
       url: 'https://example.com/image1.jpg',
     })
@@ -51,10 +51,23 @@ describe(' Delete Use Case', () => {
       url: 'https://example.com/image2.jpg',
     })
 
-    await expect(
+    const { pet } = await sut.execute({
+      petId: createdPet.id,
+    })
+
+    expect(pet.id).toBe(createdPet.id)
+    expect(pet.name).toBe('Rex')
+    expect(pet.org.name).toBe('SEDEMA')
+    expect(pet.org.whatsapp).toBe('(88)99999-9999')
+    expect(pet.images).toHaveLength(2)
+    expect(pet.images[0].url).toBe('https://example.com/image1.jpg')
+  })
+
+  it('should not be able to get details of non-existing pet', async () => {
+    await expect(() =>
       sut.execute({
-        imageId: "img-1"
+        petId: 'non-existing-pet-id',
       })
-    ).resolves
+    ).rejects.toBeInstanceOf(ResourceNotFound)
   })
 })

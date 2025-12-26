@@ -1,24 +1,23 @@
-import { InMemoryOrgsRepository } from '@/utils/test/in-memory/in-memory-orgs-repository.js'
-import { InMemoryPetImagesRepository } from '@/utils/test/in-memory/in-memory-pets-images-repository.js'
-import { InMemoryPetsRepository } from '@/utils/test/in-memory/in-memory-pets-repository.js'
-import { hash } from 'bcryptjs'
-import { beforeEach, describe, expect, it } from 'vitest'
-import { FetchPetCityUseCase } from './fetch-pet-city.js'
+import { hash } from "bcryptjs"
+import { InMemoryOrgsRepository } from "test/in-memory/in-memory-orgs-repository.js"
+import { InMemoryPetImagesRepository } from "test/in-memory/in-memory-pets-images-repository.js"
+import { InMemoryPetsRepository } from "test/in-memory/in-memory-pets-repository.js"
+import { beforeEach, describe, expect, it } from "vitest"
+import { ToggleAdoptedUseCase } from "./adopted.js"
 
 let petsRepository: InMemoryPetsRepository
 let orgsRepository: InMemoryOrgsRepository
 let petImagesRepository: InMemoryPetImagesRepository
-let sut: FetchPetCityUseCase
-
-describe('Fetch Pet City Use Case', () => {
+let sut: ToggleAdoptedUseCase
+describe("Adopted Pet Use Case", () => {
   beforeEach(() => {
     orgsRepository = new InMemoryOrgsRepository()
     petImagesRepository = new InMemoryPetImagesRepository()
     petsRepository = new InMemoryPetsRepository(orgsRepository, petImagesRepository)
-    sut = new FetchPetCityUseCase(petsRepository)
+    sut = new ToggleAdoptedUseCase(petsRepository)
   })
+  it("should be able to adopted pet ", async () => {
 
-  it('should be able to get pet to city', async () => {
     const org = await orgsRepository.create({
       name: "SEDEMA",
       email: "sedema@email.com",
@@ -50,11 +49,11 @@ describe('Fetch Pet City Use Case', () => {
       url: 'https://example.com/image2.jpg',
     })
 
-    const { pets } = await sut.execute({
-      city: "Icapui",
-      state: "CE"
+    const { pet } = await sut.execute({
+      petId: createdPet.id
     })
 
-    expect(pets).toHaveLength(1)
+    expect(pet.adopted).toBe(true)
+
   })
 })

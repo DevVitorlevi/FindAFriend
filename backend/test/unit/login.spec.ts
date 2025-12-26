@@ -1,6 +1,6 @@
 import { InvalidCredentials } from "@/utils/errors/invalid-credentials.js"
-import { InMemoryOrgsRepository } from "@/utils/test/in-memory/in-memory-orgs-repository.js"
 import { hash } from "bcryptjs"
+import { InMemoryOrgsRepository } from "test/in-memory/in-memory-orgs-repository.js"
 import { beforeEach, describe, expect, it } from "vitest"
 import { LoginUseCase } from "./login.js"
 

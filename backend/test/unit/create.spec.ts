@@ -1,6 +1,6 @@
-import { InMemoryPetsRepository } from "@/utils/test/in-memory/in-memory-pets-repository.js"
+import { InMemoryPetsRepository } from "test/in-memory/in-memory-pets-repository.js"
 import { beforeEach, describe, expect, it } from "vitest"
-import { CreatePetUseCase } from "./create.js"
+import { CreatePetUseCase } from "../../src/use-cases/pets/create.js"
 
 let petsRepository: InMemoryPetsRepository
 let sut: CreatePetUseCase
