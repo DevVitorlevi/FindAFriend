@@ -13,7 +13,7 @@ export async function fetchMany(request: FastifyRequest, reply: FastifyReply) {
   const { city, state, age, size } = fetchManyQuerySchema.parse(request.query)
   try {
     const fetchPetCityUseCase = makeFetchPetCityUseCase()
-    const pets = await fetchPetCityUseCase.execute({
+    const { pets } = await fetchPetCityUseCase.execute({
       city,
       state,
       age,
