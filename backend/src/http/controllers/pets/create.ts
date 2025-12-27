@@ -18,7 +18,7 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
   const { orgId } = orgIdParamsSchema.parse(request.params)
   try {
     const createPetUseCase = makeCreatePetUseCase()
-    const pet = await createPetUseCase.execute({
+    const { pet } = await createPetUseCase.execute({
       name,
       description,
       age,
