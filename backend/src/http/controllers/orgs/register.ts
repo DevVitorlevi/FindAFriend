@@ -34,7 +34,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
 
   try {
     const createOrgUseCase = makeCreateOrgUseCase()
-    await createOrgUseCase.execute({
+    const { org } = await createOrgUseCase.execute({
       name,
       email,
       password,
@@ -46,6 +46,11 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
       city,
       state
     })
+    return reply.status(201).send({
+      message: "Organization created!!",
+      org
+    })
+
   } catch (error) {
     if (error instanceof OrgAlreadyExits) {
       return reply.status(409).send({
@@ -56,7 +61,4 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     throw error
   }
 
-  return reply.status(201).send({
-    message: "Organization created!!"
-  })
 }
