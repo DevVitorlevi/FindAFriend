@@ -1,7 +1,7 @@
 import { app } from '@/app.js'
 import request from 'supertest'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
-import { resetDatabase } from '../utils/reset-database.js'
+import { resetDatabase } from '../../utils/reset-database.js'
 
 describe('Login Org (e2e)', () => {
   beforeAll(async () => {
