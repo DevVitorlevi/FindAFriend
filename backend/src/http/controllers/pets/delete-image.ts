@@ -15,7 +15,7 @@ export async function deleteImage(request: FastifyRequest, reply: FastifyReply) 
 
     const { message } = await deletePetImageUseCase.execute({ imageId })
 
-    return reply.status(200).send({ message })
+    return reply.status(204).send({ message })
   } catch (err) {
     if (err instanceof ResourceNotFound) {
       return reply.status(404).send({ message: 'Image not found' })
