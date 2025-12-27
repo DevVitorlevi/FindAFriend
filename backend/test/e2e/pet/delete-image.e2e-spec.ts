@@ -116,7 +116,7 @@ describe('Delete Pet Image (e2e)', () => {
       .delete(`/image/${imageId}`)
       .set('Authorization', `Bearer ${token2}`)
 
-    expect(deleteResponse.status).toBe(403) // Ou 401, dependendo do seu middleware
+    expect(deleteResponse.status).toBe(403)
   })
 
   it('should be able to delete multiple images', async () => {
