@@ -1,5 +1,5 @@
-import tsconfigPaths from 'vite-tsconfig-paths'
 import { defineConfig } from 'vitest/config'
+import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
   plugins: [tsconfigPaths()],
@@ -7,7 +7,8 @@ export default defineConfig({
     include: ['**/*.e2e-spec.ts'],
     globals: true,
     root: './',
-    setupFiles: ['test/setup-e2e.ts'],
+    setupFiles: ['./test/setup-e2e.ts'],
     pool: 'forks',
+    fileParallelism: false,
   },
 })
