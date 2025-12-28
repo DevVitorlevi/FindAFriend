@@ -1,5 +1,7 @@
+import { SearchPet } from "@/components/Search"
 import Pets from "@/public/OBJECTS.png"
 import Image from "next/image"
+
 export default function HomeSection() {
 
   return (
@@ -14,8 +16,9 @@ export default function HomeSection() {
             para seu estilo de vida!</p>
         </div>
 
-        <div>
+        <div className="flex flex-col items-end space-y-20">
           <Image src={Pets} alt="Imagens Ilustrativa de Animais" className="mt-5" />
+          <SearchPet />
         </div>
       </main>
     </>
