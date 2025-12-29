@@ -17,173 +17,264 @@ import {
 import { cn } from '@/lib/utils'
 import { getCityByState, getState, type City, type State } from '@/services/locations'
 import { searchPet } from "@/services/pets"
-import { Check, ChevronDown, Search } from "lucide-react"
+import { Check, ChevronDown, Search, X } from "lucide-react"
 import { useEffect, useState } from 'react'
 
 export function SearchPet() {
-  const [State, setState] = useState<State[]>([])
-  const [City, setCity] = useState<City[]>([])
-  const [selectState, setselectState] = useState<State | null>(null)
-  const [selectCity, setselectCity] = useState<City | null>(null)
-  const [loadingCity, setLoadingCity] = useState(false)
+  const [states, setStates] = useState<State[]>([])
+  const [cities, setCities] = useState<City[]>([])
+  const [selectedState, setSelectedState] = useState<State | null>(null)
+  const [selectedCity, setSelectedCity] = useState<City | null>(null)
+  const [loadingCities, setLoadingCities] = useState(false)
   const [openState, setOpenState] = useState(false)
   const [openCity, setOpenCity] = useState(false)
+  const [isSearching, setIsSearching] = useState(false)
 
-  // Carregar States ao montar o componente
+  // Carregar estados ao montar o componente
   useEffect(() => {
     async function loadStates() {
       try {
         const data = await getState()
-        setState(data)
+        setStates(data)
       } catch (error) {
-        console.error('Erro ao carregar States:', error)
+        console.error('Erro ao carregar estados:', error)
       }
     }
     loadStates()
   }, [])
 
-  // Carregar Citys quando o Statemudar
+  // Carregar cidades quando o estado mudar
   useEffect(() => {
-    async function loadCitys() {
-      if (!selectState) {
-        setCity([])
+    async function loadCities() {
+      if (!selectedState) {
+        setCities([])
         return
       }
 
-      setLoadingCity(true)
-      setselectCity(null)
+      setLoadingCities(true)
+      setSelectedCity(null)
 
       try {
-        const data = await getCityByState(selectState.sigla)
-        setCity(data)
+        const data = await getCityByState(selectedState.sigla)
+        setCities(data)
       } catch (error) {
-        console.error('Erro ao carregar Cidade', error)
+        console.error('Erro ao carregar cidades:', error)
       } finally {
-        setLoadingCity(false)
+        setLoadingCities(false)
       }
     }
 
-    loadCitys()
-  }, [selectState])
+    loadCities()
+  }, [selectedState])
 
   const handleSearch = async () => {
+    if (!selectedState || !selectedCity) return
+
+    setIsSearching(true)
     try {
       await searchPet({
-        city: selectCity?.nome,
-        state: selectState?.sigla,
+        city: selectedCity.nome,
+        state: selectedState.sigla,
         adopted: false
       })
     } catch (err) {
       console.error(err)
+    } finally {
+      setIsSearching(false)
     }
   }
 
+  const clearState = () => {
+    setSelectedState(null)
+    setSelectedCity(null)
+    setCities([])
+  }
+
+  const clearCity = () => {
+    setSelectedCity(null)
+  }
+
   return (
-    <div className="flex items-center space-x-5">
-      <p className="text-white text-xl">Busque Por Um Amigo:</p>
+    <div className="flex flex-col items-center justify-center w-full space-y-4 px-4">
+      <h2 className="text-white text-xl md:text-2xl font-semibold text-center">
+        Busque por um amigo
+      </h2>
 
-      {/* Select Statecom busca */}
-      <Popover open={openState} onOpenChange={setOpenState}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={openState}
-            className="px-4 py-6 text-xl border-2 border-white text-white bg-transparent hover:bg-white/10 rounded-xl min-w-35 justify-between"
-          >
-            {selectState ? selectState.sigla : "State"}
-            <ChevronDown className="ml-2 h-5 w-5 shrink-0 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-45 p-0" align="start">
-          <Command>
-            <CommandInput placeholder="Buscar State..." className="h-10" />
-            <CommandList>
-              <CommandEmpty>Nenhum Stateencontrado.</CommandEmpty>
-              <CommandGroup className="max-h-25 overflow-auto">
-                {State.map((State) => (
-                  <CommandItem
-                    key={State.id}
-                    value={`${State.sigla} ${State.nome}`}
-                    onSelect={() => {
-                      setselectState(State)
-                      setOpenState(false)
-                    }}
-                    className="cursor-pointer"
-                  >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        selectState?.id === State.id ? "opacity-100" : "opacity-0"
-                      )}
-                    />
-                    <span className="font-semibold">{State.sigla}</span>
-                    <span className="ml-2 text-muted-foreground">- {State.nome}</span>
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+      <div className="w-full max-w-md space-y-3">
+        {/* Select Estado com busca */}
+        <div className="relative">
+          <Popover open={openState} onOpenChange={setOpenState}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={openState}
+                aria-label="Selecionar estado"
+                className="w-full px-6 py-8 text-base md:text-lg border-2 border-white text-white bg-transparent hover:bg-white/10 rounded-xl justify-between transition-all"
+              >
+                <span className="truncate md:text-2xl">
+                  {selectedState ? (
+                    <span>
+                      <span className="font-semibold  md:text-2xl">{selectedState.sigla}</span>
+                      <span className="hidden sm:inline text-white/80 md:text-2xl"> - {selectedState.nome}</span>
+                    </span>
+                  ) : (
+                    "Selecione o estado"
+                  )}
+                </span>
+                <ChevronDown className={cn(
+                  "ml-2 h-5 w-5 shrink-0 opacity-50 transition-transform",
+                  openState && "rotate-180"
+                )} />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              className="w-[var(--radix-popover-trigger-width)] p-0"
+              align="start"
+              sideOffset={4}
+            >
+              <Command>
+                <CommandInput
+                  placeholder="Buscar estado..."
+                  className="h-11 text-base"
+                />
+                <CommandList>
+                  <CommandEmpty>Nenhum estado encontrado.</CommandEmpty>
+                  <CommandGroup className="max-h-[300px] overflow-auto">
+                    {states.map((state) => (
+                      <CommandItem
+                        key={state.id}
+                        value={`${state.sigla} ${state.nome}`}
+                        onSelect={() => {
+                          setSelectedState(state)
+                          setOpenState(false)
+                        }}
+                        className="cursor-pointer py-3"
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4 shrink-0",
+                            selectedState?.id === state.id ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                        <span className="font-semibold">{state.sigla}</span>
+                        <span className="ml-2 text-muted-foreground truncate ">
+                          - {state.nome}
+                        </span>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
 
-      {/* Select City com busca */}
-      <Popover open={openCity} onOpenChange={setOpenCity}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={openCity}
-            disabled={!selectState || loadingCity}
-            className="px-4 py-6 text-xl border-2 border-white text-white bg-transparent hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl min-w-50 justify-between"
-          >
-            {loadingCity
-              ? "Carregando..."
-              : selectCity
-                ? selectCity.nome
-                : "City"}
-            <ChevronDown className="ml-2 h-5 w-5 shrink-0 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-50 p-0" align="start">
-          <Command>
-            <CommandInput placeholder="Buscar Cidade..." className="h-10" />
-            <CommandList>
-              <CommandEmpty>Nenhuma City encontrada.</CommandEmpty>
-              <CommandGroup className="max-h-25 overflow-auto">
-                {City.map((City) => (
-                  <CommandItem
-                    key={City.id}
-                    value={City.nome}
-                    onSelect={() => {
-                      setselectCity(City)
-                      setOpenCity(false)
-                    }}
-                    className="cursor-pointer"
-                  >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        selectCity?.id === City.id ? "opacity-100" : "opacity-0"
-                      )}
-                    />
-                    {City.nome}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+          {selectedState && (
+            <button
+              onClick={clearState}
+              className="absolute right-12 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors"
+              aria-label="Limpar estado"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
 
-      <Button
-        size="icon"
-        className="bg-yellow-400 hover:bg-yellow-500 rounded-md h-14 w-14"
-        onClick={handleSearch}
-        disabled={!selectState || !setselectCity}
-      >
-        <Search className="h-6 w-6 text-blue-900" />
-      </Button>
+        {/* Select Cidade com busca */}
+        <div className="relative">
+          <Popover open={openCity} onOpenChange={setOpenCity}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={openCity}
+                aria-label="Selecionar cidade"
+                disabled={!selectedState || loadingCities}
+                className="w-full px-6 py-8 text-base md:text-lg border-2 border-white text-white bg-transparent hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl justify-between transition-all"
+              >
+                <span className="truncate md:text-2xl">
+                  {loadingCities
+                    ? "Carregando cidades..."
+                    : selectedCity
+                      ? selectedCity.nome
+                      : selectedState
+                        ? "Selecione a cidade"
+                        : "Selecione o estado primeiro"}
+                </span>
+                <ChevronDown className={cn(
+                  "ml-2 h-5 w-5 shrink-0 opacity-50 transition-transform",
+                  openCity && "rotate-180"
+                )} />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              className="w-(--radix-popover-trigger-width) p-0"
+              align="start"
+              sideOffset={4}
+            >
+              <Command>
+                <CommandInput
+                  placeholder="Buscar cidade..."
+                  className="h-11 text-2xl"
+                />
+                <CommandList>
+                  <CommandEmpty>Nenhuma cidade encontrada.</CommandEmpty>
+                  <CommandGroup className="max-h-[300px] overflow-auto">
+                    {cities.map((city) => (
+                      <CommandItem
+                        key={city.id}
+                        value={city.nome}
+                        onSelect={() => {
+                          setSelectedCity(city)
+                          setOpenCity(false)
+                        }}
+                        className="cursor-pointer py-3"
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4 shrink-0",
+                            selectedCity?.id === city.id ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                        <span className="truncate">{city.nome}</span>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+
+          {selectedCity && (
+            <button
+              onClick={clearCity}
+              className="absolute right-12 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors"
+              aria-label="Limpar cidade"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+
+        {/* Botão de busca */}
+        <Button
+          className="w-full bg-yellow-400 hover:bg-yellow-500 rounded-xl h-14 text-base md:text-2xl font-semibold text-blue-900 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          onClick={handleSearch}
+          disabled={!selectedState || !selectedCity || isSearching}
+        >
+          {isSearching ? (
+            <span className="flex items-center gap-2">
+              <span className="h-5 w-5 border-2 border-blue-900/30 border-t-blue-900 rounded-full animate-spin" />
+              Buscando...
+            </span>
+          ) : (
+            <span className="flex items-center gap-2">
+              <Search className="h-5 w-5" />
+              Buscar pets
+            </span>
+          )}
+        </Button>
+      </div>
     </div>
   )
 }
