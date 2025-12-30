@@ -129,7 +129,7 @@ export function SearchPet() {
               </Button>
             </PopoverTrigger>
             <PopoverContent
-              className="w-[var(--radix-popover-trigger-width)] p-0"
+              className="w-(--radix-popover-trigger-width) p-0"
               align="start"
               sideOffset={4}
             >
@@ -140,7 +140,7 @@ export function SearchPet() {
                 />
                 <CommandList>
                   <CommandEmpty>Nenhum estado encontrado.</CommandEmpty>
-                  <CommandGroup className="max-h-[300px] overflow-auto">
+                  <CommandGroup className="max-h-75 overflow-auto">
                     {states.map((state) => (
                       <CommandItem
                         key={state.id}
@@ -219,7 +219,7 @@ export function SearchPet() {
                 />
                 <CommandList>
                   <CommandEmpty>Nenhuma cidade encontrada.</CommandEmpty>
-                  <CommandGroup className="max-h-[300px] overflow-auto">
+                  <CommandGroup className="max-h-75 overflow-auto">
                     {cities.map((city) => (
                       <CommandItem
                         key={city.id}
