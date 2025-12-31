@@ -1,9 +1,9 @@
 import cookie from "@fastify/cookie";
+import cors from "@fastify/cors";
 import fastifyJwt from "@fastify/jwt";
+import multipart from '@fastify/multipart';
 import fastify from "fastify";
 export const app = fastify()
-import multipart from '@fastify/multipart'
-
 
 import { env } from '@/env/index.js';
 import { v2 as cloudinary } from 'cloudinary';
@@ -28,6 +28,12 @@ app.register(fastifyJwt, {
     expiresIn: "10m"
   }
 })
+
+app.register(cors, {
+  origin: "http://localhost:3000",
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+});
+
 //Routes
 app.register(orgsRoutes)
 app.register(petsRoutes)
