@@ -6,15 +6,9 @@ interface CreateOrgOptions {
   name?: string
   email?: string
   password?: string
-  cep?: string
-  address?: string
-  latitude?: number
-  longitude?: number
   whatsapp?: string
   state?: string
   city?: string
-  street?: string
-  numberHome?: number
 }
 
 export async function createAndAuthenticateOrg(
