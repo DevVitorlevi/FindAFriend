@@ -13,12 +13,13 @@ model Org {
   email         String   @unique
   password_hash String
   cep           String
-  address       String
+  street        String   @default("")
+  number_home   Int      @default(0)
+  state         String
+  city          String
   latitude      Decimal
   longitude     Decimal
   whatsapp      String
-  state         String
-  city          String
   created_at    DateTime @default(now())
   pets          Pet[]
 
