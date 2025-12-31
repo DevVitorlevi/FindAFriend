@@ -5,47 +5,49 @@ import z from "zod";
 
 export async function register(request: FastifyRequest, reply: FastifyReply) {
   const registerBodySchema = z.object({
-    name: z.string(),
-    email: z.email(),
-    password: z.string().min(8), cep: z
-      .string()
-      .regex(/^\d{5}-?\d{3}$/, 'CEP inválido'),
+    name: z.string().min(3, {
+      message:
+        "O nome da organização deve ter ao menos 3 letras",
+    }),
+
+    email: z.email({
+      message: "Email inválido",
+    }),
+
+    password: z.string().min(8, {
+      message:
+        "A senha deve ter ao menos 8 caracteres",
+    }),
+
     whatsapp: z
       .string()
-      .transform(value => value.replace(/\D/g, ''))
-      .refine(value => {
-        return /^\d{2}9\d{8}$/.test(value)
-      }, {
-        message: 'Número de WhatsApp inválido',
-      }),
-    latitude: z.number().refine(value => {
-      return Math.abs(value) <= 90
-    }),
-    longitude: z.number().refine(value => {
-      return Math.abs(value) <= 180
-    }),
+      .transform((value) =>
+        value.replace(/\D/g, "")
+      )
+      .refine(
+        (value) =>
+          /^\d{2}9\d{8}$/.test(value),
+        {
+          message:
+            "Número de WhatsApp inválido",
+        }
+      ),
+
     city: z.string(),
     state: z.string(),
-    street: z.string(),
-    numberHome: z.number()
-  })
 
-  const { name, email, password, cep, whatsapp, latitude, longitude, city, state, street, numberHome } = registerBodySchema.parse(request.body)
+  });
 
+  const { name, email, password, whatsapp, city, state } = registerBodySchema.parse(request.body)
   try {
     const createOrgUseCase = makeCreateOrgUseCase()
     const { org } = await createOrgUseCase.execute({
       name,
       email,
       password,
-      cep,
       whatsapp,
-      latitude,
-      longitude,
       city,
       state,
-      street,
-      numberHome
     })
     return reply.status(201).send({
       message: "Organization created!!",
