@@ -18,14 +18,9 @@ describe("Login Use Case", () => {
       name: "SEDEMA",
       email: "sedema@email.com",
       password_hash: await hash("123456", 6),
-      cep: "62810-000",
       whatsapp: "(88)99999-9999",
       state: "CE",
       city: "Icapui",
-      latitude: -4.7086,
-      longitude: -37.3564,
-      street: "Rua das Flores",
-      number_home: 1
     })
 
     const { org } = await sut.execute({
@@ -51,14 +46,9 @@ describe("Login Use Case", () => {
       name: "SEDEMA",
       email: "sedema@email.com",
       password_hash: await hash("123456", 6),
-      cep: "62810-000",
       whatsapp: "(88)99999-9999",
       state: "CE",
       city: "Icapui",
-      latitude: -4.7086,
-      longitude: -37.3564,
-      street: "Rua das Flores",
-      number_home: 1
     })
 
     await expect(

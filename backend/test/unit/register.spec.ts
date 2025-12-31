@@ -18,14 +18,9 @@ describe("Create Org Use Case", () => {
       name: "SEDEMA",
       email: "sedema@email.com",
       password: "123456",
-      cep: "62810-000",
       whatsapp: "(88)99999-9999",
       state: "CE",
       city: "Icapui",
-      latitude: -4.7086,
-      longitude: -37.3564,
-      street: "Rua das Flores",
-      numberHome: 1
     })
 
     expect(org.id).toEqual(expect.any(String))
@@ -37,14 +32,9 @@ describe("Create Org Use Case", () => {
       name: "SEDEMA",
       email: "sedema@email.com",
       password: "123456",
-      cep: "62810-000",
       whatsapp: "(88)99999-9999",
       state: "CE",
       city: "Icapui",
-      latitude: -4.7086,
-      longitude: -37.3564,
-      street: "Rua das Flores",
-      numberHome: 1
     })
 
     const isPasswordCorrectlyHashed = await compare("123456", org.password_hash)
@@ -59,14 +49,9 @@ describe("Create Org Use Case", () => {
       name: "SEDEMA",
       email: "sedema@email.com",
       password: "123456",
-      cep: "62810-000",
       whatsapp: "(88)99999-9999",
       state: "CE",
       city: "Icapui",
-      latitude: -4.7086,
-      longitude: -37.3564,
-      street: "Rua das Flores",
-      numberHome: 1
     })
 
     await expect(
@@ -74,14 +59,9 @@ describe("Create Org Use Case", () => {
         name: "SEDEMA",
         email: "sedema@email.com",
         password: "123456",
-        cep: "62810-000",
         whatsapp: "(88)99999-9999",
         state: "CE",
         city: "Icapui",
-        latitude: -4.7086,
-        longitude: -37.3564,
-        street: "Rua das Flores",
-        numberHome: 1
       })
     ).rejects.toBeInstanceOf(OrgAlreadyExits)
   })
