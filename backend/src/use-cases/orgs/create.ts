@@ -8,8 +8,9 @@ interface CreateOrgUseCaseRequest {
   email: string
   password: string
   whatsapp: string
-  cep: string,
-  address: string,
+  cep: string
+  street: string
+  numberHome: number
   state: string
   city: string
   latitude: number
@@ -29,7 +30,8 @@ export class CreateOrgUseCase {
     password,
     whatsapp,
     cep,
-    address,
+    street,
+    numberHome,
     state,
     city,
     latitude,
@@ -48,7 +50,8 @@ export class CreateOrgUseCase {
       email,
       password_hash,
       cep,
-      address,
+      street,
+      number_home: numberHome,
       whatsapp,
       state,
       city,
