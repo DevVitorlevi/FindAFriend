@@ -7,9 +7,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
   const registerBodySchema = z.object({
     name: z.string(),
     email: z.email(),
-    password: z.string().min(8),
-    address: z.string(),
-    cep: z
+    password: z.string().min(8), cep: z
       .string()
       .regex(/^\d{5}-?\d{3}$/, 'CEP inválido'),
     whatsapp: z
@@ -28,9 +26,11 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     }),
     city: z.string(),
     state: z.string(),
+    street: z.string(),
+    numberHome: z.number()
   })
 
-  const { name, email, password, address, cep, whatsapp, latitude, longitude, city, state } = registerBodySchema.parse(request.body)
+  const { name, email, password, cep, whatsapp, latitude, longitude, city, state, street, numberHome } = registerBodySchema.parse(request.body)
 
   try {
     const createOrgUseCase = makeCreateOrgUseCase()
@@ -38,13 +38,14 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
       name,
       email,
       password,
-      address,
       cep,
       whatsapp,
       latitude,
       longitude,
       city,
-      state
+      state,
+      street,
+      numberHome
     })
     return reply.status(201).send({
       message: "Organization created!!",
