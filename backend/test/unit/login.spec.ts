@@ -1,8 +1,8 @@
+import { LoginUseCase } from "@/use-cases/orgs/login.js"
 import { InvalidCredentials } from "@/utils/errors/invalid-credentials.js"
 import { hash } from "bcryptjs"
 import { InMemoryOrgsRepository } from "test/in-memory/in-memory-orgs-repository.js"
 import { beforeEach, describe, expect, it } from "vitest"
-import { LoginUseCase } from "./login.js"
 
 let orgsRepository: InMemoryOrgsRepository
 let sut: LoginUseCase
@@ -17,14 +17,15 @@ describe("Login Use Case", () => {
     await orgsRepository.create({
       name: "SEDEMA",
       email: "sedema@email.com",
-      password_hash: await hash('123456', 6),
+      password_hash: await hash("123456", 6),
       cep: "62810-000",
-      address: "Vila Serra de Peroba",
       whatsapp: "(88)99999-9999",
       state: "CE",
-      city: "Icapui - CE",
+      city: "Icapui",
       latitude: -4.7086,
-      longitude: -37.3564
+      longitude: -37.3564,
+      street: "Rua das Flores",
+      number_home: 1
     })
 
     const { org } = await sut.execute({
@@ -49,14 +50,15 @@ describe("Login Use Case", () => {
     await orgsRepository.create({
       name: "SEDEMA",
       email: "sedema@email.com",
-      password_hash: await hash('123456', 6),
+      password_hash: await hash("123456", 6),
       cep: "62810-000",
-      address: "Vila Serra de Peroba",
       whatsapp: "(88)99999-9999",
       state: "CE",
-      city: "Icapui - CE",
+      city: "Icapui",
       latitude: -4.7086,
-      longitude: -37.3564
+      longitude: -37.3564,
+      street: "Rua das Flores",
+      number_home: 1
     })
 
     await expect(

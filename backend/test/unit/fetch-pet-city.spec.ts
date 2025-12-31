@@ -24,12 +24,13 @@ describe('Fetch Pet City Use Case', () => {
       email: "sedema@email.com",
       password_hash: await hash('123456', 6),
       cep: "62810-000",
-      address: "Vila Serra de Peroba",
       whatsapp: "(88)99999-9999",
       state: "CE",
       city: "Icapui",
       latitude: -4.7086,
-      longitude: -37.3564
+      longitude: -37.3564,
+      street: "Rua das Flores",
+      number_home: 1
     })
 
     const createdPet = await petsRepository.create({

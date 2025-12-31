@@ -1,9 +1,9 @@
+import { ToggleAdoptedUseCase } from "@/use-cases/pets/adopted.js"
 import { hash } from "bcryptjs"
 import { InMemoryOrgsRepository } from "test/in-memory/in-memory-orgs-repository.js"
 import { InMemoryPetImagesRepository } from "test/in-memory/in-memory-pets-images-repository.js"
 import { InMemoryPetsRepository } from "test/in-memory/in-memory-pets-repository.js"
 import { beforeEach, describe, expect, it } from "vitest"
-import { ToggleAdoptedUseCase } from "./adopted.js"
 
 let petsRepository: InMemoryPetsRepository
 let orgsRepository: InMemoryOrgsRepository
@@ -23,12 +23,13 @@ describe("Adopted Pet Use Case", () => {
       email: "sedema@email.com",
       password_hash: await hash('123456', 6),
       cep: "62810-000",
-      address: "Vila Serra de Peroba",
       whatsapp: "(88)99999-9999",
       state: "CE",
       city: "Icapui",
       latitude: -4.7086,
-      longitude: -37.3564
+      longitude: -37.3564,
+      street: "Rua das Flores",
+      number_home: 1
     })
 
     const createdPet = await petsRepository.create({
