@@ -13,6 +13,8 @@ interface CreateOrgOptions {
   whatsapp?: string
   state?: string
   city?: string
+  street?: string
+  numberHome?: number
 }
 
 export async function createAndAuthenticateOrg(
