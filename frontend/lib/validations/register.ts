@@ -1,38 +1,14 @@
 import z from "zod";
 
 export const registerBodySchema = z.object({
-  name: z.string().min(3, {
-    message:
-      "O nome da organização deve ter ao menos 3 letras",
-  }),
-
-  email: z.email({
-    message: "Email inválido",
-  }),
-
-  password: z.string().min(8, {
-    message:
-      "A senha deve ter ao menos 8 caracteres",
-  }),
-
-  cep: z
-    .string()
-    .regex(/^\d{5}-?\d{3}$/, "CEP inválido"),
-
+  name: z.string().min(3, "O nome deve ter pelo menos 3 letras"),
+  email: z.email("Email inválido"),
+  state: z.string().nonempty("Escolha um estado"),
+  city: z.string().nonempty("Escolha uma cidade"),
   whatsapp: z
     .string()
-    .transform((value) =>
-      value.replace(/\D/g, "")
-    )
-    .refine(
-      (value) =>
-        /^\d{2}9\d{8}$/.test(value),
-      {
-        message:
-          "Número de WhatsApp inválido",
-      }
-    ),
-
-  city: z.string(),
-  state: z.string(),
+    .regex(/^\(\d{2}\)\s9\d{4}-\d{4}$/, "WhatsApp inválido"),
+  password: z.string().min(8, "Senha deve ter ao menos 8 caracteres"),
 });
+
+export type RegisterFormSchema = z.infer<typeof registerBodySchema>;

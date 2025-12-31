@@ -3,11 +3,10 @@ import { petAPI } from "./api"
 export interface OrgRegisterRequest {
   name: string
   email: string
-  password: string
-  cep: string
-  city: string
   state: string
+  city: string
   whatsapp: string
+  password: string
 }
 
 

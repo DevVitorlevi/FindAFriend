@@ -4,14 +4,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 
-import { registerBodySchema } from "@/lib/validations/register";
 import BuildForms, {
   IFormsFields,
 } from "@/components/BuildForms";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { registerBodySchema } from "@/lib/validations/register";
 
-import { maskCEP, maskWhatsapp } from "@/utils/masks";
+import { maskWhatsapp } from "@/utils/masks";
 import {
   RegisterFormProps,
   RegisterFormSchema,
@@ -23,7 +23,6 @@ const RegisterForms = ({ submitForm }: RegisterFormProps) => {
     defaultValues: {
       name: "",
       email: "",
-      cep: "",
       city: "",
       state: "",
       whatsapp: "",
@@ -32,6 +31,7 @@ const RegisterForms = ({ submitForm }: RegisterFormProps) => {
   });
 
   async function onSubmit(values: RegisterFormSchema) {
+    console.log(values)
     await submitForm(values, form);
   }
 
@@ -69,6 +69,8 @@ const RegisterForms = ({ submitForm }: RegisterFormProps) => {
       type: "password",
     },
   ];
+
+  console.log(form.formState.errors);
 
   return (
     <Form {...form}>

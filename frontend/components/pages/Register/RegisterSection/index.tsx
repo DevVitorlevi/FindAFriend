@@ -1,6 +1,5 @@
 
 "use client";
-
 import { useState, useEffect } from "react";
 import { registerOrg } from "@/services/orgs";
 import RegisterForms from "../RegisterForm";
@@ -22,7 +21,6 @@ export default function RegisterSection() {
       await registerOrg({
         name: values.name,
         email: values.email,
-        cep: values.cep,
         state: values.state,
         city: values.city,
         whatsapp: values.whatsapp,
@@ -31,8 +29,17 @@ export default function RegisterSection() {
 
       form.reset();
       toast.success("Organização cadastrada com sucesso!");
-    } catch (error) {
-      toast.error("Erro ao cadastrar organização. Tente novamente.");
+    } catch (error: any) {
+      console.error("Erro no frontend ao cadastrar:", error);
+
+      // tenta mostrar mensagem real se existir
+      if (error?.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else if (error.message) {
+        toast.error(error.message);
+      } else {
+        toast.error("Erro ao cadastrar organização. Tente novamente.");
+      }
     }
   }
 
