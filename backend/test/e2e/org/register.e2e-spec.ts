@@ -23,14 +23,9 @@ describe('Register Org (e2e)', () => {
         name: 'ONG Amigos dos Animais',
         email: 'contato@ongamigos.com',
         password: 'senha123',
-        cep: '59000-000',
-        latitude: -5.795,
-        longitude: -35.209,
         whatsapp: '84999999999',
         state: 'RN',
         city: 'Natal',
-        street: "Rua das Flores",
-        numberHome: 1,
       })
 
     expect(response.status).toBe(201)
@@ -41,14 +36,9 @@ describe('Register Org (e2e)', () => {
       name: 'ONG Amigos dos Animais',
       email: 'contato@ongamigos.com',
       password: 'senha123',
-      cep: '59000-000',
-      latitude: -5.795,
-      longitude: -35.209,
       whatsapp: '84999999999',
       state: 'RN',
       city: 'Natal',
-      street: "Rua das Flores",
-      numberHome: 1,
     }
 
     await request(app.server).post('/orgs').send(orgData)
