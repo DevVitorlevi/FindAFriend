@@ -24,12 +24,13 @@ describe('Register Org (e2e)', () => {
         email: 'contato@ongamigos.com',
         password: 'senha123',
         cep: '59000-000',
-        address: 'Rua das Flores, 123',
         latitude: -5.795,
         longitude: -35.209,
         whatsapp: '84999999999',
         state: 'RN',
         city: 'Natal',
+        street: "Rua das Flores",
+        numberHome: 1,
       })
 
     expect(response.status).toBe(201)
@@ -37,16 +38,17 @@ describe('Register Org (e2e)', () => {
 
   it('should not be able to register with duplicate email', async () => {
     const orgData = {
-      name: 'ONG Teste',
-      email: 'duplicate@test.com',
+      name: 'ONG Amigos dos Animais',
+      email: 'contato@ongamigos.com',
       password: 'senha123',
       cep: '59000-000',
-      address: 'Rua Teste, 123',
       latitude: -5.795,
       longitude: -35.209,
       whatsapp: '84999999999',
       state: 'RN',
       city: 'Natal',
+      street: "Rua das Flores",
+      numberHome: 1,
     }
 
     await request(app.server).post('/orgs').send(orgData)
