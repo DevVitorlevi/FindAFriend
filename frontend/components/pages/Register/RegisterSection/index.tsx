@@ -1,14 +1,15 @@
 
 "use client";
-import { useState, useEffect } from "react";
 import { registerOrg } from "@/services/orgs";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import RegisterForms from "../RegisterForm";
 import { RegisterFormSchema, UseRegisterForm } from "../RegisterForm/types.d";
-import { toast } from "sonner";
 
 export default function RegisterSection() {
   const [isMounted, setIsMounted] = useState(false);
-
+  const router = useRouter()
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -29,10 +30,10 @@ export default function RegisterSection() {
 
       form.reset();
       toast.success("Organização cadastrada com sucesso!");
+      router.push("/login")
     } catch (error: any) {
       console.error("Erro no frontend ao cadastrar:", error);
 
-      // tenta mostrar mensagem real se existir
       if (error?.response?.data?.message) {
         toast.error(error.response.data.message);
       } else if (error.message) {
