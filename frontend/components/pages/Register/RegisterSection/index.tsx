@@ -6,7 +6,8 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import RegisterForms from "../RegisterForm";
 import { RegisterFormSchema, UseRegisterForm } from "../RegisterForm/types.d";
-
+import Image from "next/image";
+import Pet from "@/public/Pet.jpg"
 export default function RegisterSection() {
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter()
@@ -49,14 +50,16 @@ export default function RegisterSection() {
   }
 
   return (
-    <section className="flex min-h-screen items-center justify-center">
-      <div className="w-full max-w-md space-y-6 p-6">
-        <header className="space-y-2 text-center">
-          <h1 className="text-3xl font-semibold text-[#0D3B66]">
+    <section className="flex min-h-screen w-full items-center justify-center bg-background">
+      <div className="max-lg:hidden w-[40%] bg-[#FCF3E8] min-h-screen flex flex-col align-items justify-center">
+        <Image src={Pet} alt="Imagem de um Cao e Gato" className="w-130 m-auto" />
+      </div>
+      <div className="w-full lg:w-[60%] space-y-6 p-6">
+        <header className="space-y-2 text-center flex items-center justify-center">
+          <h1 className="text-3xl font-semibold text-[#0D3B66] min-[712px]:text-4xl">
             Cadastre a sua organização
           </h1>
         </header>
-
         <RegisterForms submitForm={submitForm} />
       </div>
     </section>

@@ -76,7 +76,7 @@ const RegisterForms = ({ submitForm }: RegisterFormProps) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4"
+        className="space-y-4 m-auto min-[712px]:w-[80%] lg:w-[60%]"
       >
         <BuildForms
           formsList={form}
@@ -86,7 +86,7 @@ const RegisterForms = ({ submitForm }: RegisterFormProps) => {
         <div className="flex flex-col">
           <Button
             type="submit"
-            className="mt-4 bg-[#0D3B66]"
+            className="mt-4 bg-[#0D3B66] min-[712px]:text-xl py-6"
             disabled={form.formState.isSubmitting}
           >
             Cadastrar
@@ -100,7 +100,7 @@ const RegisterForms = ({ submitForm }: RegisterFormProps) => {
           >
             <Link
               href="/login"
-              className="text-[#0D3B66]"
+              className="text-[#0D3B66] min-[712px]:text-xl"
             >
               Já Possui Conta?
             </Link>
