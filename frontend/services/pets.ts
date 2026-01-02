@@ -25,10 +25,6 @@ export interface Org {
   id: string
   name: string
   email: string
-  cep: string
-  address: string
-  latitude: number
-  longitude: number
   whatsapp: string
   state: string
   city: string
