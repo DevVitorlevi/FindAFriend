@@ -66,4 +66,17 @@ export class PrismaPetsRepository implements PetsRepository {
 
     return pet
   }
+
+  async findManyOfOrg(orgId: string): Promise<(Pet & { org: Org; images: PetImage[]; })[]> {
+    const pets = await prisma.pet.findMany({
+      where: {
+        org_id: orgId
+      },
+      include: {
+        org: true,
+        images: true,
+      },
+    })
+    return pets
+  }
 }

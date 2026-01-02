@@ -13,4 +13,5 @@ export interface PetsRepository {
   findById(id: string): Promise<(Pet & { org: Org; images: PetImage[] }) | null>
   findManyByCity(params: FindManyByCityParams): Promise<(Pet & { org: Org; images: PetImage[] })[]>
   toggleAdopted(petId: string): Promise<Pet>
+  findManyOfOrg(orgId: string): Promise<(Pet & { org: Org; images: PetImage[] })[]>
 }

@@ -24,7 +24,7 @@ export class InMemoryPetsRepository implements PetsRepository {
       throw new Error('Pet not found')
     }
 
-    // Toggle: inverte o valor (true → false, false → true)
+    // inverte o valor (true → false, false → true)
     this.database[petIndex].adopted = !this.database[petIndex].adopted
 
     return this.database[petIndex]
@@ -57,19 +57,16 @@ export class InMemoryPetsRepository implements PetsRepository {
       return null
     }
 
-    // Busca a ONG relacionada ao pet
     const org = this.orgsRepository?.database.find((org) => org.id === pet.org_id)
 
     if (!org) {
       return null
     }
 
-    // Busca as imagens do pet
     const images = this.petImagesRepository?.items.filter(
       (image) => image.pet_id === pet.id
     ) || []
 
-    // Retorna o pet com a org e images incluídas
     return {
       ...pet,
       org,
@@ -83,18 +80,14 @@ export class InMemoryPetsRepository implements PetsRepository {
     age,
     size,
   }: FindManyByCityParams): Promise<(Pet & { org: Org; images: PetImage[] })[]> {
-    // Mapeia cada pet com sua org e imagens
     const petsWithRelations = this.database
       .map((pet) => {
-        // Busca a ONG do pet
         const org = this.orgsRepository?.database.find(
           (org) => org.id === pet.org_id
         )
 
-        // Se não encontrar a ONG, ignora esse pet
         if (!org) return null
 
-        // Busca as imagens do pet
         const images = this.petImagesRepository?.items.filter(
           (image) => image.pet_id === pet.id
         ) || []
@@ -105,16 +98,12 @@ export class InMemoryPetsRepository implements PetsRepository {
           images,
         }
       })
-      // Remove pets que não têm ONG (nulls)
       .filter((pet): pet is Pet & { org: Org; images: PetImage[] } => pet !== null)
 
-    // Filtra pelos critérios
     const filteredPets = petsWithRelations.filter((petWithOrg) => {
-      // Filtros obrigatórios: state e city
       if (petWithOrg.org.state !== state) return false
       if (petWithOrg.org.city !== city) return false
 
-      // Filtros opcionais
       if (age && petWithOrg.age !== age) return false
       if (size && petWithOrg.size !== size) return false
 
@@ -122,5 +111,32 @@ export class InMemoryPetsRepository implements PetsRepository {
     })
 
     return filteredPets
+  }
+
+  async findManyOfOrg(
+    orgId: string
+  ): Promise<(Pet & { org: Org; images: PetImage[] })[]> {
+    return this.database
+      .filter((pet) => pet.org_id === orgId)
+      .map((pet) => {
+        const org = this.orgsRepository?.database.find(
+          (org) => org.id === pet.org_id
+        )
+
+        if (!org) {
+          throw new Error('Org not found for pet')
+        }
+
+        const images =
+          this.petImagesRepository?.items.filter(
+            (image) => image.pet_id === pet.id
+          ) ?? []
+
+        return {
+          ...pet,
+          org,
+          images,
+        }
+      })
   }
 }
