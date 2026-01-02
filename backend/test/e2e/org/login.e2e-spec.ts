@@ -54,7 +54,7 @@ describe('Login Org (e2e)', () => {
         password: 'senha1232',
       })
 
-    expect(response.status).toBe(500)
+    expect(response.status).toBe(401)
 
   })
 })

@@ -19,13 +19,11 @@ describe('Adopted Pet (e2e)', () => {
   })
 
   it('should be able to adopted pet', async () => {
-    // Criar org autenticada
     const { token, org } = await createAndAuthenticateOrg(app, {
       city: "Icapui",
       state: "CE"
     })
 
-    // Criar um pet
     const { pet } = await createPet(app, {
       orgId: org.id,
       token,
