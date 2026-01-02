@@ -1,3 +1,4 @@
+import { orgPresenter } from "@/presenters/org-presenter.js";
 import { makeCreateOrgUseCase } from "@/use-cases/factories/make-create-org-use-case.js";
 import { OrgAlreadyExits } from "@/utils/errors/org-already-exist.js";
 import type { FastifyReply, FastifyRequest } from "fastify";
@@ -51,7 +52,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     })
     return reply.status(201).send({
       message: "Organization created!!",
-      org
+      org:orgPresenter(org)
     })
 
   } catch (error) {

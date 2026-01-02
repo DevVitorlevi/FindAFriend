@@ -1,3 +1,4 @@
+import { orgPresenter } from '@/presenters/org-presenter.js'
 import { makeLoginOrgUseCase } from '@/use-cases/factories/make-login-org-use-case.js'
 import { InvalidCredentials } from '@/utils/errors/invalid-credentials.js'
 import type { FastifyReply, FastifyRequest } from 'fastify'
@@ -47,18 +48,17 @@ export async function login(
       .send({
         message: 'Auth User Successful',
         token,
+        org: orgPresenter(org)
       })
 
   } catch (error) {
 
     if (error instanceof InvalidCredentials) {
-      return reply.status(500).send({
+      return reply.status(401).send({
         message: error.message
       })
     }
-
     throw error
-
   }
 
 }
