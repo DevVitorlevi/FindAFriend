@@ -1,62 +1,70 @@
 "use client"
 
 import { createContext, useEffect, useState, ReactNode } from "react"
-import { loginOrg } from "@/services/orgs"
-
-
-interface Org {
-  id: string
-  name: string
-  email: string
-  state: string
-  city: string
-  whatsapp: string
-}
-
-interface LoginResponse {
-  token: string
-  org: Org
-}
+import { useRouter } from "next/navigation"
+import { loginOrg, getMe, type Org } from "@/services/orgs"
+import { petAPI } from "@/services/api"
 
 interface AuthContextData {
   user: Org | null
   isAuthenticated: boolean
+  isLoading: boolean
   signIn: (email: string, password: string) => Promise<void>
   logout: () => void
+  refreshUser: () => Promise<void>
 }
-
 
 export const AuthContext = createContext({} as AuthContextData)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<Org | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const router = useRouter()
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("@auth:org")
-    const token = localStorage.getItem("@auth:token")
-
-    if (storedUser && token) {
-      setUser(JSON.parse(storedUser))
+  async function loadUser() {
+    try {
+      const { org } = await getMe()
+      setUser(org)
+    } catch (error) {
+      console.error('Erro ao carregar usuário:', error)
+      setUser(null)
+    } finally {
+      setIsLoading(false)
     }
-
-    setIsLoading(false)
+  }
+  useEffect(() => {
+    loadUser()
   }, [])
 
   async function signIn(email: string, password: string) {
-    const { token, org } = await loginOrg({ email, password })
+    try {
+      const { org } = await loginOrg({ email, password })
 
-    localStorage.setItem("@auth:token", token)
-    localStorage.setItem("@auth:org", JSON.stringify(org))
+      setUser(org)
 
-    setUser(org)
+      router.push('/dashboard')
+    } catch (error) {
+      console.error('Erro no login:', error)
+      throw error
+    }
   }
 
-  function logout() {
-    localStorage.removeItem("@auth:token")
-    localStorage.removeItem("@auth:org")
+  async function logout() {
+    try {
+      await petAPI.post('/logout')
 
-    setUser(null)
+      setUser(null)
+      router.push('/login')
+    } catch (error) {
+      console.error('Erro no logout:', error)
+      setUser(null)
+      router.push('/login')
+    }
+  }
+
+  async function refreshUser() {
+    setIsLoading(true)
+    await loadUser()
   }
 
   return (
@@ -64,8 +72,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         user,
         isAuthenticated: !!user,
+        isLoading,
         signIn,
         logout,
+        refreshUser,
       }}
     >
       {!isLoading && children}
