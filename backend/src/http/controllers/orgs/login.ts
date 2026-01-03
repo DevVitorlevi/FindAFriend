@@ -14,6 +14,7 @@ export async function login(
   })
 
   const { email, password } = loginBodySchema.parse(request.body)
+
   try {
     const loginUseCase = makeLoginOrgUseCase()
 
@@ -39,20 +40,26 @@ export async function login(
 
     return reply
       .status(200)
+      .setCookie('accessToken', token, {
+        path: '/',
+        httpOnly: true,
+        sameSite: 'strict',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 60 * 10 // 10 minutos
+      })
       .setCookie('refreshToken', refreshToken, {
         path: '/',
         httpOnly: true,
         sameSite: 'strict',
         secure: process.env.NODE_ENV === 'production',
+        maxAge: 60 * 60 * 24 * 7 // 7 dias
       })
       .send({
         message: 'Auth User Successful',
-        token,
         org: orgPresenter(org)
       })
 
   } catch (error) {
-
     if (error instanceof InvalidCredentials) {
       return reply.status(401).send({
         message: error.message
@@ -60,5 +67,4 @@ export async function login(
     }
     throw error
   }
-
 }
