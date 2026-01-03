@@ -1,3 +1,4 @@
+"use client"
 import { SearchPet } from "@/components/Search"
 import Pets from "@/public/OBJECTS.png"
 import Image from "next/image"
