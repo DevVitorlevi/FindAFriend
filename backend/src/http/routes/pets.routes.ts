@@ -18,5 +18,5 @@ export function petsRoutes(app: FastifyInstance) {
   app.post("/pet/:petId/images", { onRequest: [verifyJWT, verifyPetOwnership] }, uploadImages)
   app.patch("/pet/:petId", { onRequest: [verifyJWT, verifyPetOwnership] }, adopted)
   app.delete("/image/:imageId", { onRequest: [verifyJWT, verifyImageOwnership] }, deleteImage)
-  app.get("/pets/:orgId", { onRequest: [verifyJWT, verifyOwnership] }, fetchManyOfOrg)
+  app.get("/my/pets", { onRequest: [verifyJWT, verifyOwnership] }, fetchManyOfOrg)
 }
