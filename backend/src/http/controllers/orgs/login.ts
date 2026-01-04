@@ -55,13 +55,14 @@ export async function login(
         maxAge: 60 * 60 * 24 * 7 // 7 dias
       })
       .send({
+        token,
         message: 'Auth User Successful',
         org: orgPresenter(org)
       })
 
   } catch (error) {
     if (error instanceof InvalidCredentials) {
-      return reply.status(401).send({
+      return reply.status(400).send({
         message: error.message
       })
     }
