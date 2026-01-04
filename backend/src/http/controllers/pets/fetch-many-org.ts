@@ -3,11 +3,11 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import z from "zod";
 
 export async function fetchManyOfOrg(request: FastifyRequest, reply: FastifyReply) {
-  const fetchManyParamsSchema = z.object({
+  const fetchManyQuerySchema = z.object({
     orgId: z.string()
   })
 
-  const { orgId } = fetchManyParamsSchema.parse(request.params)
+  const { orgId } = fetchManyQuerySchema.parse(request.query)
   try {
     const fetchManyOrgUseCase = makeFetchManyOrgUseCase()
     const { pets } = await fetchManyOrgUseCase.execute({ orgId })

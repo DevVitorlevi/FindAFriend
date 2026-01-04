@@ -42,14 +42,23 @@ describe('Fetch Many Pet Of Org (e2e)', () => {
     })
 
     const response = await request(app.server)
-      .get(`/pets/${org.id}`)
+      .get(`/my/pets`)
+      .query({
+        orgId: org.id
+      })
       .set('Authorization', `Bearer ${token}`)
 
     expect(response.statusCode).toBe(200)
     expect(response.body.pets).toHaveLength(2)
+
     response.body.pets.forEach((pet: any) => {
       expect(pet.org_id).toBe(org.id)
     })
+
+    const petNames = response.body.pets.map((pet: any) => pet.name)
+    expect(petNames).toContain('Rex')
+    expect(petNames).toContain('Pingo')
+    expect(petNames).not.toContain('Bolt')
   })
 
   it('should not allow an org to fetch pets from other org', async () => {
@@ -57,7 +66,8 @@ describe('Fetch Many Pet Of Org (e2e)', () => {
     const { org: otherOrg } = await createAndAuthenticateOrg(app)
 
     const response = await request(app.server)
-      .get(`/pets/${otherOrg.id}`)
+      .get(`/my/pets`)
+      .query({ ordId: otherOrg.id })
       .set('Authorization', `Bearer ${token}`)
 
     expect(response.statusCode).toBe(403)
