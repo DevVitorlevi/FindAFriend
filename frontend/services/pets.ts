@@ -44,7 +44,6 @@ export interface Pet {
   images?: PetImage[]
 }
 
-// Request/Response types
 export interface SearchPetRequest {
   city?: string
   state?: string
@@ -57,6 +56,14 @@ export interface SearchPetResponse {
   pets: Pet[]
 }
 
+export interface GetPetsRequest {
+  id: string
+}
+
+export interface GetPetsResponse {
+  pets: Pet[]
+}
+
 export async function searchPet({ city, state }: SearchPetRequest): Promise<SearchPetResponse> {
   const { data } = await petAPI.get<SearchPetResponse>('/pets', {
     params: {
@@ -66,4 +73,19 @@ export async function searchPet({ city, state }: SearchPetRequest): Promise<Sear
   })
 
   return data
+}
+export async function getPets(
+  { id }: GetPetsRequest,
+): Promise<GetPetsResponse> {
+  try {
+    const { data } = await petAPI.get<GetPetsResponse>(`/my/pets`, {
+      params: { orgId: id }
+    })
+    return {
+      pets: Array.isArray(data.pets) ? data.pets : []
+    }
+  } catch (error) {
+    console.error('Erro ao buscar pets:', error)
+    throw error
+  }
 }
