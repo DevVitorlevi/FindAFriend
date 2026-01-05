@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
 import { useForm } from "react-hook-form";
 
 import BuildForms, {
@@ -10,13 +9,12 @@ import BuildForms, {
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { createPetBodySchema } from "@/lib/validations/create";
-import { maskWhatsapp } from "@/utils/masks";
 import {
   CreatePetFormProps,
   CreatePetFormSchema
 } from "./types.d";
 
-const RegisterForms = ({ submitForm }: CreatePetFormProps) => {
+const CreatePetForms = ({ submitForm }: CreatePetFormProps) => {
   const form = useForm<CreatePetFormSchema>({
     resolver: zodResolver(createPetBodySchema),
     defaultValues: {
@@ -74,24 +72,10 @@ const RegisterForms = ({ submitForm }: CreatePetFormProps) => {
           >
             Cadastrar
           </Button>
-
-          <Button
-            asChild
-            type="button"
-            variant="link"
-            className="mt-4"
-          >
-            <Link
-              href="/login"
-              className="text-[#0D3B66] min-[712px]:text-xl"
-            >
-              Já Possui Conta?
-            </Link>
-          </Button>
         </div>
       </form>
     </Form>
   );
 };
 
-export default RegisterForms;
+export default CreatePetForms;
