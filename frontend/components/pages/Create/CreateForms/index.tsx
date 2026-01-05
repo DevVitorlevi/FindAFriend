@@ -49,7 +49,7 @@ const RegisterForms = ({ submitForm }: CreatePetFormProps) => {
     },
     {
       label: "Tamanho do Pet",
-
+      name: "size"
     }
   ];
 
