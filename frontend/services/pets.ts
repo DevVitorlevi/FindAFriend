@@ -64,6 +64,14 @@ export interface GetPetsResponse {
   pets: Pet[]
 }
 
+export interface CreatePetRequest {
+  name: string
+  description: string
+  age: Age
+  size: Size
+  orgId: string
+}
+
 export async function searchPet({ city, state }: SearchPetRequest): Promise<SearchPetResponse> {
   const { data } = await petAPI.get<SearchPetResponse>('/pets', {
     params: {
@@ -74,6 +82,7 @@ export async function searchPet({ city, state }: SearchPetRequest): Promise<Sear
 
   return data
 }
+
 export async function getPets(
   { id }: GetPetsRequest,
 ): Promise<GetPetsResponse> {
@@ -88,4 +97,10 @@ export async function getPets(
     console.error('Erro ao buscar pets:', error)
     throw error
   }
+}
+
+export async function createPet({ orgId, ...data }: CreatePetRequest) {
+  const response = await petAPI.post(`/pet/${orgId}/create`, data)
+
+  return response.data
 }
