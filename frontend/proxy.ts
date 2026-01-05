@@ -1,7 +1,8 @@
 import { type NextRequest } from 'next/server'
 
 export const config = {
-  matcher: '/dashboard/:path*',
+  matcher: ['/dashboard/:path*', "/create/:path*"]
+
 }
 
 export default function proxy(request: NextRequest) {
