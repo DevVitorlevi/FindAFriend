@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { Loader2 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { Loader2, Plus } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { getPets, type Pet } from '@/services/pets'
 import {
@@ -13,9 +14,11 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 
 export default function DashboardSection() {
   const { user } = useAuth()
+  const router = useRouter()
   const [pets, setPets] = useState<Pet[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -66,6 +69,19 @@ export default function DashboardSection() {
         </div>
 
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+          <div className="p-6 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+            <div>
+              <h2 className="text-xl font-semibold text-[#0D3B66]">Lista de Pets</h2>
+              <p className="text-sm text-slate-600 mt-1">Visualize e gerencie todos os pets cadastrados</p>
+            </div>
+            <Button
+              onClick={() => router.push('/dashboard/create')}
+              className="bg-[#E44449] hover:bg-[#E44449]/90 text-white font-medium flex items-center gap-2"
+            >
+              <Plus className="w-4 h-4" />
+              Cadastrar Pet
+            </Button>
+          </div>
           <Table>
             <TableHeader>
               <TableRow className="bg-[#0D3B66] hover:bg-[#0D3B66]">
