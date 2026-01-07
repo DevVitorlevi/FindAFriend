@@ -68,7 +68,7 @@ export default function CreatePetSection() {
 
   return (
     <section className="flex min-h-screen w-full items-center justify-center bg-background">
-      <div className="w-full space-y-6 p-6">
+      <div className="w-250 space-y-6 p-6 ">
         <header className="space-y-2 text-center flex items-center justify-center">
           <h1 className="text-3xl font-semibold text-[#0D3B66] min-[712px]:text-4xl">
             Cadastre o seu Pet
