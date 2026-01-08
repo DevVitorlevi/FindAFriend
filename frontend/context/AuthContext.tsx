@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useEffect, useState, ReactNode } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { loginOrg, getMe, type Org } from "@/services/orgs"
 import { petAPI } from "@/services/api"
 
@@ -20,8 +20,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<Org | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
+  const pathname = usePathname()
 
   async function loadUser() {
+    const isPublicPage = pathname === '/login' || pathname === '/register' || pathname === '/'
+
+    if (isPublicPage) {
+      setIsLoading(false)
+      return
+    }
+
     try {
       const { org } = await getMe()
       setUser(org)
@@ -32,9 +40,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(false)
     }
   }
+
   useEffect(() => {
     loadUser()
-  }, [])
+  }, [pathname])
 
   async function signIn(email: string, password: string) {
     try {
@@ -42,7 +51,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       setUser(org)
 
-      router.push('/dashboard')
+      // Não redireciona aqui - deixa o LoginSection fazer isso
+      // para usar o parâmetro redirect
     } catch (error) {
       console.error('Erro no login:', error)
       throw error
@@ -78,7 +88,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         refreshUser,
       }}
     >
-      {!isLoading && children}
+      {children}
     </AuthContext.Provider>
   )
 }
