@@ -1,3 +1,4 @@
+// lib/axios.ts
 import axios from 'axios'
 
 export const petAPI = axios.create({
@@ -12,26 +13,43 @@ export const ibgeAPI = axios.create({
 let isRefreshing = false;
 let failedQueue: any[] = [];
 
+const processQueue = (error: any) => {
+  failedQueue.forEach(prom => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve();
+    }
+  });
+
+  failedQueue = [];
+};
+
 petAPI.interceptors.response.use(
   response => response,
   async error => {
     const originalRequest = error.config;
     const status = error.response?.status;
 
+    // Só trata erro 401
     if (status !== 401) {
       return Promise.reject(error);
     }
 
+    // Se já tentou renovar, rejeita
     if ((originalRequest as any)._retry) {
       return Promise.reject(error);
     }
 
     (originalRequest as any)._retry = true;
 
+    // Se já está renovando, adiciona na fila
     if (isRefreshing) {
       return new Promise((resolve, reject) => {
         failedQueue.push({ resolve, reject });
-      }).then(() => petAPI(originalRequest));
+      })
+        .then(() => petAPI(originalRequest))
+        .catch(err => Promise.reject(err));
     }
 
     isRefreshing = true;
@@ -39,13 +57,11 @@ petAPI.interceptors.response.use(
     try {
       await petAPI.post("/token/refresh");
 
-      failedQueue.forEach(p => p.resolve(null));
-      failedQueue = [];
+      processQueue(null);
 
       return petAPI(originalRequest);
     } catch (err) {
-      failedQueue.forEach(p => p.reject(err));
-      failedQueue = [];
+      processQueue(err);
 
       if (typeof window !== "undefined") {
         window.location.href = "/login";
