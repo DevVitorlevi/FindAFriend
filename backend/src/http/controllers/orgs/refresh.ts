@@ -15,29 +15,25 @@ export async function refresh(
   try {
     request.cookies.accessToken = refreshToken;
 
-    const payload = await request.jwtVerify<{
-      sub: string;
-    }>();
+    await request.jwtVerify<{ sub: string }>({
+      onlyCookie: true,
+    });
+
+    const { sub } = request.user;
 
     const newAccessToken = await reply.jwtSign(
+      { sub },
       {
-        sub: payload.sub
-      },
-      {
-        expiresIn: "10m"
+        expiresIn: "10m",
       }
     );
 
     const newRefreshToken = await reply.jwtSign(
+      { sub },
       {
-        sub: payload.sub
-      },
-      {
-        expiresIn: "7d"
+        expiresIn: "7d",
       }
     );
-
-
 
     return reply
       .setCookie("accessToken", newAccessToken, {
@@ -45,20 +41,21 @@ export async function refresh(
         httpOnly: true,
         sameSite: "lax",
         secure: process.env.NODE_ENV === "production",
-        maxAge: 60 * 10, // 10 minutos
+        maxAge: 60 * 10,
       })
       .setCookie("refreshToken", newRefreshToken, {
         path: "/",
         httpOnly: true,
         sameSite: "lax",
         secure: process.env.NODE_ENV === "production",
-        maxAge: 60 * 60 * 24 * 7, // 7 dias
+        maxAge: 60 * 60 * 24 * 7,
       })
       .status(200)
       .send({
         message: "Tokens refreshed",
       });
-  } catch (err) {
+
+  } catch {
     return reply.status(401).send({
       message: "Invalid or expired refresh token",
     });

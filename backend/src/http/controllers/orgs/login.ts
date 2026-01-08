@@ -23,41 +23,36 @@ export async function login(
       password,
     })
 
-    const token = await reply.jwtSign(
-      {},
-      {
-        sub: org.id,
-      },
+    const accessToken = await reply.jwtSign(
+      { sub: org.id },
+      { expiresIn: '10m' }
     )
 
     const refreshToken = await reply.jwtSign(
-      {},
-      {
-        sub: org.id,
-        expiresIn: '7d',
-      },
+      { sub: org.id },
+      { expiresIn: '7d' }
     )
 
     return reply
       .status(200)
-      .setCookie('accessToken', token, {
+      .setCookie('accessToken', accessToken, {
         path: '/',
         httpOnly: true,
-        sameSite: 'strict',
+        sameSite: 'lax',
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 10 // 10 minutos
+        maxAge: 60 * 10
       })
       .setCookie('refreshToken', refreshToken, {
         path: '/',
         httpOnly: true,
-        sameSite: 'strict',
+        sameSite: 'lax',
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 24 * 7 // 7 dias
+        maxAge: 60 * 60 * 24 * 7
       })
       .send({
-        token,
-        message: 'Auth User Successful',
-        org: orgPresenter(org)
+        accessToken,
+        org: orgPresenter(org),
+        message: 'Auth User Successful'
       })
 
   } catch (error) {
