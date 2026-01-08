@@ -6,12 +6,15 @@ import { useForm } from "react-hook-form";
 import BuildForms, {
   IFormsFields,
 } from "@/components/BuildForms";
+
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+
 import { createPetBodySchema } from "@/lib/validations/create";
+
 import {
   CreatePetFormProps,
-  CreatePetFormSchema
+  CreatePetFormSchema,
 } from "./types.d";
 
 const CreatePetForms = ({ submitForm }: CreatePetFormProps) => {
@@ -21,12 +24,11 @@ const CreatePetForms = ({ submitForm }: CreatePetFormProps) => {
       name: "",
       description: "",
       age: "FILHOTE",
-      size: "PEQUENO"
+      size: "PEQUENO",
     },
   });
 
   async function onSubmit(values: CreatePetFormSchema) {
-    console.log(values)
     await submitForm(values, form);
   }
 
@@ -37,27 +39,40 @@ const CreatePetForms = ({ submitForm }: CreatePetFormProps) => {
       placeholder: "Inserir nome do Pet",
     },
     {
-      label: "Descricao",
+      label: "Descrição",
       name: "description",
-      placeholder: "Inserir Descricao do Pet",
+      fieldType: "textarea",
+      placeholder: "Inserir descrição do Pet",
     },
     {
       label: "Idade do Pet",
       name: "age",
+      fieldType: "select",
+      placeholder: "Selecione a idade",
+      options: [
+        { label: "Filhote", value: "FILHOTE" },
+        { label: "Adulto", value: "ADULTO" },
+        { label: "Idoso", value: "IDOSO" },
+      ],
     },
     {
       label: "Tamanho do Pet",
-      name: "size"
-    }
+      name: "size",
+      fieldType: "select",
+      placeholder: "Selecione o tamanho",
+      options: [
+        { label: "Pequeno", value: "PEQUENO" },
+        { label: "Médio", value: "MEDIO" },
+        { label: "Grande", value: "GRANDE" },
+      ],
+    },
   ];
-
-  console.log(form.formState.errors);
 
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4 m-auto min-[712px]:w-[80%] lg:w-[60%]"
+        className="space-y-4 m-auto"
       >
         <BuildForms
           formsList={form}
@@ -67,10 +82,10 @@ const CreatePetForms = ({ submitForm }: CreatePetFormProps) => {
         <div className="flex flex-col">
           <Button
             type="submit"
-            className="mt-4 bg-[#0D3B66] min-[712px]:text-xl py-6"
+            className="mt-4 bg-[#F4D35E] min-[712px]:text-xl py-6 text-[##0D3B66] hover:bg-amber-300"
             disabled={form.formState.isSubmitting}
           >
-            Cadastrar
+            Confirmar
           </Button>
         </div>
       </form>
