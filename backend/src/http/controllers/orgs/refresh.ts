@@ -1,38 +1,66 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
-export async function refresh(request: FastifyRequest, reply: FastifyReply) {
-  await request.jwtVerify({ onlyCookie: true })
 
-  const token = await reply.jwtSign(
-    {},
-    {
-      sub: request.user.sub,
-    }
-  )
+export async function refresh(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const refreshToken = request.cookies.refreshToken;
 
-  const refreshToken = await reply.jwtSign(
-    {},
-    {
-      sub: request.user.sub,
-      expiresIn: "7d"
-    }
-  )
+  if (!refreshToken) {
+    return reply.status(401).send({
+      message: "Refresh token missing",
+    });
+  }
 
-  return reply.status(200)
-    .setCookie('accessToken', token, {
-      path: '/',
-      httpOnly: true,
-      sameSite: 'strict',
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 10
-    })
-    .setCookie('refreshToken', refreshToken, {
-      path: '/',
-      httpOnly: true,
-      sameSite: 'strict',
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24 * 7
-    })
-    .send({
-      message: 'Tokens refreshed'
-    })
+  try {
+    request.cookies.accessToken = refreshToken;
+
+    const payload = await request.jwtVerify<{
+      sub: string;
+    }>();
+
+    const newAccessToken = await reply.jwtSign(
+      {
+        sub: payload.sub
+      },
+      {
+        expiresIn: "10m"
+      }
+    );
+
+    const newRefreshToken = await reply.jwtSign(
+      {
+        sub: payload.sub
+      },
+      {
+        expiresIn: "7d"
+      }
+    );
+
+
+
+    return reply
+      .setCookie("accessToken", newAccessToken, {
+        path: "/",
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 60 * 10, // 10 minutos
+      })
+      .setCookie("refreshToken", newRefreshToken, {
+        path: "/",
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 60 * 60 * 24 * 7, // 7 dias
+      })
+      .status(200)
+      .send({
+        message: "Tokens refreshed",
+      });
+  } catch (err) {
+    return reply.status(401).send({
+      message: "Invalid or expired refresh token",
+    });
+  }
 }
