@@ -3,6 +3,7 @@
 import Pet from "@/public/Pet.jpg";
 import Image from "next/image";
 import { toast } from "sonner";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { useAuth } from "@/hooks/useAuth";
 import LoginForms from "../LoginForms";
@@ -10,6 +11,9 @@ import { LoginFormSchema, UseLoginForm } from "../LoginForms/types.d";
 
 export default function LoginSection() {
   const { signIn } = useAuth();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get('redirect');
 
   async function submitForm(
     values: LoginFormSchema,
@@ -20,6 +24,12 @@ export default function LoginSection() {
 
       form.reset();
       toast.success("Login realizado com sucesso!");
+
+      if (redirectTo) {
+        router.push(redirectTo);
+      } else {
+        router.push('/dashboard');
+      }
     } catch (error: any) {
       console.error("Erro no frontend ao fazer login:", error);
       if (error?.response?.data?.message) {
