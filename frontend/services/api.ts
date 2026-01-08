@@ -9,57 +9,51 @@ export const ibgeAPI = axios.create({
   baseURL: 'https://servicodados.ibge.gov.br/api/v1/localidades'
 })
 
-let isRefreshing = false
-let failedQueue: any[] = []
+let isRefreshing = false;
+let failedQueue: any[] = [];
 
 petAPI.interceptors.response.use(
   response => response,
   async error => {
-    const originalRequest = error.config
+    const originalRequest = error.config;
+    const status = error.response?.status;
 
-    const status = error.response?.status
-
-    if (
-      status !== 401 &&
-      error.code !== 'ERR_CANCELED' &&
-      error.message !== 'Request aborted'
-    ) {
-      return Promise.reject(error)
+    if (status !== 401) {
+      return Promise.reject(error);
     }
 
     if ((originalRequest as any)._retry) {
-      return Promise.reject(error)
+      return Promise.reject(error);
     }
 
-    ; (originalRequest as any)._retry = true
+    (originalRequest as any)._retry = true;
 
     if (isRefreshing) {
       return new Promise((resolve, reject) => {
-        failedQueue.push({ resolve, reject })
-      }).then(() => petAPI(originalRequest))
+        failedQueue.push({ resolve, reject });
+      }).then(() => petAPI(originalRequest));
     }
 
-    isRefreshing = true
+    isRefreshing = true;
 
     try {
-      await petAPI.post('/token/refresh')
+      await petAPI.post("/token/refresh");
 
-      failedQueue.forEach(p => p.resolve())
-      failedQueue = []
+      failedQueue.forEach(p => p.resolve(null));
+      failedQueue = [];
 
-      return petAPI(originalRequest)
+      return petAPI(originalRequest);
     } catch (err) {
-      failedQueue.forEach(p => p.reject(err))
-      failedQueue = []
+      failedQueue.forEach(p => p.reject(err));
+      failedQueue = [];
 
-      if (typeof window !== 'undefined') {
-        window.location.href = '/login'
+      if (typeof window !== "undefined") {
+        window.location.href = "/login";
       }
 
-      return Promise.reject(err)
+      return Promise.reject(err);
     } finally {
-      isRefreshing = false
+      isRefreshing = false;
     }
   }
-)
-
+);
