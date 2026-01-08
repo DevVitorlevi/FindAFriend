@@ -3,6 +3,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
 import "./globals.css";
+import { ClientLayout } from "./client-layout";
 
 export const metadata: Metadata = {
   title: "FindAFriend",
@@ -24,7 +25,9 @@ export default function RootLayout({
     <html lang="pt-BR" className={nunito.variable}>
       <body className={nunito.className}>
         <AuthProvider>
-          {children}
+          <ClientLayout>
+            {children}
+          </ClientLayout>
         </AuthProvider>
 
         <Toaster position="top-right" />
