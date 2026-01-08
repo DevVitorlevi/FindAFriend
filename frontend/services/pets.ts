@@ -100,7 +100,7 @@ export async function getPets(
 }
 
 export async function createPet({ orgId, ...data }: CreatePetRequest) {
-  const response = await petAPI.post(`/pet/${orgId}/create`, data)
+  const response = await petAPI.post(`/pets/${orgId}/create`, data)
 
   return response.data
 }
