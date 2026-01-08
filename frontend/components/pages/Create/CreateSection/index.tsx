@@ -68,10 +68,10 @@ export default function CreatePetSection() {
 
   return (
     <section className="flex min-h-screen w-full items-center justify-center bg-background">
-      <div className="w-250 space-y-6 p-6 ">
-        <header className="space-y-2 text-center flex items-center justify-center">
-          <h1 className="text-3xl font-semibold text-[#0D3B66] min-[712px]:text-4xl">
-            Cadastre o seu Pet
+      <div className="w-150 space-y-6 p-6 bg-white rounded-xl shadow-md shadow-[#00000036]">
+        <header className="space-y-2flex items-center justify-center">
+          <h1 className="text-3xl font-semibold text-[#0D3B66]">
+            Adicionar Pet
           </h1>
         </header>
         <CreatePetForms submitForm={submitForm} />
