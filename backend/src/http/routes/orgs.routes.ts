@@ -9,5 +9,5 @@ export function orgsRoutes(app: FastifyInstance) {
   app.post("/orgs", register)
   app.post("/sessions", login)
   app.get("/me", { onRequest: [verifyJWT] }, me)
-  app.patch("/token/refresh", refresh)
+  app.post("/token/refresh", refresh)
 }
