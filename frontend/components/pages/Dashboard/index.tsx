@@ -1,10 +1,7 @@
 "use client"
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { Loader2, Plus } from 'lucide-react'
-import { useAuth } from '@/hooks/useAuth'
-import { getPets, type Pet } from '@/services/pets'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
   Table,
   TableBody,
@@ -13,8 +10,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { useAuth } from '@/hooks/useAuth'
+import { getPets, type Pet } from '@/services/pets'
+import { Image, Loader2, Plus } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 export default function DashboardSection() {
   const { user } = useAuth()
@@ -91,6 +91,7 @@ export default function DashboardSection() {
                 <TableHead className="text-center text-white font-semibold">Porte</TableHead>
                 <TableHead className="text-center text-white font-semibold">Status</TableHead>
                 <TableHead className="text-white font-semibold">Data Cadastro</TableHead>
+                <TableHead className="text-white font-semibold">Acoes</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -126,6 +127,10 @@ export default function DashboardSection() {
                     </TableCell>
                     <TableCell className="text-slate-600">
                       {new Date(pet.created_at).toLocaleDateString('pt-BR')}
+                    </TableCell><TableCell className="text-slate-600">
+                      <Button onClick={() => router.push(`/dashboard/${pet.id}/images`)} className='bg-[#0D3B66] text-white hover:bg-[#0D3B66]/90 cursor-pointer'>
+                        <Image />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))
