@@ -1,5 +1,15 @@
 "use client"
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -11,8 +21,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { useAuth } from '@/hooks/useAuth'
-import { getPets, type Pet } from '@/services/pets'
-import { Image, Loader2, Plus } from 'lucide-react'
+import { adoptedPet, getPets, type Pet } from '@/services/pets'
+import { Image, Loader2, PawPrint, Plus } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
@@ -21,6 +31,8 @@ export default function DashboardSection() {
   const router = useRouter()
   const [pets, setPets] = useState<Pet[]>([])
   const [loading, setLoading] = useState(true)
+  const [selectedPetId, setSelectedPetId] = useState<string | null>(null)
+  const [isAlertOpen, setIsAlertOpen] = useState(false)
 
   useEffect(() => {
     if (user?.id) {
@@ -47,98 +59,157 @@ export default function DashboardSection() {
     }
   }
 
+  function handleAdopted(petId: string) {
+    setSelectedPetId(petId)
+    setIsAlertOpen(true)
+  }
+
+  async function confirmAdoption() {
+    if (!selectedPetId) return
+
+    try {
+      await adoptedPet({ petId: selectedPetId })
+      setIsAlertOpen(false)
+      setSelectedPetId(null)
+      // Recarregar a lista de pets
+      await loadPets()
+    } catch (error) {
+      console.error('Erro ao adotar pet:', error)
+    }
+  }
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-slate-50 to-slate-100">
-        <Loader2 className="w-8 h-8 animate-spin text-[#E44449]" />
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-[#E44449]" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-[#0D3B66]">Dashboard de Pets</h1>
-            <p className="text-slate-600 mt-1">Gerencie todos os pets da sua organização</p>
-          </div>
-          <Badge className="text-sm bg-[#F4D35E] text-[#0D3B66] hover:bg-[#F4D35E]/90 px-4 py-2">
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900">Dashboard de Pets</h1>
+        <p className="text-gray-600 mt-2">
+          Gerencie todos os pets da sua organização
+        </p>
+      </div>
+
+      <div className="bg-white rounded-lg shadow p-6">
+        <div className="flex items-center justify-between mb-4">
+          <Badge variant="secondary" className="text-sm">
             Total: {pets.length} {pets.length === 1 ? 'pet' : 'pets'}
           </Badge>
         </div>
+      </div>
 
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className="p-6 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+      <div className="bg-white rounded-lg shadow">
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-semibold text-[#0D3B66]">Lista de Pets</h2>
-              <p className="text-sm text-slate-600 mt-1">Visualize e gerencie todos os pets cadastrados</p>
+              <h2 className="text-xl font-semibold text-gray-900">
+                Lista de Pets
+              </h2>
+              <p className="text-sm text-gray-600 mt-1">
+                Visualize e gerencie todos os pets cadastrados
+              </p>
             </div>
             <Button
               onClick={() => router.push('/dashboard/create')}
               className="bg-[#E44449] hover:bg-[#E44449]/90 text-white font-medium flex items-center gap-2"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="h-4 w-4" />
               Cadastrar Pet
             </Button>
           </div>
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-[#0D3B66] hover:bg-[#0D3B66]">
-                <TableHead className="text-white font-semibold">Nome</TableHead>
-                <TableHead className="text-white font-semibold">Descrição</TableHead>
-                <TableHead className="text-center text-white font-semibold">Idade</TableHead>
-                <TableHead className="text-center text-white font-semibold">Porte</TableHead>
-                <TableHead className="text-center text-white font-semibold">Status</TableHead>
-                <TableHead className="text-white font-semibold">Data Cadastro</TableHead>
-                <TableHead className="text-white font-semibold">Acoes</TableHead>
+        </div>
+
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Nome</TableHead>
+              <TableHead>Descrição</TableHead>
+              <TableHead>Idade</TableHead>
+              <TableHead>Porte</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Data Cadastro</TableHead>
+              <TableHead>Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {pets.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={7} className="text-center py-8">
+                  Nenhum pet encontrado
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {pets.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-12 text-slate-500">
-                    Nenhum pet encontrado
+            ) : (
+              pets.map((pet) => (
+                <TableRow key={pet.id}>
+                  <TableCell className="font-medium">{pet.name}</TableCell>
+                  <TableCell>{pet.description}</TableCell>
+                  <TableCell>{pet.age}</TableCell>
+                  <TableCell>{pet.size}</TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={pet.adopted ? 'default' : 'secondary'}
+                      className={
+                        pet.adopted ? 'bg-green-500 hover:bg-green-600' : ''
+                      }
+                    >
+                      {pet.adopted ? 'Adotado' : 'Disponível'}
+                    </Badge>
                   </TableCell>
-                </TableRow>
-              ) : (
-                pets.map((pet) => (
-                  <TableRow key={pet.id} className="hover:bg-slate-50 transition-colors border-b border-slate-200">
-                    <TableCell className="font-medium text-[#0D3B66]">{pet.name}</TableCell>
-                    <TableCell className="max-w-xs truncate text-slate-600">
-                      {pet.description}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <Badge className="bg-[#F4D35E] text-[#0D3B66] hover:bg-[#F4D35E]/90">
-                        {pet.age}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <Badge className="bg-[#0D3B66] text-white hover:bg-[#0D3B66]/90">
-                        {pet.size}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <Badge
-                        className={pet.adopted ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-[#E44449] text-white hover:bg-[#E44449]/90'}
+                  <TableCell>
+                    {new Date(pet.created_at).toLocaleDateString('pt-BR')}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={() => router.push(`/dashboard/${pet.id}/images`)}
+                        className="bg-[#0D3B66] text-white hover:bg-[#0D3B66]/90 cursor-pointer"
                       >
-                        {pet.adopted ? 'Adotado' : 'Disponível'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-slate-600">
-                      {new Date(pet.created_at).toLocaleDateString('pt-BR')}
-                    </TableCell><TableCell className="text-slate-600">
-                      <Button onClick={() => router.push(`/dashboard/${pet.id}/images`)} className='bg-[#0D3B66] text-white hover:bg-[#0D3B66]/90 cursor-pointer'>
                         <Image />
                       </Button>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+                      {!pet.adopted && (
+                        <Button
+                          onClick={() => handleAdopted(pet.id)}
+                          className="bg-green-600 text-white hover:bg-green-700 cursor-pointer"
+                        >
+                          <PawPrint />
+                        </Button>
+                      )}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
       </div>
+
+      <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar Adoção</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja marcar este pet como adotado? Esta ação
+              atualizará o status do pet.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setSelectedPetId(null)}>
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmAdoption}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              Confirmar Adoção
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
