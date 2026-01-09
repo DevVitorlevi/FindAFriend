@@ -86,6 +86,10 @@ export interface UploadPetImagesResponse {
   images: PetImage[]
 }
 
+export interface AdoptedPetRequest {
+  petId: string
+}
+
 export async function searchPet({ city, state }: SearchPetRequest): Promise<SearchPetResponse> {
   const { data } = await petAPI.get<SearchPetResponse>('/pets', {
     params: {
@@ -146,4 +150,10 @@ export async function uploadPetImages({
   )
 
   return data
+}
+
+export async function adoptedPet({ petId }: AdoptedPetRequest) {
+  const response = await petAPI.patch(`/pet/${petId}`)
+
+  return response.data
 }
