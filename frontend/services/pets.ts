@@ -72,6 +72,20 @@ export interface CreatePetRequest {
   orgId: string
 }
 
+export interface AddPetImagesRequest {
+  petId: string
+  images: string[]
+}
+
+export interface UploadPetImagesRequest {
+  petId: string
+  images: File[]
+}
+
+export interface UploadPetImagesResponse {
+  images: PetImage[]
+}
+
 export async function searchPet({ city, state }: SearchPetRequest): Promise<SearchPetResponse> {
   const { data } = await petAPI.get<SearchPetResponse>('/pets', {
     params: {
@@ -103,4 +117,33 @@ export async function createPet({ orgId, ...data }: CreatePetRequest) {
   const response = await petAPI.post(`/pets/${orgId}/create`, data)
 
   return response.data
+}
+
+export async function addPetImages({ petId, images }: AddPetImagesRequest) {
+  const response = await petAPI.post(`/pets/${petId}/images`, images)
+
+  return response.data
+}
+
+export async function uploadPetImages({
+  petId,
+  images
+}: UploadPetImagesRequest): Promise<UploadPetImagesResponse> {
+  const formData = new FormData()
+
+  images.forEach((image) => {
+    formData.append('images', image)
+  })
+
+  const { data } = await petAPI.post<UploadPetImagesResponse>(
+    `/pet/${petId}/images`,
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }
+  )
+
+  return data
 }
