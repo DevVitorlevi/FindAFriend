@@ -1,52 +1,48 @@
-import { app } from '@/app.js'
-import request from 'supertest'
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
-import { resetDatabase } from '../../utils/reset-database.js'
+import { app } from "@/app.js";
+import request from "supertest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { resetDatabase } from "../../utils/reset-database.js";
 
-describe('Register Org (e2e)', () => {
+describe("Register Org (e2e)", () => {
   beforeAll(async () => {
-    await app.ready()
-  })
+    await app.ready();
+  });
 
   afterAll(async () => {
-    await app.close()
-  })
+    await app.close();
+  });
 
   beforeEach(async () => {
-    await resetDatabase()
-  })
+    await resetDatabase();
+  });
 
-  it('should be able to register a new org', async () => {
-    const response = await request(app.server)
-      .post('/orgs')
-      .send({
-        name: 'ONG Amigos dos Animais',
-        email: 'contato@ongamigos.com',
-        password: 'senha123',
-        whatsapp: '84999999999',
-        state: 'RN',
-        city: 'Natal',
-      })
+  it("should be able to register a new org", async () => {
+    const response = await request(app.server).post("/orgs").send({
+      name: "ONG Amigos dos Animais",
+      email: "contato@ongamigos.com",
+      password: "senha123",
+      whatsapp: "84999999999",
+      state: "RN",
+      city: "Natal",
+    });
 
-    expect(response.status).toBe(201)
-  })
+    expect(response.status).toBe(201);
+  });
 
-  it('should not be able to register with duplicate email', async () => {
+  it("should not be able to register with duplicate email", async () => {
     const orgData = {
-      name: 'ONG Amigos dos Animais',
-      email: 'contato@ongamigos.com',
-      password: 'senha123',
-      whatsapp: '84999999999',
-      state: 'RN',
-      city: 'Natal',
-    }
+      name: "ONG Amigos dos Animais",
+      email: "contato@ongamigos.com",
+      password: "senha123",
+      whatsapp: "84999999999",
+      state: "RN",
+      city: "Natal",
+    };
 
-    await request(app.server).post('/orgs').send(orgData)
+    await request(app.server).post("/orgs").send(orgData);
 
-    const response = await request(app.server)
-      .post('/orgs')
-      .send(orgData)
+    const response = await request(app.server).post("/orgs").send(orgData);
 
-    expect(response.status).toBe(409)
-  })
-})
+    expect(response.status).toBe(409);
+  });
+});

@@ -1,4 +1,4 @@
-import type { Org } from "generated/prisma/browser.js";
+import type { Org } from "@generated/prisma/browser.js";
 
 export function orgPresenter(org: Org) {
   return {

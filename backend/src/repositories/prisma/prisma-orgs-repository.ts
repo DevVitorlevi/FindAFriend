@@ -1,35 +1,35 @@
 import { prisma } from "@/lib/prisma.js";
-import type { Org } from "generated/prisma/client.js";
-import type { OrgCreateInput } from "generated/prisma/models.js";
+import type { Org } from "@generated/prisma/client.js";
+import type { OrgCreateInput } from "@generated/prisma/models.js";
 import type { OrgsRepository } from "../orgs-repository-interface.js";
 
 export class PrismaOrgsRepository implements OrgsRepository {
   async findByEmail(email: string): Promise<Org | null> {
     const org = await prisma.org.findUnique({
       where: {
-        email
-      }
-    })
+        email,
+      },
+    });
 
-    return org
+    return org;
   }
   async create(data: OrgCreateInput) {
-    const org = await prisma.org.create({ data })
+    const org = await prisma.org.create({ data });
 
-    return org
+    return org;
   }
 
   async me(id: string) {
     const org = await prisma.org.findUnique({
       where: {
-        id
-      }
-    })
+        id,
+      },
+    });
 
     if (!org) {
-      return null
+      return null;
     }
 
-    return org
+    return org;
   }
 }

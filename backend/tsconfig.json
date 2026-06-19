@@ -3,18 +3,14 @@
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "target": "es2023",
-    "baseUrl": ".",
-    "paths": {
-      "@/*": [
-        "src/*"
-      ]
-    },
-    "lib": [
-      "es2023"
-    ],
-    "types": [
-      "node"
-    ],
+"paths": {
+  "@/*": ["./src/*"],
+  "@generated/*": ["./generated/*"],
+  "@test/*": ["./test/*"],
+  "@use-cases/*": ["./src/use-cases/*"]
+},
+    "lib": ["es2023"],
+    "types": ["node"],
     "strict": true,
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
