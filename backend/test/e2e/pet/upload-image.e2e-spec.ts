@@ -1,42 +1,31 @@
-import { app } from "@/app.js";
 import request from "supertest";
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { createAndAuthenticateOrg } from "../../utils/authenticate.js";
 import {
   createFakeImage,
   createFakeImages,
 } from "../../utils/create-fake-image.js";
 import { createPet } from "../../utils/create-pet.js";
-import { resetDatabase } from "../../utils/reset-database.js";
+import { setupE2E } from "@test/setup-e2e.js";
 
 describe("Upload Pet Images (e2e)", () => {
-  beforeAll(async () => {
-    await app.ready();
-  });
-
-  afterAll(async () => {
-    await app.close();
-  });
+  let app: Awaited<ReturnType<typeof setupE2E>>;
 
   beforeEach(async () => {
-    await resetDatabase();
+    app = await setupE2E();
   });
 
   it("should be able to upload images for a pet", async () => {
-    // Criar org autenticada
     const { token, org } = await createAndAuthenticateOrg(app);
 
-    // Criar um pet
     const { pet } = await createPet(app, {
       orgId: org.id,
       token,
       name: "Rex",
     });
 
-    // Criar imagem fake
     const imageBuffer = createFakeImage();
 
-    // Fazer upload da imagem
     const response = await request(app.server)
       .post(`/pet/${pet.id}/images`)
       .set("Authorization", `Bearer ${token}`)
@@ -65,12 +54,10 @@ describe("Upload Pet Images (e2e)", () => {
 
     const images = createFakeImages(2);
 
-    // Fazer upload de múltiplas imagens
     const uploadRequest = request(app.server)
       .post(`/pet/${pet.id}/images`)
       .set("Authorization", `Bearer ${token}`);
 
-    // Anexar cada imagem
     images.forEach((buffer, index) => {
       uploadRequest.attach("file", buffer, `test-image-${index}.png`);
     });
@@ -98,7 +85,6 @@ describe("Upload Pet Images (e2e)", () => {
 
     const imageBuffer = createFakeImage();
 
-    // Tentar upload sem token
     const response = await request(app.server)
       .post(`/pet/${pet.id}/images`)
       .attach("file", imageBuffer, "test-image.png");

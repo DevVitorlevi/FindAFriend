@@ -1,31 +1,22 @@
-import { app } from "@/app.js";
 import request from "supertest";
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { createAndAuthenticateOrg } from "../../utils/authenticate.js";
 import { createPet } from "../../utils/create-pet.js";
-import { resetDatabase } from "../../utils/reset-database.js";
+import { setupE2E } from "@test/setup-e2e.js";
 
 describe("Get Pet (e2e)", () => {
-  beforeAll(async () => {
-    await app.ready();
-  });
-
-  afterAll(async () => {
-    await app.close();
-  });
+  let app: Awaited<ReturnType<typeof setupE2E>>;
 
   beforeEach(async () => {
-    await resetDatabase();
+    app = await setupE2E();
   });
 
   it("should be able to get pet", async () => {
-    // Criar org autenticada
     const { token, org } = await createAndAuthenticateOrg(app, {
       city: "Icapui",
       state: "CE",
     });
 
-    // Criar um pet
     const { pet } = await createPet(app, {
       orgId: org.id,
       token,

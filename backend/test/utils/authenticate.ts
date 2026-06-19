@@ -1,32 +1,30 @@
-import type { FastifyInstance } from 'fastify'
-import request from 'supertest'
-import { createOrg } from './create-org.js'
+import type { FastifyInstance } from "fastify";
+import request from "supertest";
+import { createOrg } from "./create-org.js";
 
 interface CreateOrgOptions {
-  name?: string
-  email?: string
-  password?: string
-  whatsapp?: string
-  state?: string
-  city?: string
+  name?: string;
+  email?: string;
+  password?: string;
+  whatsapp?: string;
+  state?: string;
+  city?: string;
 }
 
 export async function createAndAuthenticateOrg(
   app: FastifyInstance,
-  options: CreateOrgOptions = {}
+  options: CreateOrgOptions = {},
 ) {
-  const { org, credentials } = await createOrg(app, options)
+  const { org, credentials } = await createOrg(app, options);
 
-  const authResponse = await request(app.server)
-    .post('/sessions')
-    .send({
-      email: credentials.email,
-      password: credentials.password,
-    })
+  const authResponse = await request(app.server).post("/sessions").send({
+    email: credentials.email,
+    password: credentials.password,
+  });
 
   return {
     org,
-    token: authResponse.body.token,
+    token: authResponse.body.accessToken,
     credentials,
-  }
+  };
 }

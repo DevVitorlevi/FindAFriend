@@ -1,20 +1,14 @@
 import { app } from "@/app.js";
 import request from "supertest";
 import { createOrg } from "@test/utils/create-org.js";
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
-import { resetDatabase } from "../../utils/reset-database.js";
+import { beforeEach, describe, expect, it } from "vitest";
+import { setupE2E } from "@test/setup-e2e.js";
 
 describe("Login Org (e2e)", () => {
-  beforeAll(async () => {
-    await app.ready();
-  });
-
-  afterAll(async () => {
-    await app.close();
-  });
+  let app: Awaited<ReturnType<typeof setupE2E>>;
 
   beforeEach(async () => {
-    await resetDatabase();
+    app = await setupE2E();
   });
 
   it("should be able to login a org", async () => {
@@ -31,7 +25,7 @@ describe("Login Org (e2e)", () => {
     expect(response.status).toBe(200);
     expect(response.body).toEqual(
       expect.objectContaining({
-        token: expect.any(String),
+        accessToken: expect.any(String),
       }),
     );
   });

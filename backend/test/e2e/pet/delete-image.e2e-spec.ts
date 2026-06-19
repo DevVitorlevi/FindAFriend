@@ -1,36 +1,25 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import request from "supertest";
-import { app } from "@/app.js";
-import { resetDatabase } from "../../utils/reset-database.js";
+import { setupE2E } from "@test/setup-e2e.js";
 import { createAndAuthenticateOrg } from "../../utils/authenticate.js";
 import { createPet } from "../../utils/create-pet.js";
 import { createFakeImage } from "../../utils/create-fake-image.js";
 
 describe("Delete Pet Image (e2e)", () => {
-  beforeAll(async () => {
-    await app.ready();
-  });
-
-  afterAll(async () => {
-    await app.close();
-  });
+  let app: Awaited<ReturnType<typeof setupE2E>>;
 
   beforeEach(async () => {
-    await resetDatabase();
+    app = await setupE2E();
   });
-
   it("should be able to delete a pet image", async () => {
-    // Criar org autenticada
     const { token, org } = await createAndAuthenticateOrg(app);
 
-    // Criar um pet
     const { pet } = await createPet(app, {
       orgId: org.id,
       token,
       name: "Rex",
     });
 
-    // Fazer upload de uma imagem primeiro
     const imageBuffer = createFakeImage();
 
     const uploadResponse = await request(app.server)
@@ -42,15 +31,12 @@ describe("Delete Pet Image (e2e)", () => {
 
     const imageId = uploadResponse.body.images[0].id;
 
-    // Deletar a imagem
     const deleteResponse = await request(app.server)
       .delete(`/image/${imageId}`)
       .set("Authorization", `Bearer ${token}`);
 
     expect(deleteResponse.status).toBe(204);
 
-    // Verificar se a imagem foi realmente deletada
-    // Tentar buscar o pet e verificar que não tem mais essa imagem
     const petResponse = await request(app.server).get(`/pet/${pet.id}`);
 
     const petImages = petResponse.body.pet.images || [];
@@ -67,7 +53,6 @@ describe("Delete Pet Image (e2e)", () => {
       token,
     });
 
-    // Upload de imagem
     const imageBuffer = createFakeImage();
 
     const uploadResponse = await request(app.server)
@@ -77,7 +62,6 @@ describe("Delete Pet Image (e2e)", () => {
 
     const imageId = uploadResponse.body.images[0].id;
 
-    // Tentar deletar sem token
     const deleteResponse = await request(app.server).delete(
       `/image/${imageId}`,
     );
@@ -86,7 +70,6 @@ describe("Delete Pet Image (e2e)", () => {
   });
 
   it("should not delete image from another org", async () => {
-    // Criar primeira org e seu pet com imagem
     const { token: token1, org: org1 } = await createAndAuthenticateOrg(app, {
       email: "org1@test.com",
     });
@@ -106,12 +89,10 @@ describe("Delete Pet Image (e2e)", () => {
 
     const imageId = uploadResponse.body.images[0].id;
 
-    // Criar segunda org
     const { token: token2 } = await createAndAuthenticateOrg(app, {
       email: "org2@test.com",
     });
 
-    // Tentar deletar imagem da primeira org com token da segunda org
     const deleteResponse = await request(app.server)
       .delete(`/image/${imageId}`)
       .set("Authorization", `Bearer ${token2}`);
@@ -127,7 +108,6 @@ describe("Delete Pet Image (e2e)", () => {
       token,
     });
 
-    // Upload de 3 imagens
     const imageBuffer1 = createFakeImage();
     const imageBuffer2 = createFakeImage();
     const imageBuffer3 = createFakeImage();
@@ -151,7 +131,6 @@ describe("Delete Pet Image (e2e)", () => {
     const imageId2 = upload2.body.images[0].id;
     const imageId3 = upload3.body.images[0].id;
 
-    // Deletar a primeira e terceira imagem
     await request(app.server)
       .delete(`/image/${imageId1}`)
       .set("Authorization", `Bearer ${token}`);
@@ -160,7 +139,6 @@ describe("Delete Pet Image (e2e)", () => {
       .delete(`/image/${imageId3}`)
       .set("Authorization", `Bearer ${token}`);
 
-    // Verificar que apenas a segunda imagem ainda existe
     const petResponse = await request(app.server).get(`/pet/${pet.id}`);
 
     const petImages = petResponse.body.pet.images || [];
