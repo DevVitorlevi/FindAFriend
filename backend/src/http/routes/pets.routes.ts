@@ -10,13 +10,35 @@ import { verifyImageOwnership } from "../middlewares/verify-image-ownership.js";
 import { verifyJWT } from "../middlewares/verify-jwt.js";
 import { verifyPetOwnership } from "../middlewares/verify-pet-ownership.js";
 import { verifyOwnership } from "../middlewares/verify-ownership.js";
+import { deletePet } from "../controllers/pets/delete.js";
 
 export function petsRoutes(app: FastifyInstance) {
-  app.post("/pets/:orgId/create", { onRequest: [verifyJWT] }, create)
-  app.get("/pets", fetchMany)
-  app.get("/pet/:petId", getPet)
-  app.post("/pet/:petId/images", { onRequest: [verifyJWT, verifyPetOwnership] }, uploadImages)
-  app.patch("/pet/:petId", { onRequest: [verifyJWT, verifyPetOwnership] }, adopted)
-  app.delete("/image/:imageId", { onRequest: [verifyJWT, verifyImageOwnership] }, deleteImage)
-  app.get("/my/pets", { onRequest: [verifyJWT, verifyOwnership] }, fetchManyOfOrg)
+  app.post("/pets/:orgId/create", { onRequest: [verifyJWT] }, create);
+  app.get("/pets", fetchMany);
+  app.get("/pet/:petId", getPet);
+  app.post(
+    "/pet/:petId/images",
+    { onRequest: [verifyJWT, verifyPetOwnership] },
+    uploadImages,
+  );
+  app.patch(
+    "/pet/:petId",
+    { onRequest: [verifyJWT, verifyPetOwnership] },
+    adopted,
+  );
+  app.delete(
+    "/image/:imageId",
+    { onRequest: [verifyJWT, verifyImageOwnership] },
+    deleteImage,
+  );
+  app.get(
+    "/my/pets",
+    { onRequest: [verifyJWT, verifyOwnership] },
+    fetchManyOfOrg,
+  );
+  app.delete(
+    "/pet/:id",
+    { onRequest: [verifyJWT, verifyOwnership] },
+    deletePet,
+  );
 }
