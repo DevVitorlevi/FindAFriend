@@ -31,7 +31,6 @@ export class InMemoryPetsRepository implements PetsRepository {
       throw new Error("Pet not found");
     }
 
-    // inverte o valor (true → false, false → true)
     this.database[petIndex].adopted = !this.database[petIndex].adopted;
 
     return this.database[petIndex];
@@ -156,5 +155,13 @@ export class InMemoryPetsRepository implements PetsRepository {
           images,
         };
       });
+  }
+
+  async delete(id: string) {
+    const petIndex = this.database.findIndex((pet) => pet.id === id);
+
+    if (petIndex >= 0) {
+      this.database.splice(petIndex, 1);
+    }
   }
 }
