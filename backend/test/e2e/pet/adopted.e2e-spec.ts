@@ -2,7 +2,7 @@ import request from "supertest";
 import { beforeEach, describe, expect, it } from "vitest";
 import { createAndAuthenticateOrg } from "../../utils/authenticate.js";
 import { createPet } from "../../utils/create-pet.js";
-import { setupE2E } from "@test/setup-e2e.js";
+import { setupE2E } from "@test/utils/setup-e2e.js";
 
 describe("Adopted Pet (e2e)", () => {
   let app: Awaited<ReturnType<typeof setupE2E>>;

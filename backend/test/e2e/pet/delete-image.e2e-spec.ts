@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import request from "supertest";
-import { setupE2E } from "@test/setup-e2e.js";
+import { setupE2E } from "@test/utils/setup-e2e.js";
 import { createAndAuthenticateOrg } from "../../utils/authenticate.js";
 import { createPet } from "../../utils/create-pet.js";
 import { createFakeImage } from "../../utils/create-fake-image.js";

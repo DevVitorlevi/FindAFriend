@@ -5,19 +5,18 @@ import z from "zod";
 export async function adopted(request: FastifyRequest, reply: FastifyReply) {
   const AdoptedPetParamsSchema = z.object({
     petId: z.string(),
-  })
+  });
 
-  const { petId } = AdoptedPetParamsSchema.parse(request.params)
+  const { petId } = AdoptedPetParamsSchema.parse(request.params);
   try {
-    const toggleAdoptedUseCase = makeToggleAdoptedUseCase()
+    const toggleAdoptedUseCase = makeToggleAdoptedUseCase();
     const pet = await toggleAdoptedUseCase.execute({
-      petId
-    })
+      petId,
+    });
     return reply.status(204).send({
-      pet
-    })
+      pet,
+    });
   } catch (error) {
-    throw error
+    throw error;
   }
-
 }

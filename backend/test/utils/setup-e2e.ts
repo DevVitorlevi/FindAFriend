@@ -1,6 +1,6 @@
 import { app } from "@/app.js";
 import { prisma } from "@/lib/prisma.js";
-import { resetDatabase } from "./utils/reset-database.js";
+import { resetDatabase } from "./reset-database.js";
 
 let isSetup = false;
 export async function setupE2E() {

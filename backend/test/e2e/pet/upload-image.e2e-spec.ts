@@ -6,7 +6,7 @@ import {
   createFakeImages,
 } from "../../utils/create-fake-image.js";
 import { createPet } from "../../utils/create-pet.js";
-import { setupE2E } from "@test/setup-e2e.js";
+import { setupE2E } from "@test/utils/setup-e2e.js";
 
 describe("Upload Pet Images (e2e)", () => {
   let app: Awaited<ReturnType<typeof setupE2E>>;

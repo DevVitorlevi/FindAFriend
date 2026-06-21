@@ -1,6 +1,6 @@
 import request from "supertest";
 import { beforeEach, describe, expect, it } from "vitest";
-import { setupE2E } from "@test/setup-e2e.js";
+import { setupE2E } from "@test/utils/setup-e2e.js";
 
 describe("Register Org (e2e)", () => {
   let app: Awaited<ReturnType<typeof setupE2E>>;

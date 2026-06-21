@@ -2,7 +2,7 @@ import { app } from "@/app.js";
 import request from "supertest";
 import { createOrg } from "@test/utils/create-org.js";
 import { beforeEach, describe, expect, it } from "vitest";
-import { setupE2E } from "@test/setup-e2e.js";
+import { setupE2E } from "@test/utils/setup-e2e.js";
 
 describe("Login Org (e2e)", () => {
   let app: Awaited<ReturnType<typeof setupE2E>>;
