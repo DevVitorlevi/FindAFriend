@@ -26,5 +26,5 @@ export interface PetsRepository {
   findManyOfOrg(
     orgId: string,
   ): Promise<(Pet & { org: Org; images: PetImage[] })[]>;
-  delete(id: string): Promise<void>;
+  delete(petId: string): Promise<void>;
 }

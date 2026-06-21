@@ -157,8 +157,8 @@ export class InMemoryPetsRepository implements PetsRepository {
       });
   }
 
-  async delete(id: string) {
-    const petIndex = this.database.findIndex((pet) => pet.id === id);
+  async delete(petId: string) {
+    const petIndex = this.database.findIndex((pet) => pet.id === petId);
 
     if (petIndex >= 0) {
       this.database.splice(petIndex, 1);

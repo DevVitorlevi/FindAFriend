@@ -5,14 +5,14 @@ import z from "zod";
 
 export async function deletePet(request: FastifyRequest, reply: FastifyReply) {
   const deletePetParamsSchema = z.object({
-    id: z.string(),
+    petId: z.string(),
   });
 
-  const { id } = deletePetParamsSchema.parse(request.params);
+  const { petId } = deletePetParamsSchema.parse(request.params);
   try {
     const deletePetUseCase = makeDeletePetUseCase();
     await deletePetUseCase.execute({
-      id,
+      petId,
     });
 
     return reply.status(204).send({

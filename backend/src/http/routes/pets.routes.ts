@@ -37,8 +37,8 @@ export function petsRoutes(app: FastifyInstance) {
     fetchManyOfOrg,
   );
   app.delete(
-    "/pet/:id",
-    { onRequest: [verifyJWT, verifyOwnership] },
+    "/pet/:petId",
+    { onRequest: [verifyJWT, verifyPetOwnership] },
     deletePet,
   );
 }
