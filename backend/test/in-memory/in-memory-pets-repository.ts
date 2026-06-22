@@ -1,3 +1,4 @@
+import type { UpdatePetInput } from "@/repositories/DTOs/pet.dtos.js";
 import type { PetsRepository } from "@/repositories/pets-repository-interface.js";
 import type {
   Age,
@@ -163,5 +164,32 @@ export class InMemoryPetsRepository implements PetsRepository {
     if (petIndex >= 0) {
       this.database.splice(petIndex, 1);
     }
+  }
+
+  async update(petId: string, data: UpdatePetInput) {
+    const pet = this.database.find((pet) => pet.id === petId);
+
+    if (!pet) {
+      throw new Error("Pet not found");
+    }
+
+    Object.assign(pet, {
+      ...(data.name !== undefined && { name: data.name }),
+      ...(data.description !== undefined && { description: data.description }),
+      ...(data.age !== undefined && { age: data.age }),
+      ...(data.size !== undefined && { size: data.size }),
+      updatedAt: new Date(),
+    });
+
+    return {
+      pet: {
+        id: pet.id,
+        name: pet.name,
+        description: pet.description,
+        age: pet.age,
+        size: pet.size,
+        org_id: pet.org_id,
+      },
+    };
   }
 }

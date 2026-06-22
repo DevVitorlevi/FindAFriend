@@ -6,6 +6,7 @@ import type {
   Prisma,
   Size,
 } from "@generated/prisma/client.js";
+import type { UpdatePetInput, UpdatePetOutput } from "./DTOs/pet.dtos.js";
 
 interface FindManyByCityParams {
   state: string;
@@ -27,4 +28,5 @@ export interface PetsRepository {
     orgId: string,
   ): Promise<(Pet & { org: Org; images: PetImage[] })[]>;
   delete(petId: string): Promise<void>;
+  update(petId: string, data: UpdatePetInput): Promise<UpdatePetOutput>;
 }
