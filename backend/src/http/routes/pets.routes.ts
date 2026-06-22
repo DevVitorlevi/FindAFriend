@@ -11,6 +11,7 @@ import { verifyJWT } from "../middlewares/verify-jwt.js";
 import { verifyPetOwnership } from "../middlewares/verify-pet-ownership.js";
 import { verifyOwnership } from "../middlewares/verify-ownership.js";
 import { deletePet } from "../controllers/pets/delete.js";
+import { update } from "../controllers/pets/update.js";
 
 export function petsRoutes(app: FastifyInstance) {
   app.post("/pets/:orgId/create", { onRequest: [verifyJWT] }, create);
@@ -40,5 +41,10 @@ export function petsRoutes(app: FastifyInstance) {
     "/pet/:petId",
     { onRequest: [verifyJWT, verifyPetOwnership] },
     deletePet,
+  );
+  app.put(
+    "/pet/:petId",
+    { onRequest: [verifyJWT, verifyPetOwnership] },
+    update,
   );
 }
