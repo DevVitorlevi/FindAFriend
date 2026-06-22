@@ -1,13 +1,20 @@
 "use client";
 import { SearchPet } from "@/components/Search";
-import Pets from "@/public/OBJECTS.png";
+import Pets from "@/public/shape.png";
 import Image from "next/image";
+import Logo from "@/public/logo.png";
 
 export default function HomeSection() {
   return (
     <main className="bg-[#F15156] w-full min-h-screen flex flex-col overflow-x-hidden py-5">
-      <div className="w-full px-5 sm:px-8 lg:px-10">
-        <h2 className="font-semibold text-2xl sm:text-3xl text-white lg:text-5xl">
+      <div className="w-full flex flex-row items-center gap-2 px-5 sm:px-8 lg:px-10">
+        <Image
+          src={Logo}
+          alt="Imagem ilustrativa de um pet"
+          className="w-10 h-auto"
+          priority
+        />
+        <h2 className="font-semibold text-2xl sm:text-2xl text-white lg:text-3xl">
           FindAFriend
         </h2>
       </div>
