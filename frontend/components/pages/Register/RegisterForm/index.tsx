@@ -4,18 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 
-import BuildForms, {
-  IFormsFields,
-} from "@/components/BuildForms";
+import BuildForms, { IFormsFields } from "@/components/BuildForms";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { registerBodySchema } from "@/lib/validations/register";
 
 import { maskWhatsapp } from "@/utils/masks";
-import {
-  RegisterFormProps,
-  RegisterFormSchema,
-} from "./types.d";
+import { RegisterFormProps, RegisterFormSchema } from "./types.d";
 
 const RegisterForms = ({ submitForm }: RegisterFormProps) => {
   const form = useForm<RegisterFormSchema>({
@@ -31,7 +26,6 @@ const RegisterForms = ({ submitForm }: RegisterFormProps) => {
   });
 
   async function onSubmit(values: RegisterFormSchema) {
-    console.log(values)
     await submitForm(values, form);
   }
 
@@ -70,18 +64,13 @@ const RegisterForms = ({ submitForm }: RegisterFormProps) => {
     },
   ];
 
-  console.log(form.formState.errors);
-
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4 m-auto min-[712px]:w-[80%] lg:w-[60%]"
       >
-        <BuildForms
-          formsList={form}
-          formsFields={formFields}
-        />
+        <BuildForms formsList={form} formsFields={formFields} />
 
         <div className="flex flex-col">
           <Button
@@ -92,16 +81,8 @@ const RegisterForms = ({ submitForm }: RegisterFormProps) => {
             Cadastrar
           </Button>
 
-          <Button
-            asChild
-            type="button"
-            variant="link"
-            className="mt-4"
-          >
-            <Link
-              href="/login"
-              className="text-[#0D3B66] min-[712px]:text-xl"
-            >
+          <Button asChild type="button" variant="link" className="mt-4">
+            <Link href="/login" className="text-[#0D3B66] min-[712px]:text-xl">
               Já Possui Conta?
             </Link>
           </Button>

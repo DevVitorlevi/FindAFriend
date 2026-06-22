@@ -1,6 +1,6 @@
 "use client";
 
-import Pet from "@/public/Pet.jpg";
+import Pet from "@/public/pet.jpg";
 import Image from "next/image";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -8,17 +8,15 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import LoginForms from "../LoginForms";
 import { LoginFormSchema, UseLoginForm } from "../LoginForms/types.d";
+import { isAxiosError } from 'axios';
 
 export default function LoginSection() {
   const { signIn } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get('redirect');
+  const redirectTo = searchParams.get("redirect");
 
-  async function submitForm(
-    values: LoginFormSchema,
-    form: UseLoginForm
-  ) {
+  async function submitForm(values: LoginFormSchema, form: UseLoginForm) {
     try {
       await signIn(values.email, values.password);
 
@@ -28,13 +26,14 @@ export default function LoginSection() {
       if (redirectTo) {
         router.push(redirectTo);
       } else {
-        router.push('/dashboard');
+        router.push("/dashboard");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Erro no frontend ao fazer login:", error);
-      if (error?.response?.data?.message) {
+
+      if (isAxiosError(error) && error.response?.data?.message) {
         toast.error(error.response.data.message);
-      } else if (error?.message) {
+      } else if (error instanceof Error) {
         toast.error(error.message);
       } else {
         toast.error("Erro no login. Tente novamente.");
