@@ -29,12 +29,9 @@ export class UploadPetImagesUseCase {
       throw new ResourceNotFound();
     }
 
-    //Array para guardar as imagens salvas
     const uploadedImages: PetImage[] = [];
 
-    //Para cada imagem enviada
     for (const imageBuffer of images) {
-      //Faz upload para o Cloudinary
       const uploadResult = await new Promise<any>((resolve, reject) => {
         cloudinary.uploader
           .upload_stream(
@@ -50,7 +47,6 @@ export class UploadPetImagesUseCase {
           .end(imageBuffer);
       });
 
-      // Salva a URL no banco de dados
       const image = await this.petImagesRepository.create({
         pet_id: petId,
         url: uploadResult.secure_url,
@@ -59,7 +55,6 @@ export class UploadPetImagesUseCase {
       uploadedImages.push(image);
     }
 
-    //Retorna todas as imagens salvas
     return { images: uploadedImages };
   }
 }

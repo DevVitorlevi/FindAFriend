@@ -31,4 +31,14 @@ export class InMemoryOrgsRepository implements OrgsRepository {
 
     return org;
   }
+
+  async me(id: string) {
+    const org = this.database.find((org) => org.id === id);
+
+    if (!org) {
+      return null;
+    }
+
+    return org;
+  }
 }
