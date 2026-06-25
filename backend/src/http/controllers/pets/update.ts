@@ -1,4 +1,4 @@
-import { makeUpdatePetUseCase } from "@/use-cases/factories/make-update-pet-use-case.js";
+import { makeUpdatePetUseCase } from "@/use-cases/factories/pets/make-update-pet-use-case.js";
 import { ResourceNotFound } from "@/utils/errors/resource-not-found.js";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import z from "zod";

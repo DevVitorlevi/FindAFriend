@@ -1,4 +1,4 @@
-import { makeCreatePetUseCase } from "@/use-cases/factories/make-create-pet-use-case.js";
+import { makeCreatePetUseCase } from "@/use-cases/factories/pets/make-create-pet-use-case.js";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import z from "zod";
 
@@ -6,31 +6,32 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
   const createPetBodySchema = z.object({
     name: z.string(),
     description: z.string().max(300),
-    age: z.enum(['FILHOTE', 'ADULTO', 'IDOSO']),
-    size: z.enum(['PEQUENO', 'MEDIO', 'GRANDE']),
-  })
+    age: z.enum(["FILHOTE", "ADULTO", "IDOSO"]),
+    size: z.enum(["PEQUENO", "MEDIO", "GRANDE"]),
+  });
 
   const orgIdParamsSchema = z.object({
-    orgId: z.string()
-  })
+    orgId: z.string(),
+  });
 
-  const { name, description, age, size } = createPetBodySchema.parse(request.body)
-  const { orgId } = orgIdParamsSchema.parse(request.params)
+  const { name, description, age, size } = createPetBodySchema.parse(
+    request.body,
+  );
+  const { orgId } = orgIdParamsSchema.parse(request.params);
   try {
-    const createPetUseCase = makeCreatePetUseCase()
+    const createPetUseCase = makeCreatePetUseCase();
     const { pet } = await createPetUseCase.execute({
       name,
       description,
       age,
       size,
-      orgId
-    })
+      orgId,
+    });
     return reply.status(201).send({
       message: "Pet Created!!",
-      pet
-    })
+      pet,
+    });
   } catch (error) {
-    throw error
+    throw error;
   }
-
 }

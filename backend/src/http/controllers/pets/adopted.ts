@@ -1,4 +1,4 @@
-import { makeToggleAdoptedUseCase } from "@/use-cases/factories/make-adopted-pet-use-case.js";
+import { makeToggleAdoptedUseCase } from "@/use-cases/factories/pets/make-adopted-pet-use-case.js";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import z from "zod";
 

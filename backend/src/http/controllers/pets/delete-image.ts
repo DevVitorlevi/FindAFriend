@@ -1,26 +1,29 @@
-import { makeDeleteImageUseCase } from '@/use-cases/factories/make-delete-image-use-case.js'
-import { ResourceNotFound } from '@/utils/errors/resource-not-found.js'
-import type { FastifyReply, FastifyRequest } from 'fastify'
-import { z } from 'zod'
+import { makeDeleteImageUseCase } from "@/use-cases/factories/pets/make-delete-image-use-case.js";
+import { ResourceNotFound } from "@/utils/errors/resource-not-found.js";
+import type { FastifyReply, FastifyRequest } from "fastify";
+import { z } from "zod";
 
-export async function deleteImage(request: FastifyRequest, reply: FastifyReply) {
+export async function deleteImage(
+  request: FastifyRequest,
+  reply: FastifyReply,
+) {
   const deleteImageParamsSchema = z.object({
     imageId: z.string().uuid(),
-  })
+  });
 
-  const { imageId } = deleteImageParamsSchema.parse(request.params)
+  const { imageId } = deleteImageParamsSchema.parse(request.params);
 
   try {
-    const deletePetImageUseCase = makeDeleteImageUseCase()
+    const deletePetImageUseCase = makeDeleteImageUseCase();
 
-    const { message } = await deletePetImageUseCase.execute({ imageId })
+    const { message } = await deletePetImageUseCase.execute({ imageId });
 
-    return reply.status(204).send({ message })
+    return reply.status(204).send({ message });
   } catch (err) {
     if (err instanceof ResourceNotFound) {
-      return reply.status(404).send({ message: 'Image not found' })
+      return reply.status(404).send({ message: "Image not found" });
     }
 
-    throw err
+    throw err;
   }
 }

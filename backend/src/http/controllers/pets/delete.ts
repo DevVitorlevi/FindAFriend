@@ -1,4 +1,4 @@
-import { makeDeletePetUseCase } from "@/use-cases/factories/make-delete-pet-use-case.js";
+import { makeDeletePetUseCase } from "@/use-cases/factories/pets/make-delete-pet-use-case.js";
 import { ResourceNotFound } from "@/utils/errors/resource-not-found.js";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import z from "zod";
