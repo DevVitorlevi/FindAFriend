@@ -58,6 +58,4 @@ describe("Login Use Case", () => {
       }),
     ).rejects.toBeInstanceOf(InvalidCredentials);
   });
-
-  it("should");
 });
