@@ -20,6 +20,7 @@ import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { Age, searchPet, Size, type Pet } from "@/services/pets";
 import { Loader2 } from "lucide-react";
@@ -42,6 +43,27 @@ const SIZE_LABEL: Record<Size, string> = {
 };
 
 export default function SearchSection() {
+  return (
+    <SidebarProvider
+      style={
+        {
+          "--sidebar-width": "420px",
+          "--sidebar-width-icon": "120px",
+          "--sidebar-foreground": "#ffffff",
+          "--sidebar-accent": "#e04a4f",
+          "--sidebar-accent-foreground": "#ffffff",
+          "--sidebar-border": "transparent",
+          "--sidebar-ring": "#F4D35E",
+        } as React.CSSProperties
+      }
+    >
+      <SearchSectionInner />
+    </SidebarProvider>
+  );
+}
+
+function SearchSectionInner() {
+  const { setOpenMobile } = useSidebar();
   const searchParams = useSearchParams();
   const city = searchParams.get("city") ?? "";
   const state = searchParams.get("state") ?? "";
@@ -76,19 +98,7 @@ export default function SearchSection() {
   }, [fetchPets]);
 
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "420px",
-          "--sidebar-width-icon": "120px",
-          "--sidebar-foreground": "#ffffff",
-          "--sidebar-accent": "#e04a4f",
-          "--sidebar-accent-foreground": "#ffffff",
-          "--sidebar-border": "transparent",
-          "--sidebar-ring": "#F4D35E",
-        } as React.CSSProperties
-      }
-    >
+    <>
       <Sidebar collapsible="icon" className="border-none overflow-hidden">
         <SidebarHeader className="px-4 pt-6 pb-6 gap-6 bg-[#F15156] items-center">
           <div className="flex items-center justify-between w-full">
@@ -100,7 +110,7 @@ export default function SearchSection() {
           </div>
 
           <div className="flex items-center gap-2 w-full group-data-[collapsible=icon]:hidden">
-            <SearchPet />
+            <SearchPet onSearch={() => setOpenMobile(false)} />
           </div>
         </SidebarHeader>
 
@@ -201,7 +211,7 @@ export default function SearchSection() {
           )}
         </main>
       </SidebarInset>
-    </SidebarProvider>
+    </>
   );
 }
 
