@@ -59,8 +59,20 @@ export interface GetPetsRequest {
 }
 
 export interface GetPetsResponse {
-  pets: Pet[];
+  pet: Pet[];
 }
+
+// ─── Nova interface para busca por ID ─────────────────────────────────────────
+
+export interface GetPetByIdRequest {
+  petId: string;
+}
+
+export interface GetPetByIdResponse {
+  pet: Pet;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 export interface CreatePetRequest {
   name: string;
@@ -100,13 +112,7 @@ export async function searchPet({
   adopted,
 }: SearchPetRequest): Promise<SearchPetResponse> {
   const { data } = await petAPI.get<SearchPetResponse>("/pets", {
-    params: {
-      city,
-      state,
-      age,
-      size,
-      adopted,
-    },
+    params: { city, state, age, size, adopted },
   });
 
   return data;
@@ -120,13 +126,24 @@ export async function getPets({
       params: { orgId: id },
     });
     return {
-      pets: Array.isArray(data.pets) ? data.pets : [],
+      pet: Array.isArray(data.pet) ? data.pet : [],
     };
   } catch (error) {
     console.error("Erro ao buscar pets:", error);
     throw error;
   }
 }
+
+// ─── Busca um pet pelo ID — GET /pet/{petId} ──────────────────────────────────
+
+export async function getPetById({
+  petId,
+}: GetPetByIdRequest): Promise<GetPetByIdResponse> {
+  const { data } = await petAPI.get<GetPetByIdResponse>(`/pet/${petId}`);
+  return data;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 export async function createPet({ orgId, ...data }: CreatePetRequest) {
   const response = await petAPI.post(`/pets/${orgId}/create`, data);
@@ -150,9 +167,7 @@ export async function uploadPetImages({
   const { data } = await petAPI.post<UploadPetImagesResponse>(
     `/pet/${petId}/images`,
     formData,
-    {
-      headers: { "Content-Type": "multipart/form-data" },
-    },
+    { headers: { "Content-Type": "multipart/form-data" } },
   );
 
   return data;
