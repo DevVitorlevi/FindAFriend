@@ -21,13 +21,19 @@ import {
   type City,
   type State,
 } from "@/services/locations";
-import { searchPet } from "@/services/pets";
 import { Check, ChevronDown } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Icon from "@/public/Search.png";
+import Icon from "@/public/search.png";
 
-export function SearchPet() {
+interface SearchPetProps {
+  onSearch?: () => void;
+}
+
+export function SearchPet({ onSearch }: SearchPetProps) {
+  const router = useRouter();
+
   const [states, setStates] = useState<State[]>([]);
   const [cities, setCities] = useState<City[]>([]);
   const [selectedState, setSelectedState] = useState<State | null>(null);
@@ -35,7 +41,6 @@ export function SearchPet() {
   const [loadingCities, setLoadingCities] = useState(false);
   const [openState, setOpenState] = useState(false);
   const [openCity, setOpenCity] = useState(false);
-  const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
     async function loadStates() {
@@ -72,21 +77,16 @@ export function SearchPet() {
     loadCities();
   }, [selectedState]);
 
-  const handleSearch = async () => {
+  const handleSearch = () => {
     if (!selectedState || !selectedCity) return;
 
-    setIsSearching(true);
-    try {
-      await searchPet({
-        city: selectedCity.nome,
-        state: selectedState.sigla,
-        adopted: false,
-      });
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsSearching(false);
-    }
+    const params = new URLSearchParams({
+      state: selectedState.sigla,
+      city: selectedCity.nome,
+    });
+
+    onSearch?.();
+    router.push(`/search?${params.toString()}`);
   };
 
   return (
@@ -213,13 +213,9 @@ export function SearchPet() {
         <Button
           className="shrink-0 w-17 h-17 bg-[#F4D35E] hover:bg-yellow-500 rounded-xl text-blue-900 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           onClick={handleSearch}
-          disabled={!selectedState || !selectedCity || isSearching}
+          disabled={!selectedState || !selectedCity}
         >
-          {isSearching ? (
-            <span className="h-8 w-8 border-4 border-blue-900/30 border-t-blue-900 rounded-full animate-spin" />
-          ) : (
-            <Image src={Icon} alt={""} />
-          )}
+          <Image src={Icon} alt="" />
         </Button>
       </div>
     </div>
