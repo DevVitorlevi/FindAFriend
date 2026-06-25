@@ -1,80 +1,78 @@
-"use client"
+"use client";
 
-import { createContext, useEffect, useState, ReactNode } from "react"
-import { useRouter, usePathname } from "next/navigation"
-import { loginOrg, getMe, type Org } from "@/services/orgs"
-import { petAPI } from "@/services/api"
+import { createContext, useEffect, useState, ReactNode } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { loginOrg, getMe, type Org } from "@/services/orgs";
+import { petAPI } from "@/services/api";
 
 interface AuthContextData {
-  user: Org | null
-  isAuthenticated: boolean
-  isLoading: boolean
-  signIn: (email: string, password: string) => Promise<void>
-  logout: () => void
-  refreshUser: () => Promise<void>
+  user: Org | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  signIn: (email: string, password: string) => Promise<void>;
+  logout: () => void;
+  refreshUser: () => Promise<void>;
 }
 
-export const AuthContext = createContext({} as AuthContextData)
+export const AuthContext = createContext({} as AuthContextData);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<Org | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const router = useRouter()
-  const pathname = usePathname()
+  const [user, setUser] = useState<Org | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
+  const pathname = usePathname();
 
   async function loadUser() {
-    const isPublicPage = pathname === '/login' || pathname === '/register' || pathname === '/'
+    const isPublicPage =
+      pathname === "/login" || pathname === "/register" || pathname === "/";
 
     if (isPublicPage) {
-      setIsLoading(false)
-      return
+      setIsLoading(false);
+      return;
     }
 
     try {
-      const { org } = await getMe()
-      setUser(org)
+      const { org } = await getMe();
+      setUser(org);
     } catch (error) {
-      console.error('Erro ao carregar usuário:', error)
-      setUser(null)
+      console.error("Erro ao carregar usuário:", error);
+      setUser(null);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
   useEffect(() => {
-    loadUser()
-  }, [pathname])
+    loadUser();
+  }, [pathname]);
 
   async function signIn(email: string, password: string) {
     try {
-      const { org } = await loginOrg({ email, password })
+      const { org } = await loginOrg({ email, password });
 
-      setUser(org)
-
-      // Não redireciona aqui - deixa o LoginSection fazer isso
-      // para usar o parâmetro redirect
+      setUser(org);
     } catch (error) {
-      console.error('Erro no login:', error)
-      throw error
+      console.error("Erro no login:", error);
+      throw error;
     }
   }
 
   async function logout() {
     try {
-      await petAPI.post('/logout')
+      await petAPI.post("/logout");
 
-      setUser(null)
-      router.push('/login')
+      setUser(null);
+      router.push("/login");
     } catch (error) {
-      console.error('Erro no logout:', error)
-      setUser(null)
-      router.push('/login')
+      console.error("Erro no logout:", error);
+      setUser(null);
+      router.push("/login");
     }
   }
 
   async function refreshUser() {
-    setIsLoading(true)
-    await loadUser()
+    setIsLoading(true);
+    await loadUser();
   }
 
   return (
@@ -90,5 +88,5 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     >
       {children}
     </AuthContext.Provider>
-  )
+  );
 }

@@ -149,7 +149,6 @@ export function SearchPet() {
           </PopoverContent>
         </Popover>
 
-        {/* Cidade — ocupa o resto do espaço */}
         <Popover open={openCity} onOpenChange={setOpenCity}>
           <PopoverTrigger asChild>
             <Button
