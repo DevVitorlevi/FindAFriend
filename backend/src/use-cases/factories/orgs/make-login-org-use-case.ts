@@ -1,9 +1,9 @@
 import { PrismaOrgsRepository } from "@/repositories/prisma/prisma-orgs-repository.js";
-import { LoginUseCase } from "../orgs/login.js";
+import { LoginUseCase } from "@/use-cases/orgs/login.js";
 
 export function makeLoginOrgUseCase() {
-  const prismaOrgsRepository = new PrismaOrgsRepository()
-  const loginUseCase = new LoginUseCase(prismaOrgsRepository)
+  const prismaOrgsRepository = new PrismaOrgsRepository();
+  const loginUseCase = new LoginUseCase(prismaOrgsRepository);
 
-  return loginUseCase
+  return loginUseCase;
 }

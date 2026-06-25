@@ -1,5 +1,5 @@
 import { orgPresenter } from '@/presenters/org-presenter.js'
-import { makeLoginOrgUseCase } from '@/use-cases/factories/make-login-org-use-case.js'
+import { makeLoginOrgUseCase } from '@/use-cases/factories/orgs/make-login-org-use-case.js'
 import { InvalidCredentials } from '@/utils/errors/invalid-credentials.js'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
