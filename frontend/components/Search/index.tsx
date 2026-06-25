@@ -22,8 +22,10 @@ import {
   type State,
 } from "@/services/locations";
 import { searchPet } from "@/services/pets";
-import { Check, ChevronDown, Search, X } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
+import Icon from "@/public/Search.png";
 
 export function SearchPet() {
   const [states, setStates] = useState<State[]>([]);
@@ -87,204 +89,137 @@ export function SearchPet() {
     }
   };
 
-  const clearState = () => {
-    setSelectedState(null);
-    setSelectedCity(null);
-    setCities([]);
-  };
-
-  const clearCity = () => {
-    setSelectedCity(null);
-  };
-
   return (
-    <div className="flex flex-col items-center justify-center w-full space-y-4 px-4">
-      <h2 className="text-white text-xl md:text-2xl font-semibold text-center">
-        Busque por um amigo
-      </h2>
-
-      <div className="w-full max-w-md space-y-3">
-        <div className="relative">
-          <Popover open={openState} onOpenChange={setOpenState}>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                role="combobox"
-                aria-expanded={openState}
-                aria-label="Selecionar estado"
-                className="w-full px-6 py-8 text-base md:text-lg border-2 border-white text-white bg-transparent hover:bg-white/10 rounded-xl justify-between transition-all"
-              >
-                <span className="truncate md:text-2xl">
-                  {selectedState ? (
-                    <span>
-                      <span className="font-semibold  md:text-2xl">
-                        {selectedState.sigla}
-                      </span>
-                      <span className="hidden sm:inline text-white/80 md:text-2xl">
-                        {" "}
-                        - {selectedState.nome}
-                      </span>
-                    </span>
-                  ) : (
-                    "Selecione o estado"
-                  )}
-                </span>
-                <ChevronDown
-                  className={cn(
-                    "ml-2 h-5 w-5 shrink-0 opacity-50 transition-transform",
-                    openState && "rotate-180",
-                  )}
-                />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              className="w-(--radix-popover-trigger-width) p-0"
-              align="start"
-              sideOffset={4}
+    <div className="w-full space-y-4 px-4">
+      <div className="w-full flex flex-row gap-2 items-center">
+        <Popover open={openState} onOpenChange={setOpenState}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={openState}
+              aria-label="Selecionar estado"
+              className="w-20 shrink-0 px-3 py-8 text-base border-2 border-white text-white bg-transparent hover:bg-white/10 rounded-xl justify-between transition-all"
             >
-              <Command>
-                <CommandInput
-                  placeholder="Buscar estado..."
-                  className="h-11 text-base"
-                />
-                <CommandList>
-                  <CommandEmpty>Nenhum estado encontrado.</CommandEmpty>
-                  <CommandGroup className="max-h-75 overflow-auto">
-                    {states.map((state) => (
-                      <CommandItem
-                        key={state.id}
-                        value={`${state.sigla} ${state.nome}`}
-                        onSelect={() => {
-                          setSelectedState(state);
-                          setOpenState(false);
-                        }}
-                        className="cursor-pointer py-3"
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4 shrink-0",
-                            selectedState?.id === state.id
-                              ? "opacity-100"
-                              : "opacity-0",
-                          )}
-                        />
-                        <span className="font-semibold">{state.sigla}</span>
-                        <span className="ml-2 text-muted-foreground truncate ">
-                          - {state.nome}
-                        </span>
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </PopoverContent>
-          </Popover>
+              <span className="truncate text-lg font-semibold">
+                {selectedState ? selectedState.sigla : "UF"}
+              </span>
+              <ChevronDown
+                className={cn(
+                  "ml-1 h-4 w-4 shrink-0 opacity-50 transition-transform",
+                  openState && "rotate-180",
+                )}
+              />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-48 p-0" align="start" sideOffset={4}>
+            <Command>
+              <CommandInput
+                placeholder="Buscar UF..."
+                className="h-11 text-base"
+              />
+              <CommandList>
+                <CommandEmpty>Nenhum estado encontrado.</CommandEmpty>
+                <CommandGroup className="max-h-72 overflow-auto">
+                  {states.map((state) => (
+                    <CommandItem
+                      key={state.id}
+                      value={state.sigla}
+                      keywords={[state.sigla]}
+                      onSelect={() => {
+                        setSelectedState(state);
+                        setOpenState(false);
+                      }}
+                      className="cursor-pointer py-3"
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4 shrink-0",
+                          selectedState?.id === state.id
+                            ? "opacity-100"
+                            : "opacity-0",
+                        )}
+                      />
+                      <span className="font-semibold">{state.sigla}</span>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
 
-          {selectedState && (
-            <button
-              onClick={clearState}
-              className="absolute right-12 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors"
-              aria-label="Limpar estado"
+        {/* Cidade — ocupa o resto do espaço */}
+        <Popover open={openCity} onOpenChange={setOpenCity}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={openCity}
+              aria-label="Selecionar cidade"
+              disabled={!selectedState || loadingCities}
+              className="flex-1 px-4 py-8 text-base border-2 border-white text-white bg-transparent hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl justify-between transition-all"
             >
-              <X className="h-4 w-4" />
-            </button>
-          )}
-        </div>
-
-        <div className="relative">
-          <Popover open={openCity} onOpenChange={setOpenCity}>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                role="combobox"
-                aria-expanded={openCity}
-                aria-label="Selecionar cidade"
-                disabled={!selectedState || loadingCities}
-                className="w-full px-6 py-8 text-base md:text-lg border-2 border-white text-white bg-transparent hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl justify-between transition-all"
-              >
-                <span className="truncate md:text-2xl">
-                  {loadingCities
-                    ? "Carregando cidades..."
-                    : selectedCity
-                      ? selectedCity.nome
-                      : selectedState
-                        ? "Selecione a cidade"
-                        : "Selecione o estado primeiro"}
-                </span>
-                <ChevronDown
-                  className={cn(
-                    "ml-2 h-5 w-5 shrink-0 opacity-50 transition-transform",
-                    openCity && "rotate-180",
-                  )}
-                />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              className="w-(--radix-popover-trigger-width) p-0"
-              align="start"
-              sideOffset={4}
-            >
-              <Command>
-                <CommandInput
-                  placeholder="Buscar cidade..."
-                  className="h-11 text-2xl"
-                />
-                <CommandList>
-                  <CommandEmpty>Nenhuma cidade encontrada.</CommandEmpty>
-                  <CommandGroup className="max-h-75 overflow-auto">
-                    {cities.map((city) => (
-                      <CommandItem
-                        key={city.id}
-                        value={city.nome}
-                        onSelect={() => {
-                          setSelectedCity(city);
-                          setOpenCity(false);
-                        }}
-                        className="cursor-pointer py-3"
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4 shrink-0",
-                            selectedCity?.id === city.id
-                              ? "opacity-100"
-                              : "opacity-0",
-                          )}
-                        />
-                        <span className="truncate">{city.nome}</span>
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </PopoverContent>
-          </Popover>
-
-          {selectedCity && (
-            <button
-              onClick={clearCity}
-              className="absolute right-12 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors"
-              aria-label="Limpar cidade"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          )}
-        </div>
+              <span className="truncate text-lg">
+                {loadingCities
+                  ? "Carregando..."
+                  : selectedCity
+                    ? selectedCity.nome
+                    : "Cidade"}
+              </span>
+              <ChevronDown
+                className={cn(
+                  "ml-2 h-4 w-4 shrink-0 opacity-50 transition-transform",
+                  openCity && "rotate-180",
+                )}
+              />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-72 p-0" align="start" sideOffset={4}>
+            <Command>
+              <CommandInput
+                placeholder="Buscar cidade..."
+                className="h-11 text-base"
+              />
+              <CommandList>
+                <CommandEmpty>Nenhuma cidade encontrada.</CommandEmpty>
+                <CommandGroup className="max-h-72 overflow-auto">
+                  {cities.map((city) => (
+                    <CommandItem
+                      key={city.id}
+                      value={city.nome}
+                      onSelect={() => {
+                        setSelectedCity(city);
+                        setOpenCity(false);
+                      }}
+                      className="cursor-pointer py-3"
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4 shrink-0",
+                          selectedCity?.id === city.id
+                            ? "opacity-100"
+                            : "opacity-0",
+                        )}
+                      />
+                      <span className="truncate">{city.nome}</span>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
 
         <Button
-          className="w-full bg-yellow-400 hover:bg-yellow-500 rounded-xl h-14 text-base md:text-2xl font-semibold text-blue-900 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          className="shrink-0 w-17 h-17 bg-[#F4D35E] hover:bg-yellow-500 rounded-xl text-blue-900 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           onClick={handleSearch}
           disabled={!selectedState || !selectedCity || isSearching}
         >
           {isSearching ? (
-            <span className="flex items-center gap-2">
-              <span className="h-5 w-5 border-2 border-blue-900/30 border-t-blue-900 rounded-full animate-spin" />
-              Buscando...
-            </span>
+            <span className="h-8 w-8 border-4 border-blue-900/30 border-t-blue-900 rounded-full animate-spin" />
           ) : (
-            <span className="flex items-center gap-2">
-              <Search className="h-5 w-5" />
-              Buscar pets
-            </span>
+            <Image src={Icon} alt={""} />
           )}
         </Button>
       </div>
