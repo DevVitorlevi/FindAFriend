@@ -1,6 +1,5 @@
 import { petAPI } from "./api";
 
-// Enums
 export enum Age {
   FILHOTE = "FILHOTE",
   ADULTO = "ADULTO",
@@ -13,7 +12,6 @@ export enum Size {
   GRANDE = "GRANDE",
 }
 
-// Interfaces
 export interface PetImage {
   id: string;
   url: string;
@@ -97,11 +95,17 @@ export interface DeletePetRequest {
 export async function searchPet({
   city,
   state,
+  age,
+  size,
+  adopted,
 }: SearchPetRequest): Promise<SearchPetResponse> {
   const { data } = await petAPI.get<SearchPetResponse>("/pets", {
     params: {
       city,
       state,
+      age,
+      size,
+      adopted,
     },
   });
 
@@ -126,13 +130,11 @@ export async function getPets({
 
 export async function createPet({ orgId, ...data }: CreatePetRequest) {
   const response = await petAPI.post(`/pets/${orgId}/create`, data);
-
   return response.data;
 }
 
 export async function addPetImages({ petId, images }: AddPetImagesRequest) {
   const response = await petAPI.post(`/pets/${petId}/images`, images);
-
   return response.data;
 }
 
@@ -141,7 +143,6 @@ export async function uploadPetImages({
   images,
 }: UploadPetImagesRequest): Promise<UploadPetImagesResponse> {
   const formData = new FormData();
-
   images.forEach((image) => {
     formData.append("images", image);
   });
@@ -150,9 +151,7 @@ export async function uploadPetImages({
     `/pet/${petId}/images`,
     formData,
     {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+      headers: { "Content-Type": "multipart/form-data" },
     },
   );
 
@@ -161,7 +160,6 @@ export async function uploadPetImages({
 
 export async function adoptedPet({ petId }: AdoptedPetRequest) {
   const response = await petAPI.patch(`/pet/${petId}`);
-
   return response.data;
 }
 
