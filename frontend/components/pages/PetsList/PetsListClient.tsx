@@ -23,9 +23,10 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Age, searchPet, Size, type Pet } from "@/services/pets";
+import { PetDetailModal } from "@/components/pages/PetsList/PetDetailModal";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import Logo from "@/public/logo.png";
 import Link from "next/link";
@@ -72,6 +73,7 @@ function SearchSectionInner() {
   const [loading, setLoading] = useState(false);
   const [age, setAge] = useState<Age | "">("");
   const [size, setSize] = useState<Size | "">("");
+  const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
 
   const fetchPets = useCallback(async () => {
     if (!city || !state) return;
@@ -205,24 +207,35 @@ function SearchSectionInner() {
           {!loading && pets.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {pets.map((pet) => (
-                <PetCard key={pet.id} pet={pet} />
+                <PetCard key={pet.id} pet={pet} onSelect={setSelectedPetId} />
               ))}
             </div>
           )}
         </main>
       </SidebarInset>
+
+      <PetDetailModal
+        petId={selectedPetId}
+        open={!!selectedPetId}
+        onClose={() => setSelectedPetId(null)}
+      />
     </>
   );
 }
 
-function PetCard({ pet }: { pet: Pet }) {
-  const router = useRouter();
+function PetCard({
+  pet,
+  onSelect,
+}: {
+  pet: Pet;
+  onSelect: (id: string) => void;
+}) {
   const coverImage = pet.images?.[0]?.url;
 
   return (
     <button
-      onClick={() => router.push(`/pets/${pet.id}`)}
-      className="w-full group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all text-left hover:bg-[#0D3B66] hover:text-white"
+      onClick={() => onSelect(pet.id)}
+      className="w-full group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all text-left hover:bg-[#0D3B66] hover:text-white cursor-pointer"
     >
       <div className="relative h-48 w-full overflow-hidden bg-[#F4D35E]/20">
         {coverImage ? (
