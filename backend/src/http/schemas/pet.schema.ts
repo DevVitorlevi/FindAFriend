@@ -25,36 +25,37 @@ export const petResponseSchema = {
   $id: "Pet",
   type: "object",
   properties: {
-    id: {
-      type: "string",
-      format: "uuid",
-      example: "f1e2d3c4-b5a6-7890-abcd-123456789abc",
+    id: { type: "string", format: "uuid" },
+    name: { type: "string" },
+    description: { type: "string" },
+    age: { type: "string", enum: ["FILHOTE", "ADULTO", "IDOSO"] },
+    size: { type: "string", enum: ["PEQUENO", "MEDIO", "GRANDE"] },
+    adopted: { type: "boolean" },
+    org_id: { type: "string", format: "uuid" },
+    created_at: { type: "string", format: "date-time" },
+    images: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          id: { type: "string", format: "uuid" },
+          url: { type: "string" },
+          pet_id: { type: "string", format: "uuid" },
+          created_at: { type: "string", format: "date-time" },
+        },
+      },
     },
-    name: { type: "string", example: "Rex" },
-    description: {
-      type: "string",
-      example: "Cachorro brincalhão e carinhoso, adora crianças.",
-    },
-    age: {
-      type: "string",
-      enum: ["FILHOTE", "ADULTO", "IDOSO"],
-      example: "FILHOTE",
-    },
-    size: {
-      type: "string",
-      enum: ["PEQUENO", "MEDIO", "GRANDE"],
-      example: "MEDIO",
-    },
-    adopted: { type: "boolean", example: false },
-    org_id: {
-      type: "string",
-      format: "uuid",
-      example: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-    },
-    created_at: {
-      type: "string",
-      format: "date-time",
-      example: "2024-01-15T10:30:00.000Z",
+    org: {
+      type: "object",
+      properties: {
+        id: { type: "string", format: "uuid" },
+        name: { type: "string" },
+        email: { type: "string" },
+        whatsapp: { type: "string" },
+        state: { type: "string" },
+        city: { type: "string" },
+        created_at: { type: "string", format: "date-time" },
+      },
     },
   },
 } as const;

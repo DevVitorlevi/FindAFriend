@@ -66,7 +66,33 @@ export function petsRoutes(app: FastifyInstance) {
           201: {
             type: "object",
             properties: {
-              pets: { type: "array", items: { $ref: "Pet#" } },
+              pets: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string" },
+                    name: { type: "string" },
+                    age: { type: "string" },
+                    size: { type: "string" },
+                    adopted: { type: "boolean" },
+                    org_id: { type: "string" },
+                    created_at: { type: "string" },
+                    images: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          id: { type: "string" },
+                          url: { type: "string" },
+                          pet_id: { type: "string" },
+                          created_at: { type: "string" },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
             },
           },
         },
