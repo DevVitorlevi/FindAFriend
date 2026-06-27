@@ -35,6 +35,13 @@ export interface FindPetByIdOutput {
   };
 }
 
+export interface FindManyByCityParams {
+  state: string;
+  city: string;
+  age?: "FILHOTE" | "ADULTO" | "IDOSO";
+  size?: "PEQUENO" | "MEDIO" | "GRANDE";
+}
+
 export interface UpdatePetInput {
   name?: string;
   description?: string;

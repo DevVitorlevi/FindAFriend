@@ -10,6 +10,7 @@ import type {
   CreatePetInput,
   CreatePetOutput,
   CreatePetParams,
+  FindManyByCityParams,
   FindPetByIdOutput,
   FindPetByIdParams,
   UpdatePetInput,
@@ -17,19 +18,10 @@ import type {
 } from "./DTOs/pet.dtos.js";
 import type { PetWithDetails } from "@/@types/pet-with-details.js";
 
-interface FindManyByCityParams {
-  state: string;
-  city: string;
-  age?: Age;
-  size?: Size;
-}
-
 export interface PetsRepository {
   create(orgId: string, data: CreatePetInput): Promise<CreatePetOutput>;
   findById(params: FindPetByIdParams): Promise<PetWithDetails | null>;
-  findManyByCity(
-    params: FindManyByCityParams,
-  ): Promise<(Pet & { org: Org; images: PetImage[] })[]>;
+  findManyByCity(params: FindManyByCityParams): Promise<PetWithDetails[]>;
   toggleAdopted(petId: string): Promise<Pet>;
   findManyOfOrg(
     orgId: string,

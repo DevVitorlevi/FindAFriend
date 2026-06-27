@@ -2,6 +2,7 @@ import type { PetWithDetails } from "@/@types/pet-with-details.js";
 import type {
   CreatePetInput,
   CreatePetOutput,
+  FindManyByCityParams,
   FindPetByIdParams,
   UpdatePetInput,
 } from "@/repositories/DTOs/pet.dtos.js";
@@ -15,14 +16,6 @@ import type {
   Size,
 } from "@generated/prisma/client.js";
 import { randomUUID } from "node:crypto";
-
-interface FindManyByCityParams {
-  state: string;
-  city: string;
-  age?: Age;
-  size?: Size;
-}
-
 export class InMemoryPetsRepository implements PetsRepository {
   public database: Pet[] = [];
 
@@ -87,14 +80,7 @@ export class InMemoryPetsRepository implements PetsRepository {
     };
   }
 
-  async findManyByCity({
-    state,
-    city,
-    age,
-    size,
-  }: FindManyByCityParams): Promise<
-    (Pet & { org: Org; images: PetImage[] })[]
-  > {
+  async findManyByCity(data: FindManyByCityParams): Promise<PetWithDetails[]> {
     const petsWithRelations = this.database
       .map((pet) => {
         const org = this.orgsRepository?.database.find(
@@ -114,16 +100,14 @@ export class InMemoryPetsRepository implements PetsRepository {
           images,
         };
       })
-      .filter(
-        (pet): pet is Pet & { org: Org; images: PetImage[] } => pet !== null,
-      );
+      .filter((pet): pet is PetWithDetails => pet !== null);
 
     const filteredPets = petsWithRelations.filter((petWithOrg) => {
-      if (petWithOrg.org.state !== state) return false;
-      if (petWithOrg.org.city !== city) return false;
+      if (petWithOrg.org.state !== data.state) return false;
+      if (petWithOrg.org.city !== data.city) return false;
 
-      if (age && petWithOrg.age !== age) return false;
-      if (size && petWithOrg.size !== size) return false;
+      if (data.age && petWithOrg.age !== data.age) return false;
+      if (data.size && petWithOrg.size !== data.size) return false;
 
       return true;
     });

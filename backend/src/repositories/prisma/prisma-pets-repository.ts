@@ -54,9 +54,7 @@ export class PrismaPetsRepository implements PetsRepository {
     city,
     age,
     size,
-  }: FindManyByCityParams): Promise<
-    (Pet & { org: Org; images: PetImage[] })[]
-  > {
+  }: FindManyByCityParams): Promise<PetWithDetails[]> {
     const pets = await prisma.pet.findMany({
       where: {
         org: { city, state },
