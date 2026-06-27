@@ -1,10 +1,12 @@
-import type { Age, Size } from "@generated/prisma/enums.js";
+import type { Org } from "@/@types/org.js";
+import type { PetImage } from "@/@types/pet-image.js";
+import type { Pet } from "@/@types/pet.js";
 
 export interface CreatePetInput {
   name: string;
   description: string;
-  age: Age;
-  size: Size;
+  age: "FILHOTE" | "ADULTO" | "IDOSO";
+  size: "PEQUENO" | "MEDIO" | "GRANDE";
 }
 
 export interface CreatePetParams {
@@ -16,24 +18,36 @@ export interface CreatePetOutput {
     id: string;
     name: string;
     description: string;
-    age: Age;
-    size: Size;
+    age: "FILHOTE" | "ADULTO" | "IDOSO";
+    size: "PEQUENO" | "MEDIO" | "GRANDE";
     org_id: string;
   };
 }
+
+export interface FindPetByIdParams {
+  petId: string;
+}
+
+export interface FindPetByIdOutput {
+  pet: Pet & {
+    org: Org;
+    images: PetImage[];
+  };
+}
+
 export interface UpdatePetInput {
   name?: string;
   description?: string;
-  age?: Age;
-  size?: Size;
+  age?: "FILHOTE" | "ADULTO" | "IDOSO";
+  size?: "PEQUENO" | "MEDIO" | "GRANDE";
 }
 export interface UpdatePetOutput {
   pet: {
     id: string;
     name: string;
     description: string;
-    age: Age;
-    size: Size;
+    age: "FILHOTE" | "ADULTO" | "IDOSO";
+    size: "PEQUENO" | "MEDIO" | "GRANDE";
     org_id: string;
   };
 }

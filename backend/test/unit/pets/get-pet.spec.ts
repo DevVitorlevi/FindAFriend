@@ -4,7 +4,7 @@ import { InMemoryOrgsRepository } from "@test/in-memory/in-memory-orgs-repositor
 import { InMemoryPetImagesRepository } from "@test/in-memory/in-memory-pets-images-repository.js";
 import { InMemoryPetsRepository } from "@test/in-memory/in-memory-pets-repository.js";
 import { beforeEach, describe, expect, it } from "vitest";
-import { GetPetDetailsUseCase } from "@use-cases/pets/get-pet.js";
+import { GetPetDetailsUseCase } from "@/use-cases/pets/get-pet-by-id.js";
 
 let petsRepository: InMemoryPetsRepository;
 let orgsRepository: InMemoryOrgsRepository;
@@ -49,7 +49,7 @@ describe("Get Pet Details Use Case", () => {
       url: "https://example.com/image2.jpg",
     });
 
-    const { pet } = await sut.execute({
+    const pet = await sut.execute({
       petId: createdPet.pet.id,
     });
 

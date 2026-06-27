@@ -6,14 +6,15 @@ import type {
   PetImage,
   Size,
 } from "@generated/prisma/client.js";
-import type { PetUncheckedCreateInput } from "@generated/prisma/models.js";
 import type { PetsRepository } from "../pets-repository-interface.js";
 import type {
   CreatePetInput,
   CreatePetOutput,
+  FindPetByIdParams,
   UpdatePetInput,
   UpdatePetOutput,
 } from "../DTOs/pet.dtos.js";
+import type { PetWithDetails } from "@/@types/pet-with-details.js";
 
 interface FindManyByCityParams {
   state: string;
@@ -37,11 +38,9 @@ export class PrismaPetsRepository implements PetsRepository {
     return { pet };
   }
 
-  async findById(
-    id: string,
-  ): Promise<(Pet & { org: Org; images: PetImage[] }) | null> {
+  async findById({ petId }: FindPetByIdParams): Promise<PetWithDetails | null> {
     const pet = await prisma.pet.findUnique({
-      where: { id },
+      where: { id: petId },
       include: {
         org: true,
         images: true,

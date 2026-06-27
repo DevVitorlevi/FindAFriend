@@ -1,6 +1,8 @@
+import type { PetWithDetails } from "@/@types/pet-with-details.js";
 import type {
   CreatePetInput,
   CreatePetOutput,
+  FindPetByIdParams,
   UpdatePetInput,
 } from "@/repositories/DTOs/pet.dtos.js";
 import type { PetsRepository } from "@/repositories/pets-repository-interface.js";
@@ -58,14 +60,8 @@ export class InMemoryPetsRepository implements PetsRepository {
     return { pet };
   }
 
-  async findById(id: string): Promise<
-    | (Pet & {
-        org: Org;
-        images: PetImage[];
-      })
-    | null
-  > {
-    const pet = this.database.find((item) => item.id === id);
+  async findById({ petId }: FindPetByIdParams): Promise<PetWithDetails | null> {
+    const pet = this.database.find((item) => item.id === petId);
 
     if (!pet) {
       return null;
