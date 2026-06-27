@@ -32,26 +32,25 @@ describe("Adopted Pet Use Case", () => {
       city: "Icapui",
     });
 
-    const createdPet = await petsRepository.create({
-      name: "Rex",
-      description: "Cachorro dócil",
+    const createdPet = await petsRepository.create(org.id, {
+      name: "Simba",
       age: "ADULTO",
-      size: "MEDIO",
-      org_id: org.id,
+      description: "Gato Laranja Fofo",
+      size: "GRANDE",
     });
 
     await petImagesRepository.create({
-      pet_id: createdPet.id,
+      pet_id: createdPet.pet.id,
       url: "https://example.com/image1.jpg",
     });
 
     await petImagesRepository.create({
-      pet_id: createdPet.id,
+      pet_id: createdPet.pet.id,
       url: "https://example.com/image2.jpg",
     });
 
     const { pet } = await sut.execute({
-      petId: createdPet.id,
+      petId: createdPet.pet.id,
     });
 
     expect(pet.adopted).toBe(true);
@@ -67,18 +66,17 @@ describe("Adopted Pet Use Case", () => {
       city: "Icapui",
     });
 
-    const createdPet = await petsRepository.create({
-      name: "Frajola",
-      description: "Gato brincalhão",
-      age: "FILHOTE",
-      size: "PEQUENO",
-      org_id: org.id,
-    });
+    const createdPet = await petsRepository.create(org.id, {
+      name: "Simba",
+      age: "ADULTO",
+      description: "Gato Laranja Fofo",
+      size: "GRANDE",
+    })
 
-    await sut.execute({ petId: createdPet.id });
+    await sut.execute({ petId: createdPet.pet.id });
 
     const { pet } = await sut.execute({
-      petId: createdPet.id,
+      petId: createdPet.pet.id,
     });
 
     expect(pet.adopted).toBe(false);

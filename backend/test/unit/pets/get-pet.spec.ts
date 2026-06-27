@@ -32,30 +32,29 @@ describe("Get Pet Details Use Case", () => {
       city: "Icapui",
     });
 
-    const createdPet = await petsRepository.create({
-      name: "Rex",
-      description: "Cachorro dócil",
+    const createdPet = await petsRepository.create(org.id, {
+      name: "Simba",
       age: "ADULTO",
-      size: "MEDIO",
-      org_id: org.id,
+      description: "Gato Laranja Fofo",
+      size: "GRANDE",
     });
 
     await petImagesRepository.create({
-      pet_id: createdPet.id,
+      pet_id: createdPet.pet.id,
       url: "https://example.com/image1.jpg",
     });
 
     await petImagesRepository.create({
-      pet_id: createdPet.id,
+      pet_id: createdPet.pet.id,
       url: "https://example.com/image2.jpg",
     });
 
     const { pet } = await sut.execute({
-      petId: createdPet.id,
+      petId: createdPet.pet.id,
     });
 
-    expect(pet.id).toBe(createdPet.id);
-    expect(pet.name).toBe("Rex");
+    expect(pet.id).toBe(createdPet.pet.id);
+    expect(pet.name).toBe("Simba");
     expect(pet.org.name).toBe("SEDEMA");
     expect(pet.org.whatsapp).toBe("(88)99999-9999");
     expect(pet.images).toHaveLength(2);

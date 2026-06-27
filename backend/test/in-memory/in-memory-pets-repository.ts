@@ -1,4 +1,8 @@
-import type { UpdatePetInput } from "@/repositories/DTOs/pet.dtos.js";
+import type {
+  CreatePetInput,
+  CreatePetOutput,
+  UpdatePetInput,
+} from "@/repositories/DTOs/pet.dtos.js";
 import type { PetsRepository } from "@/repositories/pets-repository-interface.js";
 import type {
   Age,
@@ -37,21 +41,21 @@ export class InMemoryPetsRepository implements PetsRepository {
     return this.database[petIndex];
   }
 
-  async create(data: Prisma.PetUncheckedCreateInput): Promise<Pet> {
+  async create(orgId: string, data: CreatePetInput): Promise<CreatePetOutput> {
     const pet: Pet = {
-      id: data.id ?? randomUUID(),
+      id: randomUUID(),
       name: data.name,
       description: data.description,
       age: data.age as Age,
       size: data.size as Size,
-      adopted: data.adopted ?? false,
-      org_id: data.org_id,
+      adopted: false,
+      org_id: orgId,
       created_at: new Date(),
     };
 
     this.database.push(pet);
 
-    return pet;
+    return { pet };
   }
 
   async findById(id: string): Promise<

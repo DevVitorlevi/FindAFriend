@@ -6,7 +6,13 @@ import type {
   Prisma,
   Size,
 } from "@generated/prisma/client.js";
-import type { UpdatePetInput, UpdatePetOutput } from "./DTOs/pet.dtos.js";
+import type {
+  CreatePetInput,
+  CreatePetOutput,
+  CreatePetParams,
+  UpdatePetInput,
+  UpdatePetOutput,
+} from "./DTOs/pet.dtos.js";
 
 interface FindManyByCityParams {
   state: string;
@@ -16,7 +22,7 @@ interface FindManyByCityParams {
 }
 
 export interface PetsRepository {
-  create(data: Prisma.PetUncheckedCreateInput): Promise<Pet>;
+  create(orgId: string, data: CreatePetInput): Promise<CreatePetOutput>;
   findById(
     id: string,
   ): Promise<(Pet & { org: Org; images: PetImage[] }) | null>;

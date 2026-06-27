@@ -18,19 +18,15 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
     request.body,
   );
   const { orgId } = orgIdParamsSchema.parse(request.params);
+
   try {
     const createPetUseCase = makeCreatePetUseCase();
-    const { pet } = await createPetUseCase.execute({
-      name,
-      description,
-      age,
-      size,
-      orgId,
-    });
-    return reply.status(201).send({
-      message: "Pet Created!!",
-      pet,
-    });
+    const { pet } = await createPetUseCase.execute(
+      { orgId },
+      { name, description, age, size },
+    );
+
+    return reply.status(201).send({ message: "Pet Created!!", pet });
   } catch (error) {
     throw error;
   }

@@ -8,7 +8,12 @@ import type {
 } from "@generated/prisma/client.js";
 import type { PetUncheckedCreateInput } from "@generated/prisma/models.js";
 import type { PetsRepository } from "../pets-repository-interface.js";
-import type { UpdatePetInput, UpdatePetOutput } from "../DTOs/pet.dtos.js";
+import type {
+  CreatePetInput,
+  CreatePetOutput,
+  UpdatePetInput,
+  UpdatePetOutput,
+} from "../DTOs/pet.dtos.js";
 
 interface FindManyByCityParams {
   state: string;
@@ -18,9 +23,18 @@ interface FindManyByCityParams {
 }
 
 export class PrismaPetsRepository implements PetsRepository {
-  async create(data: PetUncheckedCreateInput): Promise<Pet> {
-    const pet = await prisma.pet.create({ data });
-    return pet;
+  async create(orgId: string, data: CreatePetInput): Promise<CreatePetOutput> {
+    const pet = await prisma.pet.create({
+      data: {
+        name: data.name,
+        description: data.description,
+        age: data.age,
+        size: data.size,
+        org_id: orgId,
+      },
+    });
+
+    return { pet };
   }
 
   async findById(

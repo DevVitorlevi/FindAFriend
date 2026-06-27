@@ -31,21 +31,20 @@ describe("Fetch Pet of Org Use Case", () => {
       city: "Icapui",
     });
 
-    const createdPet = await petsRepository.create({
-      name: "Rex",
-      description: "Cachorro dócil",
+    const createdPet = await petsRepository.create(org.id, {
+      name: "Simba",
       age: "ADULTO",
-      size: "MEDIO",
-      org_id: org.id,
+      description: "Gato Laranja Fofo",
+      size: "GRANDE",
     });
 
     await petImagesRepository.create({
-      pet_id: createdPet.id,
+      pet_id: createdPet.pet.id,
       url: "https://example.com/image1.jpg",
     });
 
     await petImagesRepository.create({
-      pet_id: createdPet.id,
+      pet_id: createdPet.pet.id,
       url: "https://example.com/image2.jpg",
     });
 
@@ -75,20 +74,18 @@ describe("Fetch Pet of Org Use Case", () => {
       city: "Icapui",
     });
 
-    await petsRepository.create({
+    await petsRepository.create(orgA.id, {
       name: "Rex",
       description: "Pet da org A",
       age: "ADULTO",
       size: "MEDIO",
-      org_id: orgA.id,
     });
 
-    await petsRepository.create({
+    await petsRepository.create(orgB.id, {
       name: "Bolt",
       description: "Pet da org B",
       age: "ADULTO",
       size: "MEDIO",
-      org_id: orgB.id,
     });
 
     const { pets } = await sut.execute({

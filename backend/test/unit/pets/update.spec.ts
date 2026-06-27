@@ -28,12 +28,12 @@ describe("Update Pet", () => {
   }
 
   async function makePet(orgId: string) {
-    return petsRepository.create({
+    const org = await makeOrg();
+    return petsRepository.create(org.id, {
       name: "Rex",
       description: "Cachorro dócil",
       age: "ADULTO",
       size: "MEDIO",
-      org_id: orgId,
     });
   }
 
@@ -41,14 +41,14 @@ describe("Update Pet", () => {
     const org = await makeOrg();
     const createdPet = await makePet(org.id);
 
-    const result = await sut.execute(createdPet.id, {
+    const result = await sut.execute(createdPet.pet.id, {
       name: "Simba",
       description: "Gato Laranja, docil, fofo e gordinho",
       age: "ADULTO",
       size: "GRANDE",
     });
 
-    expect(result.pet.id).toEqual(createdPet.id);
+    expect(result.pet.id).toEqual(createdPet.pet.id);
     expect(result.pet.name).toEqual("Simba");
     expect(result.pet.description).toEqual(
       "Gato Laranja, docil, fofo e gordinho",
@@ -61,50 +61,50 @@ describe("Update Pet", () => {
     const org = await makeOrg();
     const createdPet = await makePet(org.id);
 
-    const result = await sut.execute(createdPet.id, { name: "Bolinha" });
+    const result = await sut.execute(createdPet.pet.id, { name: "Bolinha" });
 
     expect(result.pet.name).toEqual("Bolinha");
-    expect(result.pet.description).toEqual(createdPet.description);
-    expect(result.pet.age).toEqual(createdPet.age);
-    expect(result.pet.size).toEqual(createdPet.size);
+    expect(result.pet.description).toEqual(createdPet.pet.description);
+    expect(result.pet.age).toEqual(createdPet.pet.age);
+    expect(result.pet.size).toEqual(createdPet.pet.size);
   });
 
   it("should be able to update only the description", async () => {
     const org = await makeOrg();
     const createdPet = await makePet(org.id);
 
-    const result = await sut.execute(createdPet.id, {
+    const result = await sut.execute(createdPet.pet.id, {
       description: "Cachorro bravo, cuidado!",
     });
 
     expect(result.pet.description).toEqual("Cachorro bravo, cuidado!");
-    expect(result.pet.name).toEqual(createdPet.name);
-    expect(result.pet.age).toEqual(createdPet.age);
-    expect(result.pet.size).toEqual(createdPet.size);
+    expect(result.pet.name).toEqual(createdPet.pet.name);
+    expect(result.pet.age).toEqual(createdPet.pet.age);
+    expect(result.pet.size).toEqual(createdPet.pet.size);
   });
 
   it("should be able to update only the age", async () => {
     const org = await makeOrg();
     const createdPet = await makePet(org.id);
 
-    const result = await sut.execute(createdPet.id, { age: "FILHOTE" });
+    const result = await sut.execute(createdPet.pet.id, { age: "FILHOTE" });
 
     expect(result.pet.age).toEqual("FILHOTE");
-    expect(result.pet.name).toEqual(createdPet.name);
-    expect(result.pet.description).toEqual(createdPet.description);
-    expect(result.pet.size).toEqual(createdPet.size);
+    expect(result.pet.name).toEqual(createdPet.pet.name);
+    expect(result.pet.age).toEqual(createdPet.pet.age);
+    expect(result.pet.size).toEqual(createdPet.pet.size);
   });
 
   it("should be able to update only the size", async () => {
     const org = await makeOrg();
     const createdPet = await makePet(org.id);
 
-    const result = await sut.execute(createdPet.id, { size: "PEQUENO" });
+    const result = await sut.execute(createdPet.pet.id, { size: "PEQUENO" });
 
     expect(result.pet.size).toEqual("PEQUENO");
-    expect(result.pet.name).toEqual(createdPet.name);
-    expect(result.pet.description).toEqual(createdPet.description);
-    expect(result.pet.age).toEqual(createdPet.age);
+    expect(result.pet.name).toEqual(createdPet.pet.name);
+    expect(result.pet.age).toEqual(createdPet.pet.age);
+    expect(result.pet.size).toEqual(createdPet.pet.size);
   });
 
   it("should throw ResourceNotFound when pet does not exist", async () => {

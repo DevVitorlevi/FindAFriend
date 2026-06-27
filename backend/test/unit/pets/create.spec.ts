@@ -26,13 +26,15 @@ describe("Create Pet Use Case", () => {
       city: "Icapuí",
     });
 
-    const { pet } = await sut.execute({
-      name: "Simba",
-      age: "ADULTO",
-      description: "Gato Laranja Fofo",
-      size: "GRANDE",
-      orgId: org.id,
-    });
+    const { pet } = await sut.execute(
+      { orgId: org.id },
+      {
+        name: "Simba",
+        age: "ADULTO",
+        description: "Gato Laranja Fofo",
+        size: "GRANDE",
+      },
+    );
 
     expect(pet.id).toEqual(expect.any(String));
     expect(pet.org_id).toEqual(org.id);
@@ -40,13 +42,15 @@ describe("Create Pet Use Case", () => {
 
   it("should not be able to create a pet with a non-existing organization", async () => {
     await expect(() =>
-      sut.execute({
-        name: "Simba",
-        age: "ADULTO",
-        description: "Gato Laranja Fofo",
-        size: "GRANDE",
-        orgId: "non-existing-org",
-      }),
+      sut.execute(
+        { orgId: "non-existing" },
+        {
+          name: "Simba",
+          age: "ADULTO",
+          description: "Gato Laranja Fofo",
+          size: "GRANDE",
+        },
+      ),
     ).rejects.toThrow(ResourceNotFound);
   });
 });
