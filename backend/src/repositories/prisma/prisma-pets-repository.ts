@@ -10,18 +10,13 @@ import type { PetsRepository } from "../pets-repository-interface.js";
 import type {
   CreatePetInput,
   CreatePetOutput,
+  FindManyByCityParams,
   FindPetByIdParams,
+  ToggleAdoptedOutput,
   UpdatePetInput,
   UpdatePetOutput,
 } from "../DTOs/pet.dtos.js";
 import type { PetWithDetails } from "@/@types/pet-with-details.js";
-
-interface FindManyByCityParams {
-  state: string;
-  city: string;
-  age?: Age;
-  size?: Size;
-}
 
 export class PrismaPetsRepository implements PetsRepository {
   async create(orgId: string, data: CreatePetInput): Promise<CreatePetOutput> {
@@ -69,7 +64,7 @@ export class PrismaPetsRepository implements PetsRepository {
     return pets;
   }
 
-  async toggleAdopted(petId: string): Promise<Pet> {
+  async toggleAdopted(petId: string): Promise<ToggleAdoptedOutput> {
     const currentPet = await prisma.pet.findUnique({
       where: { id: petId },
       select: { adopted: true },

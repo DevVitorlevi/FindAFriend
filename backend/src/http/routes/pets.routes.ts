@@ -63,7 +63,7 @@ export function petsRoutes(app: FastifyInstance) {
           },
         },
         response: {
-          201: {
+          200: {
             type: "object",
             properties: {
               pets: {

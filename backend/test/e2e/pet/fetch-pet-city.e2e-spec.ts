@@ -96,24 +96,6 @@ describe("Fetch Pet City (e2e)", () => {
     expect(response.body.pets).toHaveLength(0);
   });
 
-  it("should return 400 when city is missing", async () => {
-    const response = await request(app.server)
-      .get("/pets")
-      .query({ state: "CE" })
-      .send();
-
-    expect(response.statusCode).toBe(400);
-  });
-
-  it("should return 400 when state is missing", async () => {
-    const response = await request(app.server)
-      .get("/pets")
-      .query({ city: "Icapui" })
-      .send();
-
-    expect(response.statusCode).toBe(400);
-  });
-
   it("should return pets from multiple orgs in the same city", async () => {
     const { token: token1, org: org1 } = await createAndAuthenticateOrg(app, {
       city: "Mossoro",

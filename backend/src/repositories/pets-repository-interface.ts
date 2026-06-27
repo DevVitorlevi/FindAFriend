@@ -13,6 +13,7 @@ import type {
   FindManyByCityParams,
   FindPetByIdOutput,
   FindPetByIdParams,
+  ToggleAdoptedOutput,
   UpdatePetInput,
   UpdatePetOutput,
 } from "./DTOs/pet.dtos.js";
@@ -22,7 +23,7 @@ export interface PetsRepository {
   create(orgId: string, data: CreatePetInput): Promise<CreatePetOutput>;
   findById(params: FindPetByIdParams): Promise<PetWithDetails | null>;
   findManyByCity(params: FindManyByCityParams): Promise<PetWithDetails[]>;
-  toggleAdopted(petId: string): Promise<Pet>;
+  toggleAdopted(petId: string): Promise<ToggleAdoptedOutput>;
   findManyOfOrg(
     orgId: string,
   ): Promise<(Pet & { org: Org; images: PetImage[] })[]>;

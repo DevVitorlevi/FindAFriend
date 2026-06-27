@@ -49,9 +49,7 @@ describe("Adopted Pet Use Case", () => {
       url: "https://example.com/image2.jpg",
     });
 
-    const { pet } = await sut.execute({
-      petId: createdPet.pet.id,
-    });
+    const pet = await sut.execute(createdPet.pet.id);
 
     expect(pet.adopted).toBe(true);
   });
@@ -71,22 +69,18 @@ describe("Adopted Pet Use Case", () => {
       age: "ADULTO",
       description: "Gato Laranja Fofo",
       size: "GRANDE",
-    })
-
-    await sut.execute({ petId: createdPet.pet.id });
-
-    const { pet } = await sut.execute({
-      petId: createdPet.pet.id,
     });
+
+    await sut.execute(createdPet.pet.id);
+
+    const pet = await sut.execute(createdPet.pet.id);
 
     expect(pet.adopted).toBe(false);
   });
 
   it("should not be able to toggle adoption status of a non-existing pet", async () => {
-    await expect(() =>
-      sut.execute({
-        petId: "non-existing-pet-id",
-      }),
-    ).rejects.toThrow(ResourceNotFound);
+    await expect(() => sut.execute("non-existing")).rejects.toThrow(
+      ResourceNotFound,
+    );
   });
 });

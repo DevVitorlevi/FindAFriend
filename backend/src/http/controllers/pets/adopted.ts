@@ -10,9 +10,7 @@ export async function adopted(request: FastifyRequest, reply: FastifyReply) {
   const { petId } = AdoptedPetParamsSchema.parse(request.params);
   try {
     const toggleAdoptedUseCase = makeToggleAdoptedUseCase();
-    const pet = await toggleAdoptedUseCase.execute({
-      petId,
-    });
+    const pet = await toggleAdoptedUseCase.execute(petId);
     return reply.status(204).send({
       pet,
     });

@@ -42,6 +42,16 @@ export interface FindManyByCityParams {
   size?: "PEQUENO" | "MEDIO" | "GRANDE";
 }
 
+export interface ToggleAdoptedOutput {
+  id: string;
+  name: string;
+  description: string;
+  age: "FILHOTE" | "ADULTO" | "IDOSO";
+  size: "PEQUENO" | "MEDIO" | "GRANDE";
+  org_id: string;
+  adopted: boolean;
+}
+
 export interface UpdatePetInput {
   name?: string;
   description?: string;

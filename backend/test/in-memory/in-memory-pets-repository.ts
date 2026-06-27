@@ -4,6 +4,7 @@ import type {
   CreatePetOutput,
   FindManyByCityParams,
   FindPetByIdParams,
+  ToggleAdoptedOutput,
   UpdatePetInput,
 } from "@/repositories/DTOs/pet.dtos.js";
 import type { PetsRepository } from "@/repositories/pets-repository-interface.js";
@@ -23,18 +24,6 @@ export class InMemoryPetsRepository implements PetsRepository {
     private orgsRepository?: { database: Org[] },
     private petImagesRepository?: { items: PetImage[] },
   ) {}
-
-  async toggleAdopted(petId: string): Promise<Pet> {
-    const petIndex = this.database.findIndex((pet) => pet.id === petId);
-
-    if (petIndex < 0) {
-      throw new Error("Pet not found");
-    }
-
-    this.database[petIndex].adopted = !this.database[petIndex].adopted;
-
-    return this.database[petIndex];
-  }
 
   async create(orgId: string, data: CreatePetInput): Promise<CreatePetOutput> {
     const pet: Pet = {
@@ -113,6 +102,17 @@ export class InMemoryPetsRepository implements PetsRepository {
     });
 
     return filteredPets;
+  }
+  async toggleAdopted(petId: string): Promise<ToggleAdoptedOutput> {
+    const petIndex = this.database.findIndex((pet) => pet.id === petId);
+
+    if (petIndex < 0) {
+      throw new Error("Pet not found");
+    }
+
+    this.database[petIndex].adopted = !this.database[petIndex].adopted;
+
+    return this.database[petIndex];
   }
 
   async findManyOfOrg(
