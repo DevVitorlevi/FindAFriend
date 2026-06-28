@@ -9,7 +9,7 @@ let petsRepository: InMemoryPetsRepository;
 let orgsRepository: InMemoryOrgsRepository;
 let petImagesRepository: InMemoryPetImagesRepository;
 let sut: DeletePetImageUseCase;
-describe(" Delete Use Case", () => {
+describe(" Delete Image Use Case", () => {
   beforeEach(() => {
     orgsRepository = new InMemoryOrgsRepository();
     petImagesRepository = new InMemoryPetImagesRepository();

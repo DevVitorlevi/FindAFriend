@@ -40,16 +40,16 @@ describe("Adopted Pet Use Case", () => {
     });
 
     await petImagesRepository.create({
-      pet_id: createdPet.pet.id,
+      pet_id: createdPet.id,
       url: "https://example.com/image1.jpg",
     });
 
     await petImagesRepository.create({
-      pet_id: createdPet.pet.id,
+      pet_id: createdPet.id,
       url: "https://example.com/image2.jpg",
     });
 
-    const pet = await sut.execute(createdPet.pet.id);
+    const pet = await sut.execute(createdPet.id);
 
     expect(pet.adopted).toBe(true);
   });
@@ -71,9 +71,9 @@ describe("Adopted Pet Use Case", () => {
       size: "GRANDE",
     });
 
-    await sut.execute(createdPet.pet.id);
+    await sut.execute(createdPet.id);
 
-    const pet = await sut.execute(createdPet.pet.id);
+    const pet = await sut.execute(createdPet.id);
 
     expect(pet.adopted).toBe(false);
   });

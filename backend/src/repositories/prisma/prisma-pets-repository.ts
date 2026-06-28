@@ -30,7 +30,7 @@ export class PrismaPetsRepository implements PetsRepository {
       },
     });
 
-    return { pet };
+    return pet;
   }
 
   async findById({ petId }: FindPetByIdParams): Promise<PetWithDetails | null> {

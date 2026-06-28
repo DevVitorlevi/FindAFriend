@@ -14,14 +14,12 @@ export interface CreatePetParams {
 }
 
 export interface CreatePetOutput {
-  pet: {
-    id: string;
-    name: string;
-    description: string;
-    age: "FILHOTE" | "ADULTO" | "IDOSO";
-    size: "PEQUENO" | "MEDIO" | "GRANDE";
-    org_id: string;
-  };
+  id: string;
+  name: string;
+  description: string;
+  age: "FILHOTE" | "ADULTO" | "IDOSO";
+  size: "PEQUENO" | "MEDIO" | "GRANDE";
+  org_id: string;
 }
 
 export interface FindPetByIdParams {

@@ -26,7 +26,7 @@ describe("Create Pet Use Case", () => {
       city: "Icapuí",
     });
 
-    const { pet } = await sut.execute(
+    const pet = await sut.execute(
       { orgId: org.id },
       {
         name: "Simba",

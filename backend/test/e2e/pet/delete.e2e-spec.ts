@@ -29,4 +29,17 @@ describe("Delete Pet (e2e)", () => {
 
     expect(response.statusCode).toEqual(204);
   });
+
+  it("should not be able to delete pet that not exists", async () => {
+    const { token } = await createAndAuthenticateOrg(app, {
+      city: "Icapui",
+      state: "CE",
+    });
+
+    const response = await request(app.server)
+      .delete(`/pet/"not-exist"`)
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(response.statusCode).toEqual(404);
+  });
 });

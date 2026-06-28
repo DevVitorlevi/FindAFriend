@@ -39,7 +39,7 @@ export class InMemoryPetsRepository implements PetsRepository {
 
     this.database.push(pet);
 
-    return { pet };
+    return pet;
   }
 
   async findById({ petId }: FindPetByIdParams): Promise<PetWithDetails | null> {
