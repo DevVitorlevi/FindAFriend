@@ -166,14 +166,12 @@ export class InMemoryPetsRepository implements PetsRepository {
     });
 
     return {
-      pet: {
-        id: pet.id,
-        name: pet.name,
-        description: pet.description,
-        age: pet.age,
-        size: pet.size,
-        org_id: pet.org_id,
-      },
+      id: pet.id,
+      name: pet.name,
+      description: pet.description,
+      age: pet.age,
+      size: pet.size,
+      org_id: pet.org_id,
     };
   }
 }

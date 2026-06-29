@@ -9,14 +9,14 @@ export class UpdatePetUseCase {
   constructor(private petsRepository: PetsRepository) {}
 
   async execute(petId: string, data: UpdatePetInput): Promise<UpdatePetOutput> {
-    const petExists = await this.petsRepository.findById(petId);
+    const petExists = await this.petsRepository.findById({ petId });
 
     if (!petExists) {
       throw new ResourceNotFound();
     }
 
-    const { pet } = await this.petsRepository.update(petId, data);
+    const pet = await this.petsRepository.update(petId, data);
 
-    return { pet };
+    return pet;
   }
 }

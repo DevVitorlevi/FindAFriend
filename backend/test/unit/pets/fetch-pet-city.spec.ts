@@ -190,12 +190,12 @@ describe("Fetch Pet City Use Case", () => {
     });
 
     await petImagesRepository.create({
-      pet_id: createdPet.pet.id,
+      pet_id: createdPet.id,
       url: "https://example.com/image1.jpg",
     });
 
     await petImagesRepository.create({
-      pet_id: createdPet.pet.id,
+      pet_id: createdPet.id,
       url: "https://example.com/image2.jpg",
     });
 

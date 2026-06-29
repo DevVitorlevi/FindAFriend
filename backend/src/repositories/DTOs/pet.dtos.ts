@@ -57,12 +57,10 @@ export interface UpdatePetInput {
   size?: "PEQUENO" | "MEDIO" | "GRANDE";
 }
 export interface UpdatePetOutput {
-  pet: {
-    id: string;
-    name: string;
-    description: string;
-    age: "FILHOTE" | "ADULTO" | "IDOSO";
-    size: "PEQUENO" | "MEDIO" | "GRANDE";
-    org_id: string;
-  };
+  id: string;
+  name: string;
+  description: string;
+  age: "FILHOTE" | "ADULTO" | "IDOSO";
+  size: "PEQUENO" | "MEDIO" | "GRANDE";
+  org_id: string;
 }

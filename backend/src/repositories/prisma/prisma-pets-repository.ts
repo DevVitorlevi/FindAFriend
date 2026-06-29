@@ -110,6 +110,6 @@ export class PrismaPetsRepository implements PetsRepository {
   async update(petId: string, data: UpdatePetInput) {
     const pet = await prisma.pet.update({ where: { id: petId }, data });
 
-    return { pet };
+    return pet;
   }
 }

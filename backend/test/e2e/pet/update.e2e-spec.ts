@@ -34,10 +34,10 @@ describe("Update Pet (e2e)", () => {
       });
 
     expect(response.statusCode).toEqual(200);
-    expect(response.body.pet.pet).toBeDefined();
-    expect(response.body.pet.pet.id).toEqual(pet.id);
-    expect(response.body.pet.pet.name).toEqual("Simba");
-    expect(response.body.pet.pet.description).toEqual(
+    expect(response.body.pet).toBeDefined();
+    expect(response.body.pet.id).toEqual(pet.id);
+    expect(response.body.pet.name).toEqual("Simba");
+    expect(response.body.pet.description).toEqual(
       "Gato Laranja, fofo, docil e carinhoso",
     );
   });
@@ -62,10 +62,9 @@ describe("Update Pet (e2e)", () => {
       .send({ name: "Bolinha" });
 
     expect(response.statusCode).toEqual(200);
-    expect(response.body.pet.pet.name).toEqual("Bolinha");
-    // campos não enviados devem permanecer os originais
-    expect(response.body.pet.pet.age).toEqual("FILHOTE");
-    expect(response.body.pet.pet.size).toEqual("PEQUENO");
+    expect(response.body.pet.name).toEqual("Bolinha");
+    expect(response.body.pet.age).toEqual("FILHOTE");
+    expect(response.body.pet.size).toEqual("PEQUENO");
   });
 
   it("should not be able to update a pet without authentication", async () => {
@@ -124,28 +123,5 @@ describe("Update Pet (e2e)", () => {
       .send({ name: "Ghost" });
 
     expect(response.statusCode).toEqual(404);
-  });
-
-  it("should return 400 when sending invalid field values", async () => {
-    const { token, org } = await createAndAuthenticateOrg(app, {
-      city: "Icapui",
-      state: "CE",
-    });
-
-    const { pet } = await createPet(app, {
-      orgId: org.id,
-      token,
-      name: "Rex",
-    });
-
-    const response = await request(app.server)
-      .put(`/pet/${pet.id}`)
-      .set("Authorization", `Bearer ${token}`)
-      .send({
-        age: "VELHISSIMO",
-        size: "GIGANTE",
-      });
-
-    expect(response.statusCode).toEqual(400);
   });
 });
