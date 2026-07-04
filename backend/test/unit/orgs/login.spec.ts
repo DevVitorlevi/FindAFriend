@@ -17,13 +17,13 @@ describe("Login Use Case", () => {
     await orgsRepository.create({
       name: "SEDEMA",
       email: "sedema@email.com",
-      password_hash: await hash("123456", 6),
+      password: await hash("123456", 6),
       whatsapp: "(88)99999-9999",
       state: "CE",
       city: "Icapui",
     });
 
-    const { org } = await sut.execute({
+    const org = await sut.execute({
       email: "sedema@email.com",
       password: "123456",
     });
@@ -45,7 +45,7 @@ describe("Login Use Case", () => {
     await orgsRepository.create({
       name: "SEDEMA",
       email: "sedema@email.com",
-      password_hash: await hash("123456", 6),
+      password: await hash("123456", 6),
       whatsapp: "(88)99999-9999",
       state: "CE",
       city: "Icapui",

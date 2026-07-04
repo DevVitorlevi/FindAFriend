@@ -1,4 +1,7 @@
-import type { CreateOrgInput } from "@/repositories/DTOs/org.dtos.js";
+import type {
+  CreateOrgInput,
+  MeOrgParams,
+} from "@/repositories/DTOs/org.dtos.js";
 import type { OrgsRepository } from "@/repositories/orgs-repository-interface.js";
 import type { Org } from "@generated/prisma/client.js";
 import { Prisma } from "@generated/prisma/client.js";
@@ -33,7 +36,7 @@ export class InMemoryOrgsRepository implements OrgsRepository {
     return org;
   }
 
-  async me(id: string) {
+  async me({ id }: MeOrgParams) {
     const org = this.database.find((org) => org.id === id);
 
     if (!org) {

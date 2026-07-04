@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma.js";
 import type { Org } from "@generated/prisma/client.js";
 import type { OrgCreateInput } from "@generated/prisma/models.js";
 import type { OrgsRepository } from "../orgs-repository-interface.js";
-import type { CreateOrgInput } from "../DTOs/org.dtos.js";
+import type { CreateOrgInput, MeOrgParams } from "../DTOs/org.dtos.js";
 
 export class PrismaOrgsRepository implements OrgsRepository {
   async findByEmail(email: string): Promise<Org | null> {
@@ -29,7 +29,7 @@ export class PrismaOrgsRepository implements OrgsRepository {
     return org;
   }
 
-  async me(id: string) {
+  async me({id}: MeOrgParams) {
     const org = await prisma.org.findUnique({
       where: {
         id,

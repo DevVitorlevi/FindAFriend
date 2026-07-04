@@ -1,5 +1,3 @@
-import type { Org } from "@/@types/org.js";
-
 export interface CreateOrgInput {
   name: string;
   email: string;
@@ -24,6 +22,19 @@ export interface LoginOrgInput {
 }
 
 export interface LoginOrgOutput {
+  id: string;
+  name: string;
+  email: string;
+  whatsapp: string;
+  state: string;
+  city: string;
+}
+
+export interface MeOrgParams {
+  id: string;
+}
+
+export interface MeOrgOutput {
   id: string;
   name: string;
   email: string;
