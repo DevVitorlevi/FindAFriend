@@ -1,4 +1,3 @@
-import { orgPresenter } from "@/presenters/org-presenter.js";
 import { makeCreateOrgUseCase } from "@/use-cases/factories/orgs/make-create-org-use-case.js";
 import { OrgAlreadyExits } from "@/utils/errors/org-already-exist.js";
 import type { FastifyReply, FastifyRequest } from "fastify";
@@ -33,7 +32,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     registerBodySchema.parse(request.body);
   try {
     const createOrgUseCase = makeCreateOrgUseCase();
-    const { org } = await createOrgUseCase.execute({
+    const org = await createOrgUseCase.execute({
       name,
       email,
       password,
@@ -43,7 +42,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     });
     return reply.status(201).send({
       message: "Organization created!!",
-      org: orgPresenter(org),
+      org,
     });
   } catch (error) {
     if (error instanceof OrgAlreadyExits) {

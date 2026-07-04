@@ -26,7 +26,6 @@ export async function createOrg(
 
   const response = await request(app.server).post('/orgs').send(orgData)
 
-
   return {
     org: response.body.org,
     credentials: {

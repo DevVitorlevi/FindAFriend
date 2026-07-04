@@ -1,21 +1,10 @@
+import type {
+  CreateOrgInput,
+  CreateOrgOutput,
+} from "@/repositories/DTOs/org.dtos.js";
 import type { OrgsRepository } from "@/repositories/orgs-repository-interface.js";
 import { OrgAlreadyExits } from "@/utils/errors/org-already-exist.js";
 import { hash } from "bcryptjs";
-import type { Org } from "@generated/prisma/client.js";
-
-interface CreateOrgUseCaseRequest {
-  name: string;
-  email: string;
-  password: string;
-  whatsapp: string;
-  state: string;
-  city: string;
-}
-
-interface CreateOrgUseCaseResponse {
-  org: Org;
-}
-
 export class CreateOrgUseCase {
   constructor(private orgsRepository: OrgsRepository) {}
 
@@ -26,7 +15,7 @@ export class CreateOrgUseCase {
     whatsapp,
     state,
     city,
-  }: CreateOrgUseCaseRequest): Promise<CreateOrgUseCaseResponse> {
+  }: CreateOrgInput): Promise<CreateOrgOutput> {
     const orgWithSameEmail = await this.orgsRepository.findByEmail(email);
 
     if (orgWithSameEmail) {
@@ -38,12 +27,12 @@ export class CreateOrgUseCase {
     const org = await this.orgsRepository.create({
       name,
       email,
-      password_hash,
+      password: password_hash,
       whatsapp,
       state,
       city,
     });
 
-    return { org };
+    return org;
   }
 }

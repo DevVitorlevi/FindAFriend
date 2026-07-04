@@ -1,3 +1,4 @@
+import type { CreateOrgInput } from "@/repositories/DTOs/org.dtos.js";
 import type { OrgsRepository } from "@/repositories/orgs-repository-interface.js";
 import type { Org } from "@generated/prisma/client.js";
 import { Prisma } from "@generated/prisma/client.js";
@@ -6,12 +7,12 @@ import { randomUUID } from "node:crypto";
 export class InMemoryOrgsRepository implements OrgsRepository {
   public database: Org[] = [];
 
-  async create(data: Prisma.OrgCreateInput) {
+  async create(data: CreateOrgInput) {
     const org: Org = {
-      id: data.id ?? randomUUID(),
+      id: randomUUID(),
       name: data.name,
       email: data.email,
-      password_hash: data.password_hash,
+      password_hash: data.password,
       whatsapp: data.whatsapp,
       state: data.state,
       city: data.city,

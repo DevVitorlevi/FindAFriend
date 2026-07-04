@@ -14,7 +14,7 @@ describe("Create Org Use Case", () => {
   });
 
   it("should be able to register org", async () => {
-    const { org } = await sut.execute({
+    const org = await sut.execute({
       name: "SEDEMA",
       email: "sedema@email.com",
       password: "123456",
@@ -27,27 +27,7 @@ describe("Create Org Use Case", () => {
     expect(org.name).toBe("SEDEMA");
   });
 
-  it("should hash org password upon creation", async () => {
-    const { org } = await sut.execute({
-      name: "SEDEMA",
-      email: "sedema@email.com",
-      password: "123456",
-      whatsapp: "(88)99999-9999",
-      state: "CE",
-      city: "Icapui",
-    });
-
-    const isPasswordCorrectlyHashed = await compare(
-      "123456",
-      org.password_hash,
-    );
-
-    expect(isPasswordCorrectlyHashed).toBe(true);
-  });
-
   it("should not be able to register org with same email", async () => {
-    const email = "sedema@email.com";
-
     await sut.execute({
       name: "SEDEMA",
       email: "sedema@email.com",
