@@ -1,4 +1,3 @@
-import { orgPresenter } from "@/presenters/org-presenter.js";
 import { makeMeUseCase } from "@/use-cases/factories/orgs/make-me-use-case.js";
 import type { FastifyReply, FastifyRequest } from "fastify";
 
@@ -10,7 +9,7 @@ export async function me(request: FastifyRequest, reply: FastifyReply) {
     const { org } = await meUseCase.execute({ id });
 
     return reply.status(200).send({
-      org: orgPresenter(org),
+      org,
     });
   } catch (err) {
     return reply.status(404).send({

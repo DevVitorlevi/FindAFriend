@@ -1,66 +1,61 @@
-import { orgPresenter } from '@/presenters/org-presenter.js'
-import { makeLoginOrgUseCase } from '@/use-cases/factories/orgs/make-login-org-use-case.js'
-import { InvalidCredentials } from '@/utils/errors/invalid-credentials.js'
-import type { FastifyReply, FastifyRequest } from 'fastify'
-import { z } from 'zod'
+import { makeLoginOrgUseCase } from "@/use-cases/factories/orgs/make-login-org-use-case.js";
+import { InvalidCredentials } from "@/utils/errors/invalid-credentials.js";
+import type { FastifyReply, FastifyRequest } from "fastify";
+import { z } from "zod";
 
-export async function login(
-  request: FastifyRequest,
-  reply: FastifyReply,
-) {
+export async function login(request: FastifyRequest, reply: FastifyReply) {
   const loginBodySchema = z.object({
     email: z.email(),
     password: z.string().min(8),
-  })
+  });
 
-  const { email, password } = loginBodySchema.parse(request.body)
+  const { email, password } = loginBodySchema.parse(request.body);
 
   try {
-    const loginUseCase = makeLoginOrgUseCase()
+    const loginUseCase = makeLoginOrgUseCase();
 
-    const { org } = await loginUseCase.execute({
+    const org = await loginUseCase.execute({
       email,
       password,
-    })
+    });
 
     const accessToken = await reply.jwtSign(
       { sub: org.id },
-      { expiresIn: '10m' }
-    )
+      { expiresIn: "10m" },
+    );
 
     const refreshToken = await reply.jwtSign(
       { sub: org.id },
-      { expiresIn: '7d' }
-    )
+      { expiresIn: "7d" },
+    );
 
     return reply
       .status(200)
-      .setCookie('accessToken', accessToken, {
-        path: '/',
+      .setCookie("accessToken", accessToken, {
+        path: "/",
         httpOnly: true,
-        sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 10
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 60 * 10,
       })
-      .setCookie('refreshToken', refreshToken, {
-        path: '/',
+      .setCookie("refreshToken", refreshToken, {
+        path: "/",
         httpOnly: true,
-        sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 24 * 7
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 60 * 60 * 24 * 7,
       })
       .send({
         accessToken,
-        org: orgPresenter(org),
-        message: 'Auth User Successful'
-      })
-
+        org,
+        message: "Auth User Successful",
+      });
   } catch (error) {
     if (error instanceof InvalidCredentials) {
       return reply.status(400).send({
-        message: error.message
-      })
+        message: error.message,
+      });
     }
-    throw error
+    throw error;
   }
 }
