@@ -23,7 +23,7 @@ export class UploadPetImagesUseCase {
     petId,
     images,
   }: UploadPetImagesUseCaseRequest): Promise<UploadPetImagesUseCaseResponse> {
-    const pet = await this.petsRepository.findById(petId);
+    const pet = await this.petsRepository.findById({ petId });
 
     if (!pet) {
       throw new ResourceNotFound();
@@ -48,11 +48,16 @@ export class UploadPetImagesUseCase {
       });
 
       const image = await this.petImagesRepository.create({
-        pet_id: petId,
+        petId,
         url: uploadResult.secure_url,
       });
 
-      uploadedImages.push(image);
+      uploadedImages.push({
+        id: image.id,
+        url: image.url,
+        pet_id: image.petId,
+        created_at: image.create_at,
+      });
     }
 
     return { images: uploadedImages };

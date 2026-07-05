@@ -39,25 +39,24 @@ describe("Upload Pet Images Use Case", () => {
     const org = await orgsRepository.create({
       name: "SEDEMA",
       email: "sedema@email.com",
-      password_hash: await hash("123456", 6),
+      password: await hash("123456", 6),
       whatsapp: "(88)99999-9999",
       state: "CE",
       city: "Icapui",
     });
 
-       const createdPet = await petsRepository.create(org.id, {
+    const createdPet = await petsRepository.create(org.id, {
       name: "Simba",
       age: "ADULTO",
       description: "Gato Laranja Fofo",
       size: "GRANDE",
     });
 
-
     const fakeImageBuffer1 = Buffer.from("fake-image-1");
     const fakeImageBuffer2 = Buffer.from("fake-image-2");
 
     const { images } = await sut.execute({
-      petId: createdPet.pet.id,
+      petId: createdPet.id,
       images: [fakeImageBuffer1, fakeImageBuffer2],
     });
 

@@ -1,3 +1,7 @@
+import type {
+  CreatePetImageInput,
+  CreatePetImageOutput,
+} from "@/repositories/DTOs/pet-image.js";
 import type { PetImagesRepository } from "@/repositories/pets-images-repository-interface.js";
 import type { PetImage, Prisma } from "@generated/prisma/browser.js";
 import { randomUUID } from "node:crypto";
@@ -5,17 +9,22 @@ import { randomUUID } from "node:crypto";
 export class InMemoryPetImagesRepository implements PetImagesRepository {
   public items: PetImage[] = [];
 
-  async create(data: Prisma.PetImageUncheckedCreateInput): Promise<PetImage> {
+  async create(data: CreatePetImageInput): Promise<CreatePetImageOutput> {
     const image: PetImage = {
-      id: data.id ?? randomUUID(),
-      pet_id: data.pet_id,
+      id: randomUUID(),
+      pet_id: data.petId,
       url: data.url,
       created_at: new Date(),
     };
 
     this.items.push(image);
 
-    return image;
+    return {
+      id: image.id,
+      url: image.url,
+      petId: image.pet_id,
+      create_at: image.created_at,
+    };
   }
 
   async findManyByPetId(petId: string): Promise<PetImage[]> {
