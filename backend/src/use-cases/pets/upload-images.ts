@@ -1,17 +1,12 @@
+import type { PetImage } from "@/@types/pet-image.js";
 import { cloudinary } from "@/lib/cloudinary.js";
+import type {
+  UploadPetImagesInput,
+  UploadPetImagesOutput,
+} from "@/repositories/DTOs/pet-image.js";
 import type { PetImagesRepository } from "@/repositories/pets-images-repository-interface.js";
 import type { PetsRepository } from "@/repositories/pets-repository-interface.js";
 import { ResourceNotFound } from "@/utils/errors/resource-not-found.js";
-import type { PetImage } from "@generated/prisma/browser.js";
-
-interface UploadPetImagesUseCaseRequest {
-  petId: string;
-  images: Buffer[];
-}
-
-interface UploadPetImagesUseCaseResponse {
-  images: PetImage[];
-}
 
 export class UploadPetImagesUseCase {
   constructor(
@@ -22,7 +17,7 @@ export class UploadPetImagesUseCase {
   async execute({
     petId,
     images,
-  }: UploadPetImagesUseCaseRequest): Promise<UploadPetImagesUseCaseResponse> {
+  }: UploadPetImagesInput): Promise<UploadPetImagesOutput> {
     const pet = await this.petsRepository.findById({ petId });
 
     if (!pet) {

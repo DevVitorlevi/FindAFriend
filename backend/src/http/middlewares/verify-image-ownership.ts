@@ -5,12 +5,12 @@ export async function verifyImageOwnership(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const { imageId } = request.params as { imageId: string };
+  const { petImageId } = request.params as { petImageId: string };
   const orgId = request.user.sub;
 
   try {
     const image = await prisma.petImage.findUnique({
-      where: { id: imageId },
+      where: { id: petImageId },
       include: {
         pet: {
           select: {

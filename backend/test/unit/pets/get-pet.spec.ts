@@ -26,7 +26,7 @@ describe("Get Pet Details Use Case", () => {
     const org = await orgsRepository.create({
       name: "SEDEMA",
       email: "sedema@email.com",
-      password_hash: await hash("123456", 6),
+      password: await hash("123456", 6),
       whatsapp: "(88)99999-9999",
       state: "CE",
       city: "Icapui",
@@ -40,12 +40,12 @@ describe("Get Pet Details Use Case", () => {
     });
 
     await petImagesRepository.create({
-      pet_id: createdPet.id,
+      petId: createdPet.id,
       url: "https://example.com/image1.jpg",
     });
 
     await petImagesRepository.create({
-      pet_id: createdPet.id,
+      petId: createdPet.id,
       url: "https://example.com/image2.jpg",
     });
 

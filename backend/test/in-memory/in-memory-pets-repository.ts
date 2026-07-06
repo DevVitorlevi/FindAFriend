@@ -17,6 +17,7 @@ import type {
   Size,
 } from "@generated/prisma/client.js";
 import { randomUUID } from "node:crypto";
+
 export class InMemoryPetsRepository implements PetsRepository {
   public database: Pet[] = [];
 
@@ -103,6 +104,7 @@ export class InMemoryPetsRepository implements PetsRepository {
 
     return filteredPets;
   }
+
   async toggleAdopted(petId: string): Promise<ToggleAdoptedOutput> {
     const petIndex = this.database.findIndex((pet) => pet.id === petId);
 

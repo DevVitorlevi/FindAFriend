@@ -17,7 +17,7 @@ export class CreatePetUseCase {
     params: CreatePetParams,
     data: CreatePetInput,
   ): Promise<CreatePetOutput> {
-    const org = await this.orgsRepository.me(params.orgId);
+    const org = await this.orgsRepository.me({ id: params.orgId });
 
     if (!org) throw new ResourceNotFound();
 

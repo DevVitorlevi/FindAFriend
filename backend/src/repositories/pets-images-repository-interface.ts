@@ -1,12 +1,20 @@
-import type { PetImage, Prisma } from "@generated/prisma/browser.js";
 import type {
   CreatePetImageInput,
   CreatePetImageOutput,
+  DeletePetImageParams,
+  FindByIdPetImageOutput,
+  FindByIdPetImageParams,
+  FindManyPetImageOutput,
+  FindManyPetImageParams,
 } from "./DTOs/pet-image.js";
 
 export interface PetImagesRepository {
   create(data: CreatePetImageInput): Promise<CreatePetImageOutput>;
-  findManyByPetId(petId: string): Promise<PetImage[]>;
-  findById(id: string): Promise<PetImage | null>;
-  delete(id: string): Promise<void>;
+  findManyByPetId(
+    petId: FindManyPetImageParams,
+  ): Promise<FindManyPetImageOutput[]>;
+  findById(
+    petImageId: FindByIdPetImageParams,
+  ): Promise<FindByIdPetImageOutput | null>;
+  delete(petImageId: DeletePetImageParams): Promise<void>;
 }

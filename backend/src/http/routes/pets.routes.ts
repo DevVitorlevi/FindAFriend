@@ -201,7 +201,7 @@ export function petsRoutes(app: FastifyInstance) {
   );
 
   app.delete(
-    "/image/:imageId",
+    "/image/:petImageId",
     {
       onRequest: [verifyJWT, verifyImageOwnership],
       schema: {
@@ -210,9 +210,9 @@ export function petsRoutes(app: FastifyInstance) {
         security: [{ bearerAuth: [] }],
         params: {
           type: "object",
-          required: ["imageId"],
+          required: ["petImageId"],
           properties: {
-            imageId: { type: "string", format: "uuid" },
+            petImageId: { type: "string", format: "uuid" },
           },
         },
         response: {
@@ -229,7 +229,6 @@ export function petsRoutes(app: FastifyInstance) {
     },
     deleteImage,
   );
-
   app.get(
     "/my/pets",
     {

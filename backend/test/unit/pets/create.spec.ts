@@ -20,7 +20,7 @@ describe("Create Pet Use Case", () => {
     const org = await orgsRepository.create({
       name: "SEDEMA",
       email: "sedema@email.com",
-      password_hash: await hash("123456", 6),
+      password: await hash("123456", 6),
       whatsapp: "(88)99999-9999",
       state: "CE",
       city: "Icapuí",

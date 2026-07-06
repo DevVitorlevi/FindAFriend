@@ -20,11 +20,11 @@ describe(" Delete Image Use Case", () => {
     sut = new DeletePetImageUseCase(petImagesRepository);
   });
 
-  it("should be able to delete pet", async () => {
+  it("should be able to delete pet image", async () => {
     const org = await orgsRepository.create({
       name: "SEDEMA",
       email: "sedema@email.com",
-      password_hash: await hash("123456", 6),
+      password: await hash("123456", 6),
       whatsapp: "(88)99999-9999",
       state: "CE",
       city: "Icapui",
@@ -37,20 +37,26 @@ describe(" Delete Image Use Case", () => {
       size: "GRANDE",
     });
 
-    await petImagesRepository.create({
-      pet_id: createdPet.pet.id,
+    const image1 = await petImagesRepository.create({
+      petId: createdPet.id,
       url: "https://example.com/image1.jpg",
     });
 
     await petImagesRepository.create({
-      pet_id: createdPet.pet.id,
+      petId: createdPet.id,
       url: "https://example.com/image2.jpg",
     });
 
     await expect(
       sut.execute({
-        imageId: "img-1",
+        petImageId: image1.id,
       }),
-    ).resolves;
+    ).resolves.toBeUndefined();
+    const remainingImages = await petImagesRepository.findManyByPetId({
+      petId: createdPet.id,
+    });
+
+    expect(remainingImages).toHaveLength(1);
+    expect(remainingImages[0].url).toBe("https://example.com/image2.jpg");
   });
 });

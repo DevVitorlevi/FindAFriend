@@ -25,7 +25,7 @@ describe("Fetch Pet City Use Case", () => {
     const org = await orgsRepository.create({
       name: "SEDEMA",
       email: "sedema@email.com",
-      password_hash: await hash("123456", 6),
+      password: await hash("123456", 6),
       whatsapp: "(88)99999-9999",
       state: "CE",
       city: "Icapui",
@@ -54,7 +54,7 @@ describe("Fetch Pet City Use Case", () => {
     const orgFortaleza = await orgsRepository.create({
       name: "ONG Fortaleza",
       email: "ong@fortaleza.com",
-      password_hash: await hash("123456", 6),
+      password: await hash("123456", 6),
       whatsapp: "(85)99999-9999",
       state: "CE",
       city: "Fortaleza",
@@ -63,7 +63,7 @@ describe("Fetch Pet City Use Case", () => {
     const orgIcapui = await orgsRepository.create({
       name: "ONG Icapui",
       email: "ong@icapui.com",
-      password_hash: await hash("123456", 6),
+      password: await hash("123456", 6),
       whatsapp: "(88)98888-8888",
       state: "CE",
       city: "Icapui",
@@ -93,7 +93,7 @@ describe("Fetch Pet City Use Case", () => {
     const orgCE = await orgsRepository.create({
       name: "ONG CE",
       email: "ong@ce.com",
-      password_hash: await hash("123456", 6),
+      password: await hash("123456", 6),
       whatsapp: "(88)99999-9999",
       state: "CE",
       city: "Russas",
@@ -102,7 +102,7 @@ describe("Fetch Pet City Use Case", () => {
     const orgSP = await orgsRepository.create({
       name: "ONG SP",
       email: "ong@sp.com",
-      password_hash: await hash("123456", 6),
+      password: await hash("123456", 6),
       whatsapp: "(11)99999-9999",
       state: "SP",
       city: "Russas",
@@ -138,7 +138,7 @@ describe("Fetch Pet City Use Case", () => {
     const org1 = await orgsRepository.create({
       name: "ONG Alpha",
       email: "alpha@email.com",
-      password_hash: await hash("123456", 6),
+      password: await hash("123456", 6),
       whatsapp: "(88)91111-1111",
       state: "CE",
       city: "Mossoró",
@@ -147,7 +147,7 @@ describe("Fetch Pet City Use Case", () => {
     const org2 = await orgsRepository.create({
       name: "ONG Beta",
       email: "beta@email.com",
-      password_hash: await hash("123456", 6),
+      password: await hash("123456", 6),
       whatsapp: "(88)92222-2222",
       state: "CE",
       city: "Mossoró",
@@ -176,7 +176,7 @@ describe("Fetch Pet City Use Case", () => {
     const org = await orgsRepository.create({
       name: "SEDEMA",
       email: "sedema@email.com",
-      password_hash: await hash("123456", 6),
+      password: await hash("123456", 6),
       whatsapp: "(88)99999-9999",
       state: "CE",
       city: "Icapui",
@@ -190,12 +190,12 @@ describe("Fetch Pet City Use Case", () => {
     });
 
     await petImagesRepository.create({
-      pet_id: createdPet.id,
+      petId: createdPet.id,
       url: "https://example.com/image1.jpg",
     });
 
     await petImagesRepository.create({
-      pet_id: createdPet.id,
+      petId: createdPet.id,
       url: "https://example.com/image2.jpg",
     });
 

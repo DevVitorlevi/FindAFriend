@@ -1,6 +1,11 @@
 import type {
   CreatePetImageInput,
   CreatePetImageOutput,
+  DeletePetImageParams,
+  FindByIdPetImageOutput,
+  FindByIdPetImageParams,
+  FindManyPetImageOutput,
+  FindManyPetImageParams,
 } from "@/repositories/DTOs/pet-image.js";
 import type { PetImagesRepository } from "@/repositories/pets-images-repository-interface.js";
 import type { PetImage, Prisma } from "@generated/prisma/browser.js";
@@ -27,20 +32,38 @@ export class InMemoryPetImagesRepository implements PetImagesRepository {
     };
   }
 
-  async findManyByPetId(petId: string): Promise<PetImage[]> {
-    const images = this.items.filter((image) => image.pet_id === petId);
+  async findManyByPetId({
+    petId,
+  }: FindManyPetImageParams): Promise<FindManyPetImageOutput[]> {
+    const images = this.items
+      .filter((image) => image.pet_id === petId)
+      .map((image) => ({
+        id: image.id,
+        url: image.url,
+        petId: image.pet_id,
+        create_at: image.created_at,
+      }));
 
     return images;
   }
 
-  async findById(id: string): Promise<PetImage | null> {
-    const image = this.items.find((item) => item.id === id);
+  async findById({
+    petImageId,
+  }: FindByIdPetImageParams): Promise<FindByIdPetImageOutput | null> {
+    const image = this.items.find((item) => item.id === petImageId);
 
-    return image || null;
+    if (!image) return null;
+
+    return {
+      id: image.id,
+      url: image.url,
+      petId: image.pet_id,
+      create_at: image.created_at,
+    };
   }
 
-  async delete(id: string): Promise<void> {
-    const imageIndex = this.items.findIndex((image) => image.id === id);
+  async delete({ petImageId }: DeletePetImageParams): Promise<void> {
+    const imageIndex = this.items.findIndex((image) => image.id === petImageId);
 
     if (imageIndex >= 0) {
       this.items.splice(imageIndex, 1);

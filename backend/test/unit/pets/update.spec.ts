@@ -20,7 +20,7 @@ describe("Update Pet", () => {
     return orgsRepository.create({
       name: "SEDEMA",
       email: "sedema@email.com",
-      password_hash: await hash("123456", 6),
+      password: await hash("123456", 6),
       whatsapp: "(88)99999-9999",
       state: "CE",
       city: "Icapui",

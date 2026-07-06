@@ -1,21 +1,13 @@
 import { cloudinary } from "@/app.js";
+import type { DeletePetImageParams } from "@/repositories/DTOs/pet-image.js";
 import type { PetImagesRepository } from "@/repositories/pets-images-repository-interface.js";
 import { ResourceNotFound } from "@/utils/errors/resource-not-found.js";
 
-interface DeletePetImageUseCaseRequest {
-  imageId: string;
-}
-
-interface DeletePetImageUseCaseResponse {
-  message: string;
-}
 export class DeletePetImageUseCase {
   constructor(private petImagesRepository: PetImagesRepository) {}
 
-  async execute({
-    imageId,
-  }: DeletePetImageUseCaseRequest): Promise<DeletePetImageUseCaseResponse> {
-    const image = await this.petImagesRepository.findById(imageId);
+  async execute({ petImageId }: DeletePetImageParams): Promise<void> {
+    const image = await this.petImagesRepository.findById({ petImageId });
 
     if (!image) {
       throw new ResourceNotFound();
@@ -32,10 +24,6 @@ export class DeletePetImageUseCase {
       console.error("Error deleting image from Cloudinary:", error);
     }
 
-    await this.petImagesRepository.delete(imageId);
-
-    return {
-      message: "Image deleted successfully",
-    };
+    await this.petImagesRepository.delete({ petImageId });
   }
 }

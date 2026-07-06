@@ -8,17 +8,17 @@ export async function deleteImage(
   reply: FastifyReply,
 ) {
   const deleteImageParamsSchema = z.object({
-    imageId: z.string().uuid(),
+    petImageId: z.string().uuid(),
   });
 
-  const { imageId } = deleteImageParamsSchema.parse(request.params);
+  const { petImageId } = deleteImageParamsSchema.parse(request.params);
 
   try {
     const deletePetImageUseCase = makeDeleteImageUseCase();
 
-    const { message } = await deletePetImageUseCase.execute({ imageId });
+    await deletePetImageUseCase.execute({ petImageId });
 
-    return reply.status(204).send({ message });
+    return reply.status(204).send();
   } catch (err) {
     if (err instanceof ResourceNotFound) {
       return reply.status(404).send({ message: "Image not found" });

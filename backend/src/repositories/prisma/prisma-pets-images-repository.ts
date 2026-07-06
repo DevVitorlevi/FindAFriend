@@ -5,6 +5,11 @@ import type { PetImagesRepository } from "../pets-images-repository-interface.js
 import type {
   CreatePetImageInput,
   CreatePetImageOutput,
+  DeletePetImageParams,
+  FindByIdPetImageOutput,
+  FindByIdPetImageParams,
+  FindManyPetImageOutput,
+  FindManyPetImageParams,
 } from "../DTOs/pet-image.js";
 
 export class PrismaPetsImagesRepository implements PetImagesRepository {
@@ -24,26 +29,43 @@ export class PrismaPetsImagesRepository implements PetImagesRepository {
     };
   }
 
-  async findManyByPetId(petId: string): Promise<PetImage[]> {
+  async findManyByPetId({
+    petId,
+  }: FindManyPetImageParams): Promise<FindManyPetImageOutput[]> {
     const petImages = await prisma.petImage.findMany({
       where: {
         pet_id: petId,
       },
     });
-    return petImages;
+
+    return petImages.map((image) => ({
+      id: image.id,
+      url: image.url,
+      petId: image.pet_id,
+      create_at: image.created_at,
+    }));
   }
-  async findById(id: string): Promise<PetImage | null> {
+  async findById({
+    petImageId,
+  }: FindByIdPetImageParams): Promise<FindByIdPetImageOutput | null> {
     const image = await prisma.petImage.findUnique({
-      where: { id },
+      where: { id: petImageId },
     });
 
-    return image;
+    if (!image) return null;
+
+    return {
+      id: image.id,
+      url: image.url,
+      petId: image.pet_id,
+      create_at: image.created_at,
+    };
   }
 
-  async delete(id: string): Promise<void> {
+  async delete({ petImageId }: DeletePetImageParams): Promise<void> {
     await prisma.petImage.delete({
       where: {
-        id,
+        id: petImageId,
       },
     });
   }
