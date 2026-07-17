@@ -74,8 +74,12 @@ app.register(fastifyJwt, {
   },
 });
 
+const allowedOrigins = env.CORS_ORIGIN
+  ? env.CORS_ORIGIN.split(",")
+  : ["http://localhost:3000"];
+
 app.register(cors, {
-  origin: "http://localhost:3000",
+  origin: allowedOrigins,
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
 });
