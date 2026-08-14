@@ -104,4 +104,8 @@ app.setErrorHandler((error, _, reply) => {
   });
 });
 
+app.get("/health", async (_, reply) => {
+  return reply.status(200).send({ status: "ok" });
+});
+
 export { cloudinary };
