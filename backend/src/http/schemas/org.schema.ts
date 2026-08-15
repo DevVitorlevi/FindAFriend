@@ -5,9 +5,17 @@ export const orgBodySchema = {
     name: { type: "string", minLength: 3, example: "ONG Patinhas Felizes" },
     email: { type: "string", format: "email", example: "contato@patinhas.org" },
     password: { type: "string", minLength: 8, example: "senha@123" },
-    whatsapp: { type: "string", example: "11987654321" },
-    city: { type: "string", example: "São Paulo" },
-    state: { type: "string", example: "SP" },
+    whatsapp: { type: "string", example: "88987654321" },
+    city: {
+      type: "string",
+      enum: ["Fortaleza", "Icapuí", "Russas"],
+      example: "Fortaleza",
+    },
+    state: {
+      type: "string",
+      enum: ["CE"],
+      example: "CE",
+    },
   },
 } as const;
 
@@ -22,9 +30,9 @@ export const orgResponseSchema = {
     },
     name: { type: "string", example: "ONG Patinhas Felizes" },
     email: { type: "string", format: "email", example: "contato@patinhas.org" },
-    whatsapp: { type: "string", example: "11987654321" },
-    city: { type: "string", example: "São Paulo" },
-    state: { type: "string", example: "SP" },
+    whatsapp: { type: "string", example: "88987654321" },
+    city: { type: "string", example: "Fortaleza" },
+    state: { type: "string", example: "CE" },
     created_at: {
       type: "string",
       format: "date-time",
