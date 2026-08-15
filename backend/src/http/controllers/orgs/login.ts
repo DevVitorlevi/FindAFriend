@@ -29,20 +29,22 @@ export async function login(request: FastifyRequest, reply: FastifyReply) {
       { expiresIn: "7d" },
     );
 
+    const isProduction = process.env.NODE_ENV === "production";
+
     return reply
       .status(200)
       .setCookie("accessToken", accessToken, {
         path: "/",
         httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
+        sameSite: isProduction ? "none" : "lax",
+        secure: isProduction,
         maxAge: 60 * 10,
       })
       .setCookie("refreshToken", refreshToken, {
         path: "/",
         httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
+        sameSite: isProduction ? "none" : "lax",
+        secure: isProduction,
         maxAge: 60 * 60 * 24 * 7,
       })
       .send({
