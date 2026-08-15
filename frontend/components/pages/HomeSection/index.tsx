@@ -3,20 +3,30 @@ import { SearchPet } from "@/components/Search";
 import Pets from "@/public/shape.png";
 import Image from "next/image";
 import Logo from "@/public/logo.png";
+import Link from "next/link";
 
 export default function HomeSection() {
   return (
     <main className="bg-[#F15156] w-full min-h-screen flex flex-col overflow-x-hidden py-5">
-      <div className="w-full flex flex-row items-center gap-2 px-5 sm:px-8 lg:px-10">
-        <Image
-          src={Logo}
-          alt="Imagem ilustrativa de um pet"
-          className="w-10 h-auto"
-          priority
-        />
-        <h2 className="font-semibold text-2xl sm:text-2xl text-white lg:text-3xl">
-          FindAFriend
-        </h2>
+      <div className="w-full flex flex-row items-center justify-between gap-2 px-5 sm:px-8 lg:px-10">
+        <div className="flex flex-row items-center gap-2">
+          <Image
+            src={Logo}
+            alt="Imagem ilustrativa de um pet"
+            className="w-10 h-auto"
+            priority
+          />
+          <h2 className="font-semibold text-2xl sm:text-2xl text-white lg:text-3xl">
+            FindAFriend
+          </h2>
+        </div>
+
+        <Link
+          href="/register"
+          className="shrink-0 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-[#F15156] shadow-sm transition-all hover:bg-white/90 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 sm:px-5 sm:py-2.5 sm:text-base"
+        >
+          Anuncie um pet
+        </Link>
       </div>
 
       <div className="flex flex-col lg:flex-row items-center justify-center px-5 sm:px-8 lg:px-16 xl:px-20 w-full flex-1 gap-10 lg:gap-16 xl:gap-24 max-w-7xl mx-auto">

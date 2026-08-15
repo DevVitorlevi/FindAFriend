@@ -20,7 +20,11 @@
     "docker:down": "docker-compose down",
     "db:test:migrate": "dotenv -e .env.test -- npx prisma migrate deploy",
     "db:test:reset": "dotenv -e .env.test -- npx prisma migrate reset --force",
-    "db:test:studio": "dotenv -e .env.test -- npx prisma studio"
+    "db:test:studio": "dotenv -e .env.test -- npx prisma studio",
+    "seed:local": "dotenv -e .env.local -- npx prisma db seed",
+    "migrate:local": "dotenv -e .env.local -- npx prisma migrate deploy",
+    "seed:prod": "dotenv -e .env.production -- npx prisma db seed",
+    "migrate:prod": "dotenv -e .env.production -- npx prisma migrate deploy"
   },
   "keywords": [],
   "author": "",
