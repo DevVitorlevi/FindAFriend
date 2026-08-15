@@ -6,7 +6,7 @@ export async function me(request: FastifyRequest, reply: FastifyReply) {
 
   try {
     const meUseCase = makeMeUseCase();
-    const { org } = await meUseCase.execute({ id });
+    const org = await meUseCase.execute({ id });
 
     return reply.status(200).send({
       org,
