@@ -59,10 +59,8 @@ export interface GetPetsRequest {
 }
 
 export interface GetPetsResponse {
-  pet: Pet[];
+  pets: Pet[];
 }
-
-// ─── Nova interface para busca por ID ─────────────────────────────────────────
 
 export interface GetPetByIdRequest {
   petId: string;
@@ -71,8 +69,6 @@ export interface GetPetByIdRequest {
 export interface GetPetByIdResponse {
   pet: Pet;
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
 
 export interface CreatePetRequest {
   name: string;
@@ -126,7 +122,7 @@ export async function getPets({
       params: { orgId: id },
     });
     return {
-      pet: Array.isArray(data.pet) ? data.pet : [],
+      pets: Array.isArray(data.pets) ? data.pets : [], // era data.pet
     };
   } catch (error) {
     console.error("Erro ao buscar pets:", error);
@@ -134,16 +130,12 @@ export async function getPets({
   }
 }
 
-// ─── Busca um pet pelo ID — GET /pet/{petId} ──────────────────────────────────
-
 export async function getPetById({
   petId,
 }: GetPetByIdRequest): Promise<GetPetByIdResponse> {
   const { data } = await petAPI.get<GetPetByIdResponse>(`/pet/${petId}`);
   return data;
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
 
 export async function createPet({ orgId, ...data }: CreatePetRequest) {
   const response = await petAPI.post(`/pets/${orgId}/create`, data);

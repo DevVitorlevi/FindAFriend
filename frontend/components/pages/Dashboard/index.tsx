@@ -49,7 +49,7 @@ export default function DashboardSection() {
     try {
       setLoading(true);
       const response = await getPets({ id: user.id });
-      setPets(Array.isArray(response.pet) ? response.pet : []);
+      setPets(Array.isArray(response.pets) ? response.pets : []);
     } catch (error) {
       console.error("Erro ao carregar pets:", error);
       setPets([]);
