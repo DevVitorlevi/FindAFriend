@@ -56,7 +56,11 @@ app.addSchema(orgResponseSchema);
 app.addSchema(petResponseSchema);
 app.addSchema(petImageSchema);
 
-app.register(multipart);
+app.register(multipart, {
+  limits: {
+    fileSize: 10 * 1024 * 1024,
+  },
+});
 
 cloudinary.config({
   cloud_name: env.CLOUDINARY_CLOUD_NAME,
