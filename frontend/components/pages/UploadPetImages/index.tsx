@@ -1,11 +1,17 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { uploadPetImages } from '@/services/pets';
-import { Loader2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { toast } from 'sonner';
+import { Button } from "@/components/ui/button";
+import {
+  deletePetImage,
+  getPetById,
+  uploadPetImages,
+  type PetImage,
+} from "@/services/pets";
+import { Loader2, Trash2 } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface UploadPetImagesSectionProps {
   petId: string;
@@ -18,26 +24,53 @@ export function UploadPetImagesSection({ petId }: UploadPetImagesSectionProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
 
+  const [existingImages, setExistingImages] = useState<PetImage[]>([]);
+  const [loadingImages, setLoadingImages] = useState(true);
+  const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
+
+  const loadExistingImages = useCallback(async () => {
+    try {
+      setLoadingImages(true);
+      const { pet } = await getPetById({ petId });
+      setExistingImages(pet.images ?? []);
+    } catch (error) {
+      console.error("Erro ao carregar imagens existentes:", error);
+    } finally {
+      setLoadingImages(false);
+    }
+  }, [petId]);
+
+  useEffect(() => {
+    loadExistingImages();
+  }, [loadExistingImages]);
+
   const handleFileSelect = (files: FileList | null) => {
     if (!files) return;
 
-    const validFiles = Array.from(files).filter(file => {
-      const isImage = file.type.startsWith('image/');
-      const isValidType = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'].includes(file.type);
+    const validFiles = Array.from(files).filter((file) => {
+      const isImage = file.type.startsWith("image/");
+      const isValidType = [
+        "image/png",
+        "image/jpeg",
+        "image/jpg",
+        "image/webp",
+      ].includes(file.type);
       return isImage && isValidType;
     });
 
     if (validFiles.length === 0) {
-      alert('Por favor, selecione apenas arquivos de imagem (PNG, JPG, JPEG, WEBP)');
+      alert(
+        "Por favor, selecione apenas arquivos de imagem (PNG, JPG, JPEG, WEBP)",
+      );
       return;
     }
 
-    setSelectedFiles(prev => [...prev, ...validFiles]);
+    setSelectedFiles((prev) => [...prev, ...validFiles]);
 
-    validFiles.forEach(file => {
+    validFiles.forEach((file) => {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setPreviews(prev => [...prev, e.target?.result as string]);
+        setPreviews((prev) => [...prev, e.target?.result as string]);
       };
       reader.readAsDataURL(file);
     });
@@ -60,13 +93,28 @@ export function UploadPetImagesSection({ petId }: UploadPetImagesSectionProps) {
   };
 
   const removeFile = (index: number) => {
-    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
-    setPreviews(prev => prev.filter((_, i) => i !== index));
+    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
+    setPreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleDeleteExistingImage = async (petImageId: string) => {
+    setDeletingImageId(petImageId);
+
+    try {
+      await deletePetImage({ petImageId });
+      setExistingImages((prev) => prev.filter((img) => img.id !== petImageId));
+      toast.success("Imagem removida!");
+    } catch (error) {
+      console.error("Erro ao deletar imagem:", error);
+      toast.error("Erro ao remover imagem. Tente novamente.");
+    } finally {
+      setDeletingImageId(null);
+    }
   };
 
   const handleUpload = async () => {
     if (selectedFiles.length === 0) {
-      alert('Selecione pelo menos uma imagem');
+      alert("Selecione pelo menos uma imagem");
       return;
     }
 
@@ -75,14 +123,14 @@ export function UploadPetImagesSection({ petId }: UploadPetImagesSectionProps) {
     try {
       await uploadPetImages({
         petId,
-        images: selectedFiles
+        images: selectedFiles,
       });
 
       toast.success("Imagens Enviadas!!");
-      router.push('/dashboard');
+      router.push("/dashboard");
     } catch (error) {
-      console.error('Erro ao enviar imagens:', error);
-      toast.error('Erro ao enviar imagens. Tente novamente.');
+      console.error("Erro ao enviar imagens:", error);
+      toast.error("Erro ao enviar imagens. Tente novamente.");
     } finally {
       setUploading(false);
     }
@@ -102,17 +150,55 @@ export function UploadPetImagesSection({ petId }: UploadPetImagesSectionProps) {
         </div>
 
         <div className="bg-white rounded-lg shadow-lg p-8">
-          <h1 className="text-3xl font-bold text-[#0D3B66] mb-2">Adicionar Imagens</h1>
+          <h1 className="text-3xl font-bold text-[#0D3B66] mb-2">
+            Adicionar Imagens
+          </h1>
           <p className="text-slate-600 mb-8">Faça upload das fotos do pet</p>
+
+          {!loadingImages && existingImages.length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-xl font-semibold text-[#0D3B66] mb-4">
+                Imagens Atuais ({existingImages.length})
+              </h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {existingImages.map((image) => (
+                  <div
+                    key={image.id}
+                    className="relative group w-full h-48 rounded-lg border-2 border-slate-200 overflow-hidden"
+                  >
+                    <Image
+                      src={image.url}
+                      alt="Imagem do pet"
+                      fill
+                      className="object-cover"
+                    />
+                    <button
+                      onClick={() => handleDeleteExistingImage(image.id)}
+                      disabled={deletingImageId === image.id}
+                      className="absolute top-2 right-2 bg-[#E44449] text-white rounded-full w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#E44449]/90 disabled:opacity-100 disabled:cursor-not-allowed z-10"
+                      aria-label="Remover imagem"
+                    >
+                      {deletingImageId === image.id ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
-            className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors ${isDragging
-              ? 'border-[#E44449] bg-red-50'
-              : 'border-slate-300 bg-slate-50 hover:border-slate-400'
-              }`}
+            className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors ${
+              isDragging
+                ? "border-[#E44449] bg-red-50"
+                : "border-slate-300 bg-slate-50 hover:border-slate-400"
+            }`}
           >
             <div className="space-y-4">
               <div className="text-6xl">📁</div>
@@ -185,7 +271,7 @@ export function UploadPetImagesSection({ petId }: UploadPetImagesSectionProps) {
                       Enviando...
                     </>
                   ) : (
-                    'Enviar Imagens'
+                    "Enviar Imagens"
                   )}
                 </Button>
                 <Button

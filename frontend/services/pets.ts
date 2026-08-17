@@ -99,6 +99,9 @@ export interface AdoptedPetRequest {
 export interface DeletePetRequest {
   petId: string;
 }
+export interface DeletePetImageRequest {
+  petImageId: string;
+}
 
 export async function searchPet({
   city,
@@ -172,4 +175,8 @@ export async function adoptedPet({ petId }: AdoptedPetRequest) {
 
 export async function DeletePet({ petId }: DeletePetRequest) {
   await petAPI.delete(`/pet/${petId}`);
+}
+
+export async function deletePetImage({ petImageId }: DeletePetImageRequest) {
+  await petAPI.delete(`/image/${petImageId}`);
 }
