@@ -100,11 +100,10 @@ export class PrismaPetsRepository implements PetsRepository {
   }
 
   async delete(petId: string) {
-    await prisma.pet.delete({
-      where: {
-        id: petId,
-      },
-    });
+    await prisma.$transaction([
+      prisma.petImage.deleteMany({ where: { pet_id: petId } }),
+      prisma.pet.delete({ where: { id: petId } }),
+    ]);
   }
 
   async update(petId: string, data: UpdatePetInput) {
